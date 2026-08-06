@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stopwatch | ClassCarnival</title>
+<meta name="description" content="Simple, fullscreen-friendly online stopwatch with lap tracking. Free classroom timer tool.">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .display{ text-align:center; padding: 60px 20px; }
+  .time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 14vw, 130px); letter-spacing: 2px; line-height:1; }
+  .ms{ font-size: 0.4em; color: var(--cream-dim); }
+  .laps{ max-width: 420px; margin: 0 auto; }
+  .lap-item{ display:flex; justify-content:space-between; padding: 10px 14px; border-radius: 10px;
+    background: rgba(255,255,255,0.02); margin-bottom: 6px; font-size: 14px; }
+  .lap-num{ color: var(--gold); font-weight:700; }
+  #fullscreenBtn{ position:fixed; top:16px; right:16px; z-index:10; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/team-race.html">Team Race</a>
+      <a href="/tools/stopwatch.html" class="active">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Stopwatch</div>
+    <h1>Classroom Stopwatch</h1>
+    <div class="sub">Big enough to read from the back of the room. Track laps for timed activities.</div>
+  </div>
+
+  <div class="panel">
+    <div class="display">
+      <div class="time" id="timeDisplay">00:00<span class="ms">.00</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gold" id="startStopBtn">Start</button>
+      <button class="btn-ghost" id="lapBtn" disabled>Lap</button>
+      <button class="btn-ghost" id="resetBtn">Reset</button>
+    </div>
+    <div class="laps" id="laps"></div>
+  </div>
+  <div class="hint">Tip: press Space to start/stop, L to lap.</div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A straightforward, no-frills stopwatch built to be read from the back of a classroom — large digits, a simple start/stop/reset flow, and lap tracking for activities where you need to record multiple times in a row, like timed reading fluency checks, relay-style speaking drills, or any activity broken into repeated short bursts.</p>
+    <p>Press Space to start and stop without reaching for the mouse, and L to record a lap while it's running — handy if you're timing several students back-to-back and don't want to lose track while writing scores down. Laps stack up in a simple list so you can review them after the activity is done, without needing to write anything down mid-activity.</p>
+    <p>Works in any modern browser, needs no sign-up or download, and is safe to leave open on a classroom projector or interactive board for the whole lesson.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script>
+  let running = false, startTime = 0, elapsed = 0, rafId = null, lapCount = 0;
+  const timeDisplay = document.getElementById('timeDisplay');
+  const startStopBtn = document.getElementById('startStopBtn');
+  const lapBtn = document.getElementById('lapBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  const lapsEl = document.getElementById('laps');
+
+  function format(ms){
+    const totalMs = Math.floor(ms);
+    const m = Math.floor(totalMs/60000);
+    const s = Math.floor((totalMs%60000)/1000);
+    const cs = Math.floor((totalMs%1000)/10);
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<span class="ms">.${String(cs).padStart(2,'0')}</span>`;
+  }
+
+  function tick(){
+    if(!running) return;
+    timeDisplay.innerHTML = format(elapsed + (performance.now() - startTime));
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function toggle(){
+    if(running){
+      running = false;
+      elapsed += performance.now() - startTime;
+      startStopBtn.textContent = 'Resume';
+      lapBtn.disabled = true;
+      cancelAnimationFrame(rafId);
+    } else {
+      running = true;
+      startTime = performance.now();
+      startStopBtn.textContent = 'Stop';
+      lapBtn.disabled = false;
+      tick();
+    }
+  }
+
+  function reset(){
+    running = false;
+    elapsed = 0; lapCount = 0;
+    cancelAnimationFrame(rafId);
+    timeDisplay.innerHTML = format(0);
+    startStopBtn.textContent = 'Start';
+    lapBtn.disabled = true;
+    lapsEl.innerHTML = '';
+  }
+
+  function addLap(){
+    lapCount++;
+    const current = elapsed + (running ? performance.now() - startTime : 0);
+    const item = document.createElement('div');
+    item.className = 'lap-item';
+    item.innerHTML = `<span class="lap-num">Lap ${lapCount}</span><span>${format(current).replace(/<[^>]+>/g,'').replace('.', '.')}</span>`;
+    lapsEl.prepend(item);
+  }
+
+  startStopBtn.addEventListener('click', toggle);
+  resetBtn.addEventListener('click', reset);
+  lapBtn.addEventListener('click', addLap);
+
+  document.addEventListener('keydown', (e)=>{
+    if(e.code === 'Space'){ e.preventDefault(); toggle(); }
+    if(e.key.toLowerCase() === 'l' && !lapBtn.disabled){ addLap(); }
+  });
+</script>
+</body>
+</html>

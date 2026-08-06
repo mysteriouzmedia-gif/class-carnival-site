@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Word Race Timer — Random Vocabulary Order | ClassCarnival</title>
+<meta name="description" content="Free word race timer for ESL classrooms. Enter vocabulary words or student names and watch a random race decide the order — great for vocabulary review.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/race-shared.css">
+<style>
+  :root{ --track-bg: #171a12; }
+  body{ background: radial-gradient(ellipse at top, #26301c 0%, var(--track-bg) 60%) fixed; }
+  .runner{ font-size: 11px !important; width: 34px !important; height: 34px !important; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🔤 Word Race</div>
+    <h1>Word Race Timer</h1>
+    <div class="sub">Enter your vocabulary list instead of names — race decides which word your class reviews first, second, third...</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one word per line, e.g.
+delicious
+enormous
+curious
+generous
+nervous"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 words</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample word list</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start the Race</button></div>
+  </div>
+
+  <div id="raceScreen" class="panel" style="display:none;">
+    <div class="track" id="track"></div>
+    <div class="leaderboard">
+      <h3>Review Order</h3>
+      <div id="liveLeaderboard"></div>
+    </div>
+  </div>
+
+  <div id="resultsScreen" class="panel" style="display:none;">
+    <h3 style="font-family:'Archivo Black',sans-serif; font-size:20px; margin-top:0;">Final Order</h3>
+    <div id="finalList"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="raceAgainBtn">Race Again</button>
+      <button class="btn-ghost" id="editBtn">Edit Words</button>
+    </div>
+  </div>
+
+  <div class="hint">Works for student names too — anything typed one-per-line can race.</div>
+
+  <div class="related-skins">
+    <h3>Try another theme</h3>
+    <div class="skin-links">
+      <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
+      <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
+      <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>Most random pickers only work with names — this one is built to race anything you type in, one item per line, which makes it useful well beyond turn-order. Paste in a vocabulary list instead of student names, and the race decides which word your class reviews first, second, third, and so on, turning a plain vocabulary drill into something with a bit of visible suspense.</p>
+    <p>It's a natural fit for warm-up reviews, spelling practice, or randomizing the order of a "word of the day" rotation across the week. Because it's the same underlying engine as the classic Race Timer, it works exactly as well with student names if you'd rather use it that way — there's nothing vocabulary-specific under the hood, just a different way of framing what you type in.</p>
+    <p>As always: any list length works, no sign-up required, and every race produces a different order, so review sessions don't get predictable.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script>
+  window.RACE_SKIN = {
+    avatarType: 'initials',
+    sampleNames: ['delicious','enormous','curious','generous','nervous','fantastic']
+  };
+</script>
+<script src="../js/race-engine.js"></script>
+</body>
+</html>

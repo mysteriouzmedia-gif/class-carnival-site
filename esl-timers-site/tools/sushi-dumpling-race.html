@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sushi &amp; Dumpling Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free sushi and dumpling race timer! Enter student names and watch a random race decide the order — a fun food-themed classroom timer.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/race-shared.css">
+<style>
+  :root{ --track-bg: #201217; }
+  body{ background: radial-gradient(ellipse at top, #34181f 0%, var(--track-bg) 60%) fixed; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🍣 Sushi &amp; Dumpling Race</div>
+    <h1>Sushi &amp; Dumpling Race Timer</h1>
+    <div class="sub">A tasty random race to decide who goes first — for presentations, reading turns, or line order.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start the Race</button></div>
+  </div>
+
+  <div id="raceScreen" class="panel" style="display:none;">
+    <div class="track" id="track"></div>
+    <div class="leaderboard">
+      <h3>Finish Order</h3>
+      <div id="liveLeaderboard"></div>
+    </div>
+  </div>
+
+  <div id="resultsScreen" class="panel" style="display:none;">
+    <h3 style="font-family:'Archivo Black',sans-serif; font-size:20px; margin-top:0;">Final Order</h3>
+    <div id="finalList"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="raceAgainBtn">Race Again</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+  </div>
+
+  <div class="hint">Tip: results are fully random each time — great for keeping turn order fair.</div>
+
+  <div class="related-skins">
+    <h3>Try another theme</h3>
+    <div class="skin-links">
+      <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
+      <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
+      <a href="/tools/word-race.html">🔤 Word Race</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A food-themed spin on the random order race, alternating sushi and dumpling racers as they make their way to the finish line. Same fair, fully random mechanic as the classic Race Timer — type in your student list, hit start, and let the race decide who goes first.</p>
+    <p>Good for adding a bit of visual variety when you've already used the classic race or another themed one recently, or simply for classes that respond well to food-themed visuals. Works for the same practical uses as every race on this site: deciding presentation order, reading turns, who answers first, or line-up order at the end of class.</p>
+    <p>No sign-up, no limit on class size, and a different random order every time you race — reset and run it again as many times as your lesson needs.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script>
+  window.RACE_SKIN = { avatarType: 'emoji', emojis: ['🍣','🥟'] };
+</script>
+<script src="../js/race-engine.js"></script>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dinosaur Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free dinosaur race timer! Enter student names and watch a random dino race decide the order — fun for classroom turn-taking and presentations.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/race-shared.css">
+<style>
+  :root{ --track-bg: #14210f; }
+  body{ background: radial-gradient(ellipse at top, #1f3a1a 0%, var(--track-bg) 60%) fixed; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🦖 Dinosaur Race</div>
+    <h1>Dinosaur Race Timer</h1>
+    <div class="sub">Stomp through the jungle and let the dinosaurs randomly decide who goes first.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start the Race</button></div>
+  </div>
+
+  <div id="raceScreen" class="panel" style="display:none;">
+    <div class="track" id="track"></div>
+    <div class="leaderboard">
+      <h3>Finish Order</h3>
+      <div id="liveLeaderboard"></div>
+    </div>
+  </div>
+
+  <div id="resultsScreen" class="panel" style="display:none;">
+    <h3 style="font-family:'Archivo Black',sans-serif; font-size:20px; margin-top:0;">Final Order</h3>
+    <div id="finalList"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="raceAgainBtn">Race Again</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+  </div>
+
+  <div class="hint">Tip: results are fully random each time — great for keeping turn order fair.</div>
+
+  <div class="related-skins">
+    <h3>Try another theme</h3>
+    <div class="skin-links">
+      <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
+      <a href="/tools/word-race.html">🔤 Word Race</a>
+      <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A dinosaur-themed version of the random order race — same fair mechanic as the classic Race Timer, with a prehistoric cast of racers stomping toward the finish line. Type in your student list, hit start, and let the dinosaurs decide who goes first.</p>
+    <p>This one's a natural fit if your class is in the middle of an animals, prehistory, or science unit — it doubles as a bit of incidental vocabulary reinforcement (dinosaur names, habitats, extinct vs. living animals) while still doing the practical job of generating a fair, random order for presentations, reading turns, or line-up. It also tends to land well with younger classes simply because dinosaurs are a reliable crowd-pleaser.</p>
+    <p>Like every race on this site, it's fully random each time, works for any class size from 2 students up, needs no sign-up, and can be reset and re-run as many times as you like in a single lesson.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script>
+  window.RACE_SKIN = { avatarType: 'emoji', emoji: '🦖' };
+</script>
+<script src="../js/race-engine.js"></script>
+</body>
+</html>

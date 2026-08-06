@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Popsicle Stick Picker | ClassCarnival</title>
+<meta name="description" content="Free popsicle stick name picker — the classic classroom cup-of-sticks, digitized. No repeats until everyone's had a turn.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .stage{ text-align:center; padding: 40px 20px 10px; position:relative; min-height: 220px; }
+  .cup{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
+  .cup:hover{ transform: scale(1.05) rotate(-2deg); }
+  .cup.shake{ animation: shake .4s ease; }
+  @keyframes shake{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-6deg); } 75%{ transform: rotate(6deg); } }
+  .card{
+    position:absolute; left:50%; top:20px; transform: translate(-50%, 20px) scale(0.6); opacity:0;
+    background: var(--gold); color:#1a1305; font-family:'Archivo Black', sans-serif;
+    font-size: clamp(20px, 4vw, 32px); padding: 14px 26px; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  }
+  .card.show{ transform: translate(-50%, -70px) scale(1); opacity:1; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🥤 Popsicle Stick Cup</div>
+    <h1>Popsicle Stick Picker</h1>
+    <div class="sub">The classic cup-of-sticks trick, digitized — tap to pull a stick. No repeats until everyone's had a turn.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start Picking</button></div>
+  </div>
+
+  <div id="pickScreen" class="panel" style="display:none;">
+    <div class="stage">
+      <div class="card" id="card">Name</div>
+      <div class="cup" id="cupBtn">🥤</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="pool" id="pool"></div>
+  </div>
+  <div class="hint">Tap the cup to pull a stick. Everyone gets picked once before names repeat.</div>
+
+  <div class="related-skins">
+    <h3>Try a different mechanic</h3>
+    <div class="skin-links">
+      <a href="/tools/name-picker.html">📋 List Picker</a>
+      <a href="/tools/lucky-envelope-picker.html">🧧 Lucky Envelope</a>
+      <a href="/tools/spin-globe-picker.html">🌍 Spin the Globe</a>
+      <a href="/tools/sticker-jar-picker.html">🫙 Sticker Jar</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A digital version of the classic cup-of-popsicle-sticks trick many teachers already use for cold-calling — except there's nothing to write out by hand, nothing to lose, and no risk of accidentally pulling the same stick twice in a row. Paste in your class list, tap the cup, and a name pulls up fairly, with the same no-repeat guarantee as every picker on this site: once everyone's had a turn, the pool automatically refills.</p>
+    <p>If you already run a physical stick-cup system in class, this works well as a backup for days you forget the real cup at home, or as a way to run the same fair system on a shared classroom screen so the whole class can see the pick happen, not just the teacher.</p>
+    <p>Works with any class size, no sign-up required, and the full roster stays visible below so students can see who's still waiting for a turn.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script>
+  const setupScreen = document.getElementById('setupScreen');
+  const pickScreen = document.getElementById('pickScreen');
+  const namesInput = document.getElementById('namesInput');
+  const nameCount = document.getElementById('nameCount');
+  const cupBtn = document.getElementById('cupBtn');
+  const card = document.getElementById('card');
+  const poolEl = document.getElementById('pool');
+
+  let allNames = [], picker = null;
+
+  namesInput.addEventListener('input', updateCount);
+  function updateCount(){
+    const list = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    nameCount.textContent = list.length + (list.length===1 ? ' student' : ' students');
+  }
+
+  document.getElementById('sampleBtn').addEventListener('click', ()=>{
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'].join('\n');
+    updateCount();
+  });
+
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    allNames = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
+    picker = createPicker(allNames);
+    setupScreen.style.display = 'none';
+    pickScreen.style.display = 'block';
+    renderPool(allNames);
+  });
+
+  document.getElementById('editBtn').addEventListener('click', ()=>{
+    pickScreen.style.display = 'none';
+    setupScreen.style.display = 'block';
+  });
+
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
+    picker.reset();
+    card.classList.remove('show');
+    renderPool(allNames);
+  });
+
+  cupBtn.addEventListener('click', ()=>{
+    cupBtn.classList.remove('shake'); void cupBtn.offsetWidth; cupBtn.classList.add('shake');
+    card.classList.remove('show'); void card.offsetWidth;
+    const result = picker.pickNext();
+    card.textContent = result.name;
+    setTimeout(()=> card.classList.add('show'), 120);
+    renderPool(allNames);
+    if(result.justExhausted){
+      setTimeout(()=>{ picker.reset(); renderPool(allNames); }, 1400);
+    }
+  });
+
+  function renderPool(names){
+    poolEl.innerHTML = '';
+    names.forEach(name=>{
+      const chip = document.createElement('span');
+      chip.className = 'remaining-chip' + (picker.isRemaining(name) ? '' : ' used');
+      chip.textContent = name;
+      poolEl.appendChild(chip);
+    });
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Race Timer | ClassCarnival</title>
+<meta name="description" content="Free team race timer for classroom quiz games and competitions. Click to advance your team's racer, first to the finish wins.">
+<link rel="stylesheet" href="../css/theme.css">
+<style>
+  .track{ background: var(--track-bg); border: 1px solid var(--line); border-radius: 18px; padding: 8px; overflow: hidden; }
+  .lane{ position: relative; display:flex; align-items:center; height: 74px; border-bottom: 1px dashed #384a66; }
+  .lane:last-child{ border-bottom:none; }
+  .lane:nth-child(odd){ background: rgba(255,255,255,0.015); }
+  .lane-label{ width: 130px; flex-shrink:0; padding: 0 12px; z-index: 3; display:flex; flex-direction:column; gap:2px; }
+  .team-name{ font-weight:800; font-size: 14px; outline:none; cursor:text; border-bottom: 1px dashed transparent;
+    max-width: 110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .team-name:hover, .team-name:focus{ border-bottom-color: var(--cream-dim); }
+  .team-key{ font-size:11px; color: var(--cream-dim); }
+  .lane-track{ position:relative; flex:1; height:100%; }
+  .rail{ position:absolute; top:50%; left:0; right:56px; height: 2px; transform: translateY(-1px);
+    background: repeating-linear-gradient(90deg, var(--line) 0 14px, transparent 14px 26px); }
+  .runner{ position:absolute; top:50%; transform: translate(0,-50%); font-size: 30px; left: 4px;
+    transition: left .35s cubic-bezier(.34,1.56,.64,1); filter: drop-shadow(0 3px 4px rgba(0,0,0,.4)); }
+  .flag{ position:absolute; right: 10px; top: 8px; bottom: 8px; width: 20px;
+    background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 10px 10px;
+    border-radius: 4px; opacity:.9; }
+  .go-btn{ z-index:3; margin-right: 10px; flex-shrink:0; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #101418; }
+  .stepper{ display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:10px; padding: 4px 6px; }
+  .stepper span{ font-weight:700; min-width: 70px; text-align:center; font-size:14px; }
+  .stepper button{ padding: 6px 12px; background: var(--panel-bg); color: var(--cream); }
+  .controls{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin: 22px 0 28px; }
+  .overlay{ position: fixed; inset:0; background: rgba(10,14,22,.82); display:none; align-items:center; justify-content:center; z-index: 50; backdrop-filter: blur(2px); }
+  .overlay.show{ display:flex; }
+  .win-card{ background: var(--track-bg); border: 1px solid var(--gold); border-radius: 20px; padding: 40px 50px; text-align:center; box-shadow: 0 0 60px rgba(255,182,39,.25); }
+  .win-eyebrow{ color: var(--gold); letter-spacing:3px; font-size:12px; font-weight:700; }
+  .win-name{ font-family:'Archivo Black', sans-serif; font-size: clamp(30px, 5vw, 46px); margin: 8px 0 20px; }
+  @media (max-width: 640px){ .lane-label{ width: 90px; } .runner{ font-size: 24px; } .go-btn{ padding: 8px 10px; font-size: 12px; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/team-race.html" class="active">Team Race</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">Team Race</div>
+    <h1>Team Race Timer</h1>
+    <div class="sub">Tap a lane's button every time that team scores a point. First to the finish wins.</div>
+  </div>
+
+  <div class="controls">
+    <div class="stepper"><button id="minus">−</button><span id="teamCount">4 teams</span><button id="plus">+</button></div>
+    <div class="stepper"><button id="lenMinus">−</button><span id="raceLen">8 to win</span><button id="lenPlus">+</button></div>
+    <button class="btn-ghost" id="resetBtn">Reset Race</button>
+  </div>
+
+  <div class="track" id="track"></div>
+  <div class="hint">Click a team name to rename it. Keyboard shortcuts 1–6 advance the matching lane.</div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>Unlike the Race Timer, this one isn't random — it's built for live team competitions where the students themselves decide who wins. Split the class into 2–6 teams, rename each lane to match your team names, and set how many correct answers (or points) it takes to reach the finish line.</p>
+    <p>It's built for the classroom quiz format most teachers already run: ask a question, the correct team clicks their GO button, and their racer inches toward the finish line. First team across wins, with a celebratory winner screen at the end. Keyboard shortcuts (number keys 1–6) let you run the whole thing hands-free from the front of the room, so you're not hunting for the right button mid-question.</p>
+    <p>Great for vocabulary quizzes, grammar drills, spelling competitions, or any activity where you want the energy of a race without leaving the outcome up to chance. Reset instantly between rounds, and rename teams on the fly by clicking directly on their name.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<div class="overlay" id="overlay">
+  <div class="win-card">
+    <div class="win-eyebrow">WINNER</div>
+    <div class="win-name" id="winName">Team 1</div>
+    <button class="btn-gold" id="againBtn">Race Again</button>
+  </div>
+</div>
+
+<script>
+  const colors = ['--c1','--c2','--c3','--c4','--c5','--c6'];
+  const icons = ['🏃','🚴','🐢','🚀','🐇','🦥'];
+  const defaultNames = ['Team 1','Team 2','Team 3','Team 4','Team 5','Team 6'];
+  let teamCount = 4, raceLen = 8, progress = [], names = [...defaultNames], finished = false;
+
+  const trackEl = document.getElementById('track');
+  const teamCountEl = document.getElementById('teamCount');
+  const raceLenEl = document.getElementById('raceLen');
+  const overlay = document.getElementById('overlay');
+  const winName = document.getElementById('winName');
+
+  function buildTrack(){
+    trackEl.innerHTML = '';
+    progress = Array(teamCount).fill(0);
+    finished = false;
+    for(let i=0;i<teamCount;i++){
+      const lane = document.createElement('div');
+      lane.className = 'lane';
+      lane.innerHTML = `
+        <div class="lane-label">
+          <div class="team-name" contenteditable="true" data-i="${i}">${names[i]}</div>
+          <div class="team-key">Key ${i+1}</div>
+        </div>
+        <div class="lane-track">
+          <div class="rail"></div><div class="flag"></div>
+          <div class="runner" id="runner-${i}" style="left:4px;">${icons[i]}</div>
+        </div>
+        <button class="go-btn" data-i="${i}" style="background:var(${colors[i]})">GO</button>`;
+      trackEl.appendChild(lane);
+    }
+    document.querySelectorAll('.go-btn').forEach(b=> b.addEventListener('click', ()=> advance(parseInt(b.dataset.i))));
+    document.querySelectorAll('.team-name').forEach(el=>{
+      el.addEventListener('blur', ()=>{
+        const i = parseInt(el.dataset.i);
+        names[i] = el.textContent.trim() || defaultNames[i];
+      });
+    });
+  }
+
+  function advance(i){
+    if(finished) return;
+    progress[i]++;
+    const pct = Math.min(progress[i]/raceLen, 1);
+    const runner = document.getElementById('runner-'+i);
+    const laneTrack = runner.parentElement;
+    const maxLeft = laneTrack.clientWidth - 76;
+    runner.style.left = (4 + pct*maxLeft) + 'px';
+    if(progress[i] >= raceLen){
+      finished = true;
+      winName.textContent = names[i];
+      winName.style.color = `var(${colors[i]})`;
+      overlay.classList.add('show');
+    }
+  }
+
+  document.getElementById('plus').addEventListener('click', ()=>{ if(teamCount<6){ teamCount++; teamCountEl.textContent=teamCount+' teams'; buildTrack(); } });
+  document.getElementById('minus').addEventListener('click', ()=>{ if(teamCount>2){ teamCount--; teamCountEl.textContent=teamCount+' teams'; buildTrack(); } });
+  document.getElementById('lenPlus').addEventListener('click', ()=>{ if(raceLen<30){ raceLen+=2; raceLenEl.textContent=raceLen+' to win'; buildTrack(); } });
+  document.getElementById('lenMinus').addEventListener('click', ()=>{ if(raceLen>3){ raceLen-=2; raceLenEl.textContent=raceLen+' to win'; buildTrack(); } });
+  document.getElementById('resetBtn').addEventListener('click', buildTrack);
+  document.getElementById('againBtn').addEventListener('click', ()=>{ overlay.classList.remove('show'); buildTrack(); });
+
+  document.addEventListener('keydown', (e)=>{
+    const n = parseInt(e.key);
+    if(!isNaN(n) && n>=1 && n<=teamCount){ advance(n-1); }
+  });
+
+  buildTrack();
+  window.addEventListener('resize', ()=>{
+    progress.forEach((p,i)=>{
+      const pct = Math.min(p/raceLen, 1);
+      const runner = document.getElementById('runner-'+i);
+      const maxLeft = runner.parentElement.clientWidth - 76;
+      runner.style.left = (4 + pct*maxLeft) + 'px';
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky Envelope Name Picker | ClassCarnival</title>
+<meta name="description" content="Free lucky envelope name picker for cold-calling students. Tap the envelope — no repeats until everyone's had a turn.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .stage{ text-align:center; padding: 40px 20px 10px; position:relative; min-height: 220px; }
+  .env{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
+  .env:hover{ transform: scale(1.05) rotate(-2deg); }
+  .env.shake{ animation: shake .4s ease; }
+  @keyframes shake{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-6deg); } 75%{ transform: rotate(6deg); } }
+  .card{
+    position:absolute; left:50%; top:20px; transform: translate(-50%, 20px) scale(0.6); opacity:0;
+    background: var(--gold); color:#1a1305; font-family:'Archivo Black', sans-serif;
+    font-size: clamp(20px, 4vw, 32px); padding: 14px 26px; border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.4);
+    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  }
+  .card.show{ transform: translate(-50%, -70px) scale(1); opacity:1; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🧧 Lucky Envelope</div>
+    <h1>Lucky Envelope Picker</h1>
+    <div class="sub">Tap the envelope for a lucky pick — no repeats until everyone in the class has had a turn.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start Picking</button></div>
+  </div>
+
+  <div id="pickScreen" class="panel" style="display:none;">
+    <div class="stage">
+      <div class="card" id="card">Name</div>
+      <div class="env" id="envBtn">🧧</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="pool" id="pool"></div>
+  </div>
+  <div class="hint">Tap the envelope to open it. Everyone gets picked once before names repeat.</div>
+
+  <div class="related-skins">
+    <h3>Try a different mechanic</h3>
+    <div class="skin-links">
+      <a href="/tools/name-picker.html">📋 List Picker</a>
+      <a href="/tools/popsicle-stick-picker.html">🥤 Popsicle Stick Cup</a>
+      <a href="/tools/spin-globe-picker.html">🌍 Spin the Globe</a>
+      <a href="/tools/sticker-jar-picker.html">🫙 Sticker Jar</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A red-envelope-themed random picker — tap the envelope, and a name is revealed with the same fair no-repeat logic as every other picker on this site: once a name's been drawn, it's set aside until the rest of the class has had a turn too.</p>
+    <p>The lucky envelope framing borrows from a gift-giving tradition many students will recognize, which tends to make the picking moment feel like a small event rather than just a mechanical process — useful when you want cold-calling to carry a bit of anticipation instead of feeling like a chore for whoever gets picked. Works well for warm-ups, review questions, or handing out a small in-class reward or task to a randomly selected student.</p>
+    <p>Paste in your class list, tap the envelope as many times as you need, and the roster below shows who's still waiting for a turn, updating live as you go. No sign-up needed, and any class size works.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class.</div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script>
+  const setupScreen = document.getElementById('setupScreen');
+  const pickScreen = document.getElementById('pickScreen');
+  const namesInput = document.getElementById('namesInput');
+  const nameCount = document.getElementById('nameCount');
+  const envBtn = document.getElementById('envBtn');
+  const card = document.getElementById('card');
+  const poolEl = document.getElementById('pool');
+
+  let allNames = [], picker = null;
+
+  namesInput.addEventListener('input', updateCount);
+  function updateCount(){
+    const list = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    nameCount.textContent = list.length + (list.length===1 ? ' student' : ' students');
+  }
+
+  document.getElementById('sampleBtn').addEventListener('click', ()=>{
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'].join('\n');
+    updateCount();
+  });
+
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    allNames = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
+    picker = createPicker(allNames);
+    setupScreen.style.display = 'none';
+    pickScreen.style.display = 'block';
+    renderPool(allNames);
+  });
+
+  document.getElementById('editBtn').addEventListener('click', ()=>{
+    pickScreen.style.display = 'none';
+    setupScreen.style.display = 'block';
+  });
+
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
+    picker.reset();
+    card.classList.remove('show');
+    renderPool(allNames);
+  });
+
+  envBtn.addEventListener('click', ()=>{
+    envBtn.classList.remove('shake'); void envBtn.offsetWidth; envBtn.classList.add('shake');
+    card.classList.remove('show'); void card.offsetWidth;
+    const result = picker.pickNext();
+    card.textContent = result.name;
+    setTimeout(()=> card.classList.add('show'), 120);
+    renderPool(allNames);
+    if(result.justExhausted){
+      setTimeout(()=>{ picker.reset(); renderPool(allNames); }, 1400);
+    }
+  });
+
+  function renderPool(names){
+    poolEl.innerHTML = '';
+    names.forEach(name=>{
+      const chip = document.createElement('span');
+      chip.className = 'remaining-chip' + (picker.isRemaining(name) ? '' : ' used');
+      chip.textContent = name;
+      poolEl.appendChild(chip);
+    });
+  }
+</script>
+</body>
+</html>
