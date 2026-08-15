@@ -5,6 +5,7 @@
  *   window.RACE_SKIN = {
  *     avatarType: 'emoji',      // 'emoji' or 'initials'
  *     emoji: '🦆',              // used when avatarType === 'emoji'
+ *     emojis: ['🍣','🥟'],      // optional: cycles per racer instead of one emoji
  *     sampleNames: [...]        // optional, falls back to DEFAULT_SAMPLE
  *   };
  *
@@ -28,7 +29,7 @@
     const liveLeaderboard = document.getElementById('liveLeaderboard');
     const finalList = document.getElementById('finalList');
 
-    let names = [], racers = [], finishOrder = [], raceTimer = null;
+    let names = [], racers = [], finishOrder = [], rafId = null, lastFrameTime = 0;
 
     function color(i){ return `hsl(${(i*47)%360}, 65%, 58%)`; }
     function initials(name){
@@ -58,11 +59,60 @@
       updateCount();
     }
 
+    function showCountdown(callback){
+      const overlay = document.createElement('div');
+      overlay.className = 'race-countdown-overlay';
+      trackEl.style.position = trackEl.style.position || 'relative';
+      trackEl.appendChild(overlay);
+      const steps = ['Ready…', 'Set…', 'GO!'];
+      let idx = 0;
+      function showStep(){
+        overlay.textContent = steps[idx];
+        overlay.classList.remove('pulse'); void overlay.offsetWidth; overlay.classList.add('pulse');
+        idx++;
+        if(idx < steps.length){
+          setTimeout(showStep, 550);
+        } else {
+          setTimeout(()=>{ overlay.remove(); callback(); }, 450);
+        }
+      }
+      showStep();
+    }
+
+    function spawnConfetti(laneEl, racerIndex){
+      const rect = laneEl.getBoundingClientRect();
+      const trackRect = trackEl.getBoundingClientRect();
+      const originX = rect.right - trackRect.left - 14;
+      const originY = rect.top - trackRect.top + rect.height / 2;
+      const colors = [color(racerIndex), '#ffb627', '#f5f0e6'];
+      for(let p = 0; p < 10; p++){
+        const particle = document.createElement('div');
+        particle.className = 'confetti-particle';
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const dist = 24 + Math.random() * 34;
+        particle.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+        particle.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+        particle.style.left = originX + 'px';
+        particle.style.top = originY + 'px';
+        particle.style.background = colors[p % colors.length];
+        trackEl.appendChild(particle);
+        setTimeout(()=> particle.remove(), 700);
+      }
+    }
+
     function startRace(){
       finishOrder = [];
       liveLeaderboard.innerHTML = '';
       trackEl.innerHTML = '';
-      racers = names.map((name, i)=>({ name, i, pos: 0, done:false }));
+      trackEl.style.position = 'relative';
+
+      const now = performance.now();
+      racers = names.map((name, i)=>({
+        name, i, pos: 0, done: false,
+        speed: 0,
+        targetSpeed: 8 + Math.random() * 8,
+        nextSpeedChange: now
+      }));
 
       names.forEach((name, i)=>{
         const lane = document.createElement('div');
@@ -73,38 +123,61 @@
             <div class="rank-badge" id="rank-${i}"></div>
             <div class="rail"></div>
             <div class="flag"></div>
-            <div class="${avatarClass()}" id="runner-${i}" style="background:${color(i)};">${avatarContent(name, i)}</div>
+            <div class="${avatarClass()} running" id="runner-${i}" style="background:${color(i)};">${avatarContent(name, i)}</div>
           </div>`;
         trackEl.appendChild(lane);
       });
 
-      if(raceTimer) clearInterval(raceTimer);
-      raceTimer = setInterval(tick, 140);
+      if(rafId) cancelAnimationFrame(rafId);
+      showCountdown(()=>{
+        lastFrameTime = performance.now();
+        rafId = requestAnimationFrame(frame);
+      });
     }
 
-    function tick(){
+    function frame(now){
+      const dt = Math.min((now - lastFrameTime) / 1000, 0.05);
+      lastFrameTime = now;
       let allDone = true;
+
       racers.forEach(r=>{
         if(r.done) return;
         allDone = false;
-        const step = Math.random() < 0.15 ? 0 : Math.random()*6 + 1;
-        r.pos = Math.min(r.pos + step, 100);
+
+        if(now >= r.nextSpeedChange){
+          const suspensePause = Math.random() < 0.12;
+          r.targetSpeed = suspensePause ? (1 + Math.random() * 2) : (7 + Math.random() * 11);
+          r.nextSpeedChange = now + 400 + Math.random() * 600;
+        }
+        r.speed += (r.targetSpeed - r.speed) * Math.min(dt * 3.2, 1);
+        r.pos = Math.min(r.pos + r.speed * dt, 100);
+
         const runner = document.getElementById('runner-'+r.i);
         const laneTrack = runner.parentElement;
         const maxLeft = laneTrack.clientWidth - 40;
         runner.style.left = (2 + (r.pos/100)*maxLeft) + 'px';
+
         if(r.pos >= 100){
           r.done = true;
           finishOrder.push(r.name);
-          document.getElementById('lane-'+r.i).classList.add('finished');
+          const lane = document.getElementById('lane-'+r.i);
+          lane.classList.add('finished');
+          runner.classList.remove('running');
+          runner.classList.add('finished-bounce');
           document.getElementById('rank-'+r.i).textContent = '#'+finishOrder.length;
+          spawnConfetti(lane, r.i);
           const item = document.createElement('div');
           item.className = 'lb-item';
           item.innerHTML = `<div class="lb-rank">#${finishOrder.length}</div><div class="lb-name">${r.name}</div>`;
           liveLeaderboard.appendChild(item);
         }
       });
-      if(allDone){ clearInterval(raceTimer); setTimeout(showResults, 700); }
+
+      if(!allDone){
+        rafId = requestAnimationFrame(frame);
+      } else {
+        setTimeout(showResults, 700);
+      }
     }
 
     function showResults(){

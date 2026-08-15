@@ -7,7 +7,7 @@
 <meta name="description" content="Free team race timer for classroom quiz games and competitions. Click to advance your team's racer, first to the finish wins.">
 <link rel="stylesheet" href="../css/theme.css">
 <style>
-  .track{ background: var(--track-bg); border: 1px solid var(--line); border-radius: 18px; padding: 8px; overflow: hidden; }
+  .track{ background: var(--track-bg); border: 1px solid var(--line); border-radius: 18px; padding: 8px; overflow: hidden; position: relative; }
   .lane{ position: relative; display:flex; align-items:center; height: 74px; border-bottom: 1px dashed #384a66; }
   .lane:last-child{ border-bottom:none; }
   .lane:nth-child(odd){ background: rgba(255,255,255,0.015); }
@@ -25,6 +25,17 @@
     background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 10px 10px;
     border-radius: 4px; opacity:.9; }
   .go-btn{ z-index:3; margin-right: 10px; flex-shrink:0; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #101418; }
+  .runner{ animation: run-bob 0.42s ease-in-out infinite; }
+  @keyframes run-bob{
+    0%, 100%{ transform: translate(0,-50%) rotate(0deg); }
+    50%{ transform: translate(0, calc(-50% - 4px)) rotate(-6deg); }
+  }
+  .confetti-particle{ position: absolute; width: 6px; height: 6px; border-radius: 2px;
+    pointer-events: none; z-index: 6; animation: confetti-burst 0.65s ease-out forwards; }
+  @keyframes confetti-burst{
+    0%{ transform: translate(0,0) rotate(0deg); opacity: 1; }
+    100%{ transform: translate(var(--dx), calc(var(--dy) + 20px)) rotate(220deg); opacity: 0; }
+  }
   .stepper{ display:flex; align-items:center; gap:10px; border:1px solid var(--line); border-radius:10px; padding: 4px 6px; }
   .stepper span{ font-weight:700; min-width: 70px; text-align:center; font-size:14px; }
   .stepper button{ padding: 6px 12px; background: var(--panel-bg); color: var(--cream); }
@@ -138,7 +149,29 @@
       finished = true;
       winName.textContent = names[i];
       winName.style.color = `var(${colors[i]})`;
+      spawnConfetti(runner, i);
       overlay.classList.add('show');
+    }
+  }
+
+  function spawnConfetti(runnerEl, i){
+    const rect = runnerEl.getBoundingClientRect();
+    const trackRect = trackEl.getBoundingClientRect();
+    const originX = rect.left - trackRect.left + rect.width / 2;
+    const originY = rect.top - trackRect.top + rect.height / 2;
+    const palette = [`var(${colors[i]})`, '#ffb627', '#f5f0e6'];
+    for(let p = 0; p < 12; p++){
+      const particle = document.createElement('div');
+      particle.className = 'confetti-particle';
+      const angle = (Math.random() * 360) * (Math.PI / 180);
+      const dist = 26 + Math.random() * 38;
+      particle.style.setProperty('--dx', Math.cos(angle) * dist + 'px');
+      particle.style.setProperty('--dy', Math.sin(angle) * dist + 'px');
+      particle.style.left = originX + 'px';
+      particle.style.top = originY + 'px';
+      particle.style.background = palette[p % palette.length];
+      trackEl.appendChild(particle);
+      setTimeout(()=> particle.remove(), 700);
     }
   }
 
