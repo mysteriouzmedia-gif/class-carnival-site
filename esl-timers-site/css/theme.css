@@ -132,6 +132,34 @@ button:active, .btn:active{ transform: scale(0.96); }
 .info-section p{ color: var(--cream-dim); font-size: 14px; line-height: 1.75; margin: 0 0 14px; }
 .info-section p:last-child{ margin-bottom: 0; }
 
+/* --- Fullscreen mode (for projecting to the class) --- */
+.fs-toggle-btn{
+  position: fixed; top: 16px; right: 16px; z-index: 100;
+  width: 42px; height: 42px; border-radius: 10px;
+  background: var(--panel-bg); border: 1px solid var(--line); color: var(--cream);
+  font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: transform .08s ease, border-color .15s ease;
+}
+.fs-toggle-btn:hover{ border-color: var(--gold); }
+.fs-toggle-btn:active{ transform: scale(0.94); }
+
+body.fs-active .site-header,
+body.fs-active .site-footer,
+body.fs-active .info-section,
+body.fs-active .hint,
+body.fs-active .related-skins,
+body.fs-active .eyebrow,
+body.fs-active .sub{ display: none !important; }
+
+body.fs-active{ display: flex; align-items: center; justify-content: center; min-height: 100vh; }
+body.fs-active main.wrap{ max-width: 100%; width: 100%; padding: 24px 32px; }
+body.fs-active .page-header{ padding: 0 0 18px; }
+body.fs-active h1{ font-size: clamp(28px, 5vw, 46px); }
+body.fs-active .panel{ border: none; background: transparent; padding: 0; }
+body.fs-active .time{ font-size: clamp(90px, 22vw, 240px) !important; }
+body.fs-active .picked-name{ font-size: clamp(60px, 14vw, 160px) !important; }
+body.fs-active .card{ font-size: clamp(28px, 6vw, 64px) !important; padding: 20px 36px !important; }
+
 @media (max-width: 640px){
   nav.site-nav{ justify-content:center; width:100%; }
 }
