@@ -105,11 +105,7 @@
       const bodyClass = skin.avatarType === 'emoji' ? 'runner-body emoji' : 'runner-body';
       return `
         <div class="runner-name-tag">${escapeHtml(name)}</div>
-        <div class="${bodyClass}" style="background:${color(i)};">${label}</div>
-        <svg class="runner-legs" viewBox="0 0 32 20" width="30" height="18">
-          <line class="leg leg-l" x1="16" y1="0" x2="8" y2="20" stroke="#f5f0e6" stroke-width="4" stroke-linecap="round"/>
-          <line class="leg leg-r" x1="16" y1="0" x2="24" y2="20" stroke="#f5f0e6" stroke-width="4" stroke-linecap="round"/>
-        </svg>`;
+        <div class="${bodyClass}" style="background:${color(i)};">${label}</div>`;
     }
 
     function buildTrack(){
