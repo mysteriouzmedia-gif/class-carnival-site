@@ -37,6 +37,8 @@ Push this folder to a GitHub repo, then connect it to Vercel or Netlify (both ha
 
 `tools/race-timer.html`, `ninja-race.html`, `dinosaur-race.html`, `word-race.html`, and `sushi-dumpling-race.html` all run on the same engine (`js/race-engine.js`) and shared styles (`css/race-shared.css`). Each page only supplies:
 
+Each runner is an illustrated character built from three stacked pieces (`js/race-engine.js`'s `runnerMarkup()`): a small name tag, a colored body circle (holding either the skin's emoji or the racer's initials), and an animated SVG leg pair that scissors while running and freezes on pause/finish. Races no longer auto-start — after entering names, the race screen shows everyone lined up at the start, and a `startRaceBtn` (▶ Start Race / ⏸ Pause / ▶ Resume) controls when the "Ready… Set… GO!" countdown and movement actually begin. This id is required on any page using the engine.
+
 1. Its own `<title>`, meta description, `<h1>`, and subtitle (keep these unique per page — that's what makes each one rank for its own search term)
 2. A small `:root` CSS override for `--track-bg` and the body background gradient, to give the page its own palette
 3. A `window.RACE_SKIN = { avatarType: 'emoji', emoji: '🦆' }` script (or `avatarType: 'initials'` for the plain version) right before the `race-engine.js` script tag
