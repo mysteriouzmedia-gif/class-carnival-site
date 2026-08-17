@@ -1,31 +1,64 @@
 /* Shared styles for race-engine powered pages: race-timer, and all themed race skins */
 .track{ border: 1px solid var(--line); border-radius: 16px; overflow:hidden; margin-top: 18px; }
-.lane{ position:relative; height: 40px; display:flex; align-items:center; border-bottom: 1px dashed #384a66; }
+.lane{ position:relative; height: 88px; display:flex; align-items:center; border-bottom: 1px dashed #384a66; }
 .lane:last-child{ border-bottom:none; }
 .lane:nth-child(odd){ background: var(--lane-alt); }
 .lane-track{ position:relative; flex:1; height:100%; margin: 0 8px; }
 .rail{ position:absolute; top:50%; left:0; right:40px; height:2px; transform: translateY(-1px);
   background: repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 20px); }
-.flag{ position:absolute; right:0; top:6px; bottom:6px; width:14px; border-radius:4px;
-  background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 7px 7px; opacity:.85; }
-.runner{ position:absolute; top:50%; transform: translate(0,-50%); left: 2px; width: 28px; height: 28px; border-radius: 50%;
-  display:flex; align-items:center; justify-content:center; font-size: 12px; font-weight:800; color:#101418;
-  transition: left .18s linear; box-shadow: 0 2px 5px rgba(0,0,0,.35); z-index: 2; }
-.runner.emoji{ font-size: 18px; background: rgba(255,255,255,0.06) !important; }
+.flag{ position:absolute; right:0; top:14px; bottom:14px; width:16px; border-radius:4px;
+  background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 8px 8px; opacity:.85; }
 
-/* --- Race animation polish --- */
-.runner.running{ animation: run-bob 0.42s ease-in-out infinite; }
-@keyframes run-bob{
-  0%, 100%{ transform: translate(0,-50%) rotate(0deg); }
-  50%{ transform: translate(0, calc(-50% - 4px)) rotate(-6deg); }
+/* --- Illustrated runner character: name tag + colored body + animated legs --- */
+.runner-wrap{
+  position:absolute; top:50%; transform: translate(0,-50%);
+  width: 66px; display:flex; flex-direction:column; align-items:center; gap:2px;
+  z-index: 2;
 }
-.runner.finished-bounce{ animation: finish-bounce 0.5s cubic-bezier(.34,1.56,.64,1); }
+.runner-name-tag{
+  font-size: 12px; font-weight: 800; color: var(--cream);
+  background: rgba(0,0,0,.45); padding: 2px 7px; border-radius: 7px;
+  white-space: nowrap; max-width: 66px; overflow: hidden; text-overflow: ellipsis;
+}
+.runner-body{
+  width: 40px; height: 40px; border-radius: 50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size: 17px; font-weight: 800; color:#101418;
+  box-shadow: 0 3px 7px rgba(0,0,0,.4);
+}
+.runner-body.emoji{ font-size: 24px; background: rgba(255,255,255,0.06) !important; }
+.runner-legs{ display:block; margin-top: -3px; }
+.runner-legs .leg{ transform-origin: 50% 0%; }
+
+.runner-wrap.running .runner-body{ animation: body-bob 0.32s ease-in-out infinite; }
+@keyframes body-bob{
+  0%, 100%{ transform: translateY(0); }
+  50%{ transform: translateY(-3px); }
+}
+.runner-wrap.running .leg-l{ animation: leg-swing-l 0.32s ease-in-out infinite; }
+.runner-wrap.running .leg-r{ animation: leg-swing-r 0.32s ease-in-out infinite; }
+@keyframes leg-swing-l{
+  0%, 100%{ transform: rotate(-24deg); }
+  50%{ transform: rotate(20deg); }
+}
+@keyframes leg-swing-r{
+  0%, 100%{ transform: rotate(20deg); }
+  50%{ transform: rotate(-24deg); }
+}
+
+.runner-body.finished-bounce{ animation: finish-bounce 0.5s cubic-bezier(.34,1.56,.64,1); }
 @keyframes finish-bounce{
-  0%{ transform: translate(0,-50%) scale(1); }
-  40%{ transform: translate(0,-50%) scale(1.35) rotate(8deg); }
-  100%{ transform: translate(0,-50%) scale(1.1) rotate(0deg); }
+  0%{ transform: scale(1); }
+  40%{ transform: scale(1.35) rotate(8deg); }
+  100%{ transform: scale(1.1) rotate(0deg); }
 }
-.lane.finished .runner{ transform: translate(0,-50%) scale(1.1); box-shadow: 0 0 0 3px var(--gold), 0 2px 5px rgba(0,0,0,.35); }
+.lane.finished .runner-body{
+  transform: scale(1.1);
+  box-shadow: 0 0 0 3px var(--gold), 0 2px 5px rgba(0,0,0,.35);
+}
+.rank-badge{ position:absolute; left: -26px; top:50%; transform: translateY(-50%);
+  font-family:'Archivo Black', sans-serif; font-size: 12px; color: var(--gold); opacity:0; transition: opacity .2s ease; }
+.lane.finished .rank-badge{ opacity:1; }
 
 .race-countdown-overlay{
   position: absolute; inset: 0; z-index: 10;
@@ -52,9 +85,6 @@
   0%{ transform: translate(0,0) rotate(0deg); opacity: 1; }
   100%{ transform: translate(var(--dx), calc(var(--dy) + 20px)) rotate(220deg); opacity: 0; }
 }
-.rank-badge{ position:absolute; left: -26px; top:50%; transform: translateY(-50%);
-  font-family:'Archivo Black', sans-serif; font-size: 12px; color: var(--gold); opacity:0; transition: opacity .2s ease; }
-.lane.finished .rank-badge{ opacity:1; }
 
 textarea{ width:100%; min-height: 150px; resize: vertical; background: #0f1522; color: var(--cream);
   border: 1px solid var(--line); border-radius: 12px; padding: 14px; font-family:'Work Sans', sans-serif;
@@ -62,6 +92,8 @@ textarea{ width:100%; min-height: 150px; resize: vertical; background: #0f1522; 
 textarea:focus{ border-color: var(--gold); }
 .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; margin-top: 14px; }
 .count{ color: var(--cream-dim); font-size:13px; }
+
+.race-controls{ display:flex; justify-content:center; margin-top: 4px; }
 
 .leaderboard{ margin-top: 22px; }
 .leaderboard h3{ font-size:12px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
