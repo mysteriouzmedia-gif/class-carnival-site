@@ -11,11 +11,12 @@
  *
  * Expects these element ids to exist in the page:
  *   setupScreen, raceScreen, resultsScreen, namesInput, nameCount,
- *   sampleBtn, startBtn, track, liveLeaderboard, finalList,
+ *   sampleBtn, startBtn, startRaceBtn, track, liveLeaderboard, finalList,
  *   editBtn, raceAgainBtn
  */
 (function(){
   const DEFAULT_SAMPLE = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'];
+  const WRAP_WIDTH = 66; // px — must match .runner-wrap width in CSS
 
   function initRaceEngine(){
     const skin = Object.assign({ avatarType: 'initials', emoji: '🏃', sampleNames: DEFAULT_SAMPLE }, window.RACE_SKIN || {});
@@ -28,25 +29,25 @@
     const trackEl = document.getElementById('track');
     const liveLeaderboard = document.getElementById('liveLeaderboard');
     const finalList = document.getElementById('finalList');
+    const startRaceBtn = document.getElementById('startRaceBtn');
 
     let names = [], racers = [], finishOrder = [], rafId = null, lastFrameTime = 0;
+    let raceState = 'idle'; // 'idle' | 'running' | 'paused' | 'done'
 
     function color(i){ return `hsl(${(i*47)%360}, 65%, 58%)`; }
     function initials(name){
       const parts = name.trim().split(/\s+/);
       return (parts[0][0] + (parts[1] ? parts[1][0] : '')).toUpperCase();
     }
-    function avatarContent(name, i){
+    function labelFor(name, i){
       if(skin.avatarType === 'emoji'){
-        if(Array.isArray(skin.emojis) && skin.emojis.length){
-          return skin.emojis[i % skin.emojis.length];
-        }
+        if(Array.isArray(skin.emojis) && skin.emojis.length) return skin.emojis[i % skin.emojis.length];
         return skin.emoji;
       }
       return initials(name);
     }
-    function avatarClass(){
-      return skin.avatarType === 'emoji' ? 'runner emoji' : 'runner';
+    function escapeHtml(str){
+      return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
 
     function updateCount(){
@@ -62,7 +63,6 @@
     function showCountdown(callback){
       const overlay = document.createElement('div');
       overlay.className = 'race-countdown-overlay';
-      trackEl.style.position = trackEl.style.position || 'relative';
       trackEl.appendChild(overlay);
       const steps = ['Ready…', 'Set…', 'GO!'];
       let idx = 0;
@@ -100,18 +100,23 @@
       }
     }
 
-    function startRace(){
-      finishOrder = [];
-      liveLeaderboard.innerHTML = '';
+    function runnerMarkup(name, i){
+      const label = labelFor(name, i);
+      const bodyClass = skin.avatarType === 'emoji' ? 'runner-body emoji' : 'runner-body';
+      return `
+        <div class="runner-name-tag">${escapeHtml(name)}</div>
+        <div class="${bodyClass}" style="background:${color(i)};">${label}</div>
+        <svg class="runner-legs" viewBox="0 0 32 20" width="30" height="18">
+          <line class="leg leg-l" x1="16" y1="0" x2="8" y2="20" stroke="#f5f0e6" stroke-width="4" stroke-linecap="round"/>
+          <line class="leg leg-r" x1="16" y1="0" x2="24" y2="20" stroke="#f5f0e6" stroke-width="4" stroke-linecap="round"/>
+        </svg>`;
+    }
+
+    function buildTrack(){
       trackEl.innerHTML = '';
       trackEl.style.position = 'relative';
-
-      const now = performance.now();
       racers = names.map((name, i)=>({
-        name, i, pos: 0, done: false,
-        speed: 0,
-        targetSpeed: 8 + Math.random() * 8,
-        nextSpeedChange: now
+        name, i, pos: 0, done: false, speed: 0, targetSpeed: 0, nextSpeedChange: 0
       }));
 
       names.forEach((name, i)=>{
@@ -123,16 +128,46 @@
             <div class="rank-badge" id="rank-${i}"></div>
             <div class="rail"></div>
             <div class="flag"></div>
-            <div class="${avatarClass()} running" id="runner-${i}" style="background:${color(i)};">${avatarContent(name, i)}</div>
+            <div class="runner-wrap" id="runner-${i}" style="left:2px;">${runnerMarkup(name, i)}</div>
           </div>`;
         trackEl.appendChild(lane);
       });
+    }
 
-      if(rafId) cancelAnimationFrame(rafId);
+    function setControlLabel(text){
+      if(startRaceBtn) startRaceBtn.textContent = text;
+    }
+
+    function beginRace(){
+      raceState = 'running';
+      setControlLabel('⏸ Pause');
+      document.querySelectorAll('.runner-wrap').forEach(el=> el.classList.add('running'));
+
+      const now = performance.now();
+      racers.forEach(r=>{
+        r.targetSpeed = 8 + Math.random() * 8;
+        r.nextSpeedChange = now;
+      });
+
       showCountdown(()=>{
         lastFrameTime = performance.now();
         rafId = requestAnimationFrame(frame);
       });
+    }
+
+    function pauseRace(){
+      raceState = 'paused';
+      setControlLabel('▶ Resume');
+      if(rafId) cancelAnimationFrame(rafId);
+      document.querySelectorAll('.runner-wrap').forEach(el=> el.classList.remove('running'));
+    }
+
+    function resumeRace(){
+      raceState = 'running';
+      setControlLabel('⏸ Pause');
+      document.querySelectorAll('.runner-wrap:not(.finished)').forEach(el=> el.classList.add('running'));
+      lastFrameTime = performance.now();
+      rafId = requestAnimationFrame(frame);
     }
 
     function frame(now){
@@ -154,7 +189,7 @@
 
         const runner = document.getElementById('runner-'+r.i);
         const laneTrack = runner.parentElement;
-        const maxLeft = laneTrack.clientWidth - 40;
+        const maxLeft = laneTrack.clientWidth - WRAP_WIDTH;
         runner.style.left = (2 + (r.pos/100)*maxLeft) + 'px';
 
         if(r.pos >= 100){
@@ -163,19 +198,23 @@
           const lane = document.getElementById('lane-'+r.i);
           lane.classList.add('finished');
           runner.classList.remove('running');
-          runner.classList.add('finished-bounce');
+          runner.classList.add('finished');
+          const body = runner.querySelector('.runner-body');
+          if(body) body.classList.add('finished-bounce');
           document.getElementById('rank-'+r.i).textContent = '#'+finishOrder.length;
           spawnConfetti(lane, r.i);
           const item = document.createElement('div');
           item.className = 'lb-item';
-          item.innerHTML = `<div class="lb-rank">#${finishOrder.length}</div><div class="lb-name">${r.name}</div>`;
+          item.innerHTML = `<div class="lb-rank">#${finishOrder.length}</div><div class="lb-name">${escapeHtml(r.name)}</div>`;
           liveLeaderboard.appendChild(item);
         }
       });
 
-      if(!allDone){
+      if(!allDone && raceState === 'running'){
         rafId = requestAnimationFrame(frame);
-      } else {
+      } else if(allDone){
+        raceState = 'done';
+        if(startRaceBtn) startRaceBtn.style.display = 'none';
         setTimeout(showResults, 700);
       }
     }
@@ -187,7 +226,7 @@
       finishOrder.forEach((name, idx)=>{
         const item = document.createElement('div');
         item.className = 'lb-item';
-        item.innerHTML = `<div class="lb-rank">#${idx+1}</div><div class="lb-name">${name}</div>`;
+        item.innerHTML = `<div class="lb-rank">#${idx+1}</div><div class="lb-name">${escapeHtml(name)}</div>`;
         finalList.appendChild(item);
       });
     }
@@ -198,10 +237,22 @@
     document.getElementById('startBtn').addEventListener('click', ()=>{
       names = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
       if(names.length < 2){ alert('Add at least 2 names to race.'); return; }
+      finishOrder = [];
+      liveLeaderboard.innerHTML = '';
+      raceState = 'idle';
       setupScreen.style.display = 'none';
       raceScreen.style.display = 'block';
-      startRace();
+      if(startRaceBtn){ startRaceBtn.style.display = 'inline-block'; setControlLabel('▶ Start Race'); }
+      buildTrack();
     });
+
+    if(startRaceBtn){
+      startRaceBtn.addEventListener('click', ()=>{
+        if(raceState === 'idle') beginRace();
+        else if(raceState === 'running') pauseRace();
+        else if(raceState === 'paused') resumeRace();
+      });
+    }
 
     document.getElementById('editBtn').addEventListener('click', ()=>{
       resultsScreen.style.display = 'none';
@@ -209,16 +260,20 @@
     });
 
     document.getElementById('raceAgainBtn').addEventListener('click', ()=>{
+      finishOrder = [];
+      liveLeaderboard.innerHTML = '';
+      raceState = 'idle';
       resultsScreen.style.display = 'none';
       raceScreen.style.display = 'block';
-      startRace();
+      if(startRaceBtn){ startRaceBtn.style.display = 'inline-block'; setControlLabel('▶ Start Race'); }
+      buildTrack();
     });
 
     window.addEventListener('resize', ()=>{
       racers.forEach(r=>{
         const runner = document.getElementById('runner-'+r.i);
         if(!runner) return;
-        const maxLeft = runner.parentElement.clientWidth - 40;
+        const maxLeft = runner.parentElement.clientWidth - WRAP_WIDTH;
         runner.style.left = (2 + (r.pos/100)*maxLeft) + 'px';
       });
     });
