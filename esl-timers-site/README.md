@@ -64,3 +64,4 @@ Open this folder as your project root in Cursor. To keep new tools visually cons
 - Add new URLs to `sitemap.xml`
 
 See the prompt below for kicking off your next tool.
+ 
