@@ -1,12 +1,12 @@
 /* Shared styles for race-engine powered pages: race-timer, and all themed race skins */
 .track{ border: 1px solid var(--line); border-radius: 16px; overflow:hidden; margin-top: 18px; }
-.lane{ position:relative; height: 88px; display:flex; align-items:center; border-bottom: 1px dashed #384a66; }
+.lane{ position:relative; height: 70px; display:flex; align-items:center; border-bottom: 1px dashed #384a66; }
 .lane:last-child{ border-bottom:none; }
 .lane:nth-child(odd){ background: var(--lane-alt); }
 .lane-track{ position:relative; flex:1; height:100%; margin: 0 8px; }
 .rail{ position:absolute; top:50%; left:0; right:40px; height:2px; transform: translateY(-1px);
   background: repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 20px); }
-.flag{ position:absolute; right:0; top:14px; bottom:14px; width:16px; border-radius:4px;
+.flag{ position:absolute; right:0; top:10px; bottom:10px; width:16px; border-radius:4px;
   background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 8px 8px; opacity:.85; }
 
 /* --- Illustrated runner character: name tag + colored body + animated legs --- */
@@ -27,23 +27,11 @@
   box-shadow: 0 3px 7px rgba(0,0,0,.4);
 }
 .runner-body.emoji{ font-size: 24px; background: rgba(255,255,255,0.06) !important; }
-.runner-legs{ display:block; margin-top: -3px; }
-.runner-legs .leg{ transform-origin: 50% 0%; }
 
-.runner-wrap.running .runner-body{ animation: body-bob 0.32s ease-in-out infinite; }
-@keyframes body-bob{
-  0%, 100%{ transform: translateY(0); }
-  50%{ transform: translateY(-3px); }
-}
-.runner-wrap.running .leg-l{ animation: leg-swing-l 0.32s ease-in-out infinite; }
-.runner-wrap.running .leg-r{ animation: leg-swing-r 0.32s ease-in-out infinite; }
-@keyframes leg-swing-l{
-  0%, 100%{ transform: rotate(-24deg); }
-  50%{ transform: rotate(20deg); }
-}
-@keyframes leg-swing-r{
-  0%, 100%{ transform: rotate(20deg); }
-  50%{ transform: rotate(-24deg); }
+.runner-wrap.running .runner-body{ animation: run-bob 0.42s ease-in-out infinite; }
+@keyframes run-bob{
+  0%, 100%{ transform: translateY(0) rotate(0deg); }
+  50%{ transform: translateY(-5px) rotate(-6deg); }
 }
 
 .runner-body.finished-bounce{ animation: finish-bounce 0.5s cubic-bezier(.34,1.56,.64,1); }
