@@ -33,18 +33,20 @@
 }
 .runner-body.image{
   width: 48px; height: 48px; border-radius: 0; box-shadow: none; background: none !important;
-  object-fit: contain; transform: scaleX(-1); /* source art faces left; track runs left-to-right */
+  object-fit: contain;
 }
+.runner-body.image.flip-x{ transform: scaleX(-1); } /* only for source art that faces the wrong way by default */
 .lane.finished .runner-body.custom{ box-shadow: none; transform: scale(1.12); border-radius: 10px; }
 .lane.finished .runner-body.custom svg{ filter: drop-shadow(0 0 4px var(--gold)); }
-.lane.finished .runner-body.image{ transform: scaleX(-1) scale(1.15); filter: drop-shadow(0 0 5px var(--gold)); }
+.lane.finished .runner-body.image{ transform: scale(1.15); filter: drop-shadow(0 0 5px var(--gold)); }
+.lane.finished .runner-body.image.flip-x{ transform: scaleX(-1) scale(1.15); filter: drop-shadow(0 0 5px var(--gold)); }
 
 .runner-wrap.running .runner-body{ animation: run-bob 0.42s ease-in-out infinite; }
 @keyframes run-bob{
   0%, 100%{ transform: translateY(0) rotate(0deg); }
   50%{ transform: translateY(-5px) rotate(-6deg); }
 }
-.runner-wrap.running .runner-body.image{ animation: run-bob-flipped 0.42s ease-in-out infinite; }
+.runner-wrap.running .runner-body.image.flip-x{ animation: run-bob-flipped 0.42s ease-in-out infinite; }
 @keyframes run-bob-flipped{
   0%, 100%{ transform: scaleX(-1) translateY(0) rotate(0deg); }
   50%{ transform: scaleX(-1) translateY(-5px) rotate(6deg); }
@@ -56,7 +58,7 @@
   40%{ transform: scale(1.35) rotate(8deg); }
   100%{ transform: scale(1.1) rotate(0deg); }
 }
-.runner-body.image.finished-bounce{ animation: finish-bounce-flipped 0.5s cubic-bezier(.34,1.56,.64,1); }
+.runner-body.image.flip-x.finished-bounce{ animation: finish-bounce-flipped 0.5s cubic-bezier(.34,1.56,.64,1); }
 @keyframes finish-bounce-flipped{
   0%{ transform: scaleX(-1) scale(1); }
   40%{ transform: scaleX(-1) scale(1.35) rotate(-8deg); }

@@ -108,9 +108,10 @@
       }
       if(skin.avatarType === 'image' && Array.isArray(skin.images) && skin.images.length){
         const src = skin.images[i % skin.images.length];
+        const flipClass = skin.flip ? ' flip-x' : '';
         return `
         <div class="runner-name-tag">${escapeHtml(name)}</div>
-        <img class="runner-body image" src="${src}" alt="">`;
+        <img class="runner-body image${flipClass}" src="${src}" alt="">`;
       }
       const label = labelFor(name, i);
       const bodyClass = skin.avatarType === 'emoji' ? 'runner-body emoji' : 'runner-body';
