@@ -69,6 +69,7 @@
       function showStep(){
         overlay.textContent = steps[idx];
         overlay.classList.remove('pulse'); void overlay.offsetWidth; overlay.classList.add('pulse');
+        if(window.CCSound) window.CCSound.playCountdownStep(idx);
         idx++;
         if(idx < steps.length){
           setTimeout(showStep, 550);
@@ -159,6 +160,7 @@
 
       showCountdown(()=>{
         lastFrameTime = performance.now();
+        if(window.CCSound) window.CCSound.startMusic();
         rafId = requestAnimationFrame(frame);
       });
     }
@@ -167,6 +169,7 @@
       raceState = 'paused';
       setControlLabel('▶ Resume');
       if(rafId) cancelAnimationFrame(rafId);
+      if(window.CCSound) window.CCSound.stopMusic();
       document.querySelectorAll('.runner-wrap').forEach(el=> el.classList.remove('running'));
     }
 
@@ -175,6 +178,7 @@
       setControlLabel('⏸ Pause');
       document.querySelectorAll('.runner-wrap:not(.finished)').forEach(el=> el.classList.add('running'));
       lastFrameTime = performance.now();
+      if(window.CCSound) window.CCSound.startMusic();
       rafId = requestAnimationFrame(frame);
     }
 
@@ -222,6 +226,7 @@
         rafId = requestAnimationFrame(frame);
       } else if(allDone){
         raceState = 'done';
+        if(window.CCSound){ window.CCSound.stopMusic(); window.CCSound.playFinishFanfare(); }
         if(startRaceBtn) startRaceBtn.style.display = 'none';
         setTimeout(showResults, 700);
       }

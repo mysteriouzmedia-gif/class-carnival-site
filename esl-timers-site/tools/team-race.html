@@ -158,6 +158,7 @@
       winName.textContent = names[i];
       winName.style.color = `var(${colors[i]})`;
       spawnConfetti(runner, i);
+      if(window.CCSound) window.CCSound.playFinishFanfare();
       overlay.classList.add('show');
     }
   }
@@ -205,6 +206,7 @@
     });
   });
 </script>
+<script src="../js/race-sound.js"></script>
 <script src="../js/fullscreen.js"></script>
 </body>
 </html>
