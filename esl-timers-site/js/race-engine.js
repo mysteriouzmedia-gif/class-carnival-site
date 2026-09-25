@@ -69,6 +69,7 @@
       function showStep(){
         overlay.textContent = steps[idx];
         overlay.classList.remove('pulse'); void overlay.offsetWidth; overlay.classList.add('pulse');
+        if(window.CCSound) window.CCSound.playCountdownStep(idx);
         idx++;
         if(idx < steps.length){
           setTimeout(showStep, 550);
@@ -108,9 +109,10 @@
       }
       if(skin.avatarType === 'image' && Array.isArray(skin.images) && skin.images.length){
         const src = skin.images[i % skin.images.length];
+        const flipClass = skin.flip ? ' flip-x' : '';
         return `
         <div class="runner-name-tag">${escapeHtml(name)}</div>
-        <img class="runner-body image" src="${src}" alt="">`;
+        <img class="runner-body image${flipClass}" src="${src}" alt="">`;
       }
       const label = labelFor(name, i);
       const bodyClass = skin.avatarType === 'emoji' ? 'runner-body emoji' : 'runner-body';
@@ -158,6 +160,7 @@
 
       showCountdown(()=>{
         lastFrameTime = performance.now();
+        if(window.CCSound) window.CCSound.startMusic();
         rafId = requestAnimationFrame(frame);
       });
     }
@@ -166,6 +169,7 @@
       raceState = 'paused';
       setControlLabel('▶ Resume');
       if(rafId) cancelAnimationFrame(rafId);
+      if(window.CCSound) window.CCSound.stopMusic();
       document.querySelectorAll('.runner-wrap').forEach(el=> el.classList.remove('running'));
     }
 
@@ -174,6 +178,7 @@
       setControlLabel('⏸ Pause');
       document.querySelectorAll('.runner-wrap:not(.finished)').forEach(el=> el.classList.add('running'));
       lastFrameTime = performance.now();
+      if(window.CCSound) window.CCSound.startMusic();
       rafId = requestAnimationFrame(frame);
     }
 
@@ -221,6 +226,7 @@
         rafId = requestAnimationFrame(frame);
       } else if(allDone){
         raceState = 'done';
+        if(window.CCSound){ window.CCSound.stopMusic(); window.CCSound.playFinishFanfare(); }
         if(startRaceBtn) startRaceBtn.style.display = 'none';
         setTimeout(showResults, 700);
       }

@@ -143,6 +143,17 @@ button:active, .btn:active{ transform: scale(0.96); }
 .fs-toggle-btn:hover{ border-color: var(--gold); }
 .fs-toggle-btn:active{ transform: scale(0.94); }
 
+.sound-toggle-btn{
+  position: fixed; top: 16px; left: 16px; z-index: 100;
+  width: 42px; height: 42px; border-radius: 10px;
+  background: var(--panel-bg); border: 1px solid var(--line); color: var(--cream);
+  font-size: 19px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: transform .08s ease, border-color .15s ease;
+}
+.sound-toggle-btn:hover{ border-color: var(--gold); }
+.sound-toggle-btn:active{ transform: scale(0.94); }
+body.fs-active .sound-toggle-btn{ display: none; }
+
 body.fs-active .site-header,
 body.fs-active .site-footer,
 body.fs-active .info-section,
