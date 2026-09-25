@@ -11,13 +11,14 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ninja Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free ninja race timer! Enter student names and watch a random ninja race decide the order — fun for classroom turn-taking and presentations.">
+<title>Pixel Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free 8-bit pixel race timer! Enter student names and watch a random retro video game race decide the order — fun for classroom turn-taking and presentations.">
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/race-shared.css">
 <style>
-  :root{ --track-bg: #16121c; }
-  body{ background: radial-gradient(ellipse at top, #241c30 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #0d1420; }
+  body{ background: radial-gradient(ellipse at top, #182238 0%, var(--track-bg) 60%) fixed; }
+  .runner-body.image{ image-rendering: pixelated; }
 </style>
 </head>
 <body>
@@ -37,9 +38,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🥷 Ninja Race</div>
-    <h1>Ninja Race Timer</h1>
-    <div class="sub">Silent, fast, and totally random — let the ninjas decide who goes first.</div>
+    <div class="eyebrow">👾 Pixel Race</div>
+    <h1>Pixel Race Timer</h1>
+    <div class="sub">A retro cast of 8-bit heroes race to the finish — totally random, every time.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -80,18 +81,18 @@ Ava"></textarea>
     <h3>Try another theme</h3>
     <div class="skin-links">
       <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
       <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
       <a href="/tools/word-race.html">🔤 Word Race</a>
       <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
       <a href="/tools/pirate-race.html">🏴‍☠️ Pirate Race</a>
       <a href="/tools/cowboy-race.html">🤠 Cowboy Race</a>
-      <a href="/tools/pixel-race.html">👾 Pixel Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A ninja-themed spin on the random order race — same fair, fully randomized mechanic, dressed up for classes that respond well to a bit of stealth-and-speed theming. Paste in your student list, hit start, and watch a field of ninjas race toward the finish line to decide who goes first.</p>
-    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The ninja theme tends to land especially well with classes in the middle of an action, adventure, or hero-adjacent unit, or simply with students who respond to a bit of extra visual flair over a plain list.</p>
+    <p>An 8-bit, retro-video-game twist on the random order race — same fair, fully randomized mechanic as the classic Race Timer, with a cast of pixel-art heroes (a knight, a wizard, a robot, a space explorer, and an adventurer) racing toward the finish line instead of plain icons. Paste in your student list, hit start, and let the pixel crew decide who goes first.</p>
+    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The retro gaming theme tends to land especially well with classes that are into video games, and pairs naturally with the site's chiptune-style background music.</p>
     <p>As with every race on this site, there's no limit on class size, no account required, and results are different every single time — reset and race again as many times as you like during a lesson.</p>
   </div>
 </main>
@@ -101,14 +102,12 @@ Ava"></textarea>
 <script>
   window.RACE_SKIN = {
     avatarType: 'image',
-    flip: true,
     images: [
-      '../img/ninja-black.png',
-      '../img/ninja-darkred.png',
-      '../img/ninja-blue.png',
-      '../img/ninja-green.png',
-      '../img/ninja-gold.png',
-      '../img/ninja-purple.png'
+      '../img/pixel-knight.png',
+      '../img/pixel-wizard.png',
+      '../img/pixel-robot.png',
+      '../img/pixel-astronaut.png',
+      '../img/pixel-adventurer.png'
     ]
   };
 </script>
