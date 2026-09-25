@@ -101,6 +101,17 @@
     }
 
     function runnerMarkup(name, i){
+      if(typeof skin.renderBody === 'function'){
+        return `
+        <div class="runner-name-tag">${escapeHtml(name)}</div>
+        <div class="runner-body custom">${skin.renderBody(i, color(i))}</div>`;
+      }
+      if(skin.avatarType === 'image' && Array.isArray(skin.images) && skin.images.length){
+        const src = skin.images[i % skin.images.length];
+        return `
+        <div class="runner-name-tag">${escapeHtml(name)}</div>
+        <img class="runner-body image" src="${src}" alt="">`;
+      }
       const label = labelFor(name, i);
       const bodyClass = skin.avatarType === 'emoji' ? 'runner-body emoji' : 'runner-body';
       return `

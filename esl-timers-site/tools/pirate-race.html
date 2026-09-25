@@ -11,13 +11,13 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sushi &amp; Dumpling Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free sushi and dumpling race timer! Enter student names and watch a random race decide the order — a fun food-themed classroom timer.">
+<title>Pirate Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free pirate race timer! Enter student names and watch a random pirate crew race decide the order — fun for classroom turn-taking and presentations.">
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/race-shared.css">
 <style>
-  :root{ --track-bg: #201217; }
-  body{ background: radial-gradient(ellipse at top, #34181f 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #1a1610; }
+  body{ background: radial-gradient(ellipse at top, #2e2618 0%, var(--track-bg) 60%) fixed; }
 </style>
 </head>
 <body>
@@ -37,9 +37,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🍣 Sushi &amp; Dumpling Race</div>
-    <h1>Sushi &amp; Dumpling Race Timer</h1>
-    <div class="sub">A tasty random race to decide who goes first — for presentations, reading turns, or line order.</div>
+    <div class="eyebrow">🏴‍☠️ Pirate Race</div>
+    <h1>Pirate Race Timer</h1>
+    <div class="sub">A crew of pirates race to the finish — totally random, every time.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -83,21 +83,30 @@ Ava"></textarea>
       <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
       <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
       <a href="/tools/word-race.html">🔤 Word Race</a>
-      <a href="/tools/pirate-race.html">🏴‍☠️ Pirate Race</a>
+      <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A food-themed spin on the random order race, alternating sushi and dumpling racers as they make their way to the finish line. Same fair, fully random mechanic as the classic Race Timer — type in your student list, hit start, and let the race decide who goes first.</p>
-    <p>Good for adding a bit of visual variety when you've already used the classic race or another themed one recently, or simply for classes that respond well to food-themed visuals. Works for the same practical uses as every race on this site: deciding presentation order, reading turns, who answers first, or line-up order at the end of class.</p>
-    <p>No sign-up, no limit on class size, and a different random order every time you race — reset and run it again as many times as your lesson needs.</p>
+    <p>A pirate-crew twist on the random order race — same fair, fully randomized mechanic as the classic Race Timer, with a rowdy crew of distinct pirate characters racing toward the finish line instead of plain icons. Paste in your student list, hit start, and let the crew decide who goes first.</p>
+    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The pirate theme tends to land well with classes in the middle of an adventure, ocean, or storytelling unit, and the variety of characters (a captain, a cook, a hook-handed first mate, a cabin boy) gives students something new to notice each time you run it.</p>
+    <p>As with every race on this site, there's no limit on class size, no account required, and results are different every single time — reset and race again as many times as you like during a lesson.</p>
   </div>
 </main>
 
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
 <script>
-  window.RACE_SKIN = { avatarType: 'emoji', emojis: ['🍣', '🥟', '🍱', '🍙'] };
+  window.RACE_SKIN = {
+    avatarType: 'image',
+    images: [
+      '../img/pirate-captain-classic.png',
+      '../img/pirate-hook-hand.png',
+      '../img/pirate-cook.png',
+      '../img/pirate-boy.png',
+      '../img/pirate-captain-parrot.png'
+    ]
+  };
 </script>
 <script src="../js/race-engine.js"></script>
 <script src="../js/fullscreen.js"></script>
