@@ -19,6 +19,21 @@
   :root{ --track-bg: #0d1420; }
   body{ background: radial-gradient(ellipse at top, #182238 0%, var(--track-bg) 60%) fixed; }
   .runner-body.image{ image-rendering: pixelated; }
+  .track{ position: relative; }
+  .track .lane{
+    position: relative;
+    background-image: url('../img/bg-pixel-race-ground.jpg');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+  }
+  .track .lane::before{
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(13,20,32,0.45);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .track .lane > *{ position: relative; z-index: 1; }
 </style>
 </head>
 <body>
