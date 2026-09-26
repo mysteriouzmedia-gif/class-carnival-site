@@ -11,24 +11,24 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ninja Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free ninja race timer! Enter student names and watch a random ninja race decide the order — fun for classroom turn-taking and presentations.">
+<title>Cute Critters Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free cute critters race timer! Enter student names and watch a random race of adorable characters decide the order — fun for classroom turn-taking and presentations.">
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/race-shared.css">
 <style>
-  :root{ --track-bg: #16121c; }
-  body{ background: radial-gradient(ellipse at top, #241c30 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #1c2814; }
+  body{ background: radial-gradient(ellipse at top, #2e4020 0%, var(--track-bg) 60%) fixed; }
   .track{ position: relative; }
   .track .lane{
     position: relative;
-    background-image: url('../img/bg-ninja-race-ground.jpg');
+    background-image: url('../img/bg-critters-race-ground.jpg');
     background-repeat: repeat-x;
     background-size: auto 100%;
   }
   .track .lane::before{
     content: '';
     position: absolute; inset: 0;
-    background: rgba(13,10,20,0.4);
+    background: rgba(15,20,10,0.35);
     pointer-events: none;
     z-index: 0;
   }
@@ -52,9 +52,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🥷 Ninja Race</div>
-    <h1>Ninja Race Timer</h1>
-    <div class="sub">Silent, fast, and totally random — let the ninjas decide who goes first.</div>
+    <div class="eyebrow">🐰 Cute Critters Race</div>
+    <h1>Cute Critters Race Timer</h1>
+    <div class="sub">A pack of adorable critters race across the meadow — totally random, every time.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -95,19 +95,19 @@ Ava"></textarea>
     <h3>Try another theme</h3>
     <div class="skin-links">
       <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
       <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
       <a href="/tools/word-race.html">🔤 Word Race</a>
       <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
       <a href="/tools/pirate-race.html">🏴‍☠️ Pirate Race</a>
       <a href="/tools/cowboy-race.html">🤠 Cowboy Race</a>
       <a href="/tools/pixel-race.html">👾 Pixel Race</a>
-      <a href="/tools/cute-critters-race.html">🐰 Cute Critters Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A ninja-themed spin on the random order race — same fair, fully randomized mechanic, dressed up for classes that respond well to a bit of stealth-and-speed theming. Paste in your student list, hit start, and watch a field of ninjas race toward the finish line to decide who goes first.</p>
-    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The ninja theme tends to land especially well with classes in the middle of an action, adventure, or hero-adjacent unit, or simply with students who respond to a bit of extra visual flair over a plain list.</p>
+    <p>A cute-animal twist on the random order race — same fair, fully randomized mechanic as the classic Race Timer, with a pack of adorable characters (a bunny, a bear cub, a cat, a fluffy one-eyed monster, and a happy slime) racing across a meadow toward the finish line instead of plain icons. Paste in your student list, hit start, and let the critters decide who goes first.</p>
+    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The soft, friendly character designs tend to land especially well with younger classes, or any group that responds better to cute over intense.</p>
     <p>As with every race on this site, there's no limit on class size, no account required, and results are different every single time — reset and race again as many times as you like during a lesson.</p>
   </div>
 </main>
@@ -118,11 +118,11 @@ Ava"></textarea>
   window.RACE_SKIN = {
     avatarType: 'image',
     images: [
-      '../img/ninja-master.png',
-      '../img/ninja-twindagger.png',
-      '../img/ninja-shuriken-boy.png',
-      '../img/ninja-smokebomb.png',
-      '../img/ninja-sensei.png'
+      '../img/critter-bunny.png',
+      '../img/critter-bear.png',
+      '../img/critter-cat.png',
+      '../img/critter-monster.png',
+      '../img/critter-slime.png'
     ]
   };
 </script>
