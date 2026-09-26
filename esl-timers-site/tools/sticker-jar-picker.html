@@ -16,20 +16,81 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .stage{ text-align:center; padding: 100px 20px 10px; position:relative; min-height: 260px; }
-  .jar{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
-  .jar:hover{ transform: scale(1.05) rotate(-2deg); }
-  .jar.shake{ animation: shake .4s ease; }
-  @keyframes shake{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-6deg); } 75%{ transform: rotate(6deg); } }
-  .card{
-    position:absolute; left:50%; top:20px; transform: translate(-50%, 20px) scale(0.6); opacity:0;
-    background: var(--gold); color:#1a1305; font-family:'Archivo Black', sans-serif;
-    font-size: clamp(18px, 3.6vw, 30px); padding: 14px 26px; border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  /* ---------- Glass jar scene (pure CSS, scales for fullscreen) ---------- */
+  .jar-stage{ --s: 1; position:relative; height: calc(440px * var(--s)); display:flex; justify-content:center; align-items:flex-end; margin-top: 4px; }
+  .jar-scene{ position:relative; width:300px; height:440px; transform: scale(var(--s)); transform-origin: bottom center; cursor:pointer; user-select:none; -webkit-tap-highlight-color: transparent; }
+  .jar-scene:focus-visible{ outline: 3px solid var(--gold); outline-offset: 8px; border-radius: 20px; }
+
+  .jar-shadow{ position:absolute; left:40px; right:40px; bottom:-10px; height:22px; border-radius:50%; background: rgba(0,0,0,.35); filter: blur(6px); }
+  .jar-back{ position:absolute; left:30px; right:30px; bottom:0; height:300px; border-radius: 34px 34px 40px 40px;
+    background: linear-gradient(90deg, rgba(160,210,255,.10), rgba(160,210,255,.04) 50%, rgba(160,210,255,.12)); }
+  .stickers{ position:absolute; left:42px; right:42px; bottom:14px; height:270px; z-index:2; }
+  .jar-glass{ position:absolute; left:30px; right:30px; bottom:0; height:300px; z-index:5; pointer-events:none;
+    border-radius: 34px 34px 40px 40px; border: 3px solid rgba(200,230,255,.35);
+    background:
+      linear-gradient(90deg, transparent 8%, rgba(255,255,255,.28) 11%, rgba(255,255,255,.05) 17%, transparent 22%),
+      linear-gradient(90deg, transparent 80%, rgba(255,255,255,.12) 86%, transparent 90%);
+    box-shadow: inset 0 -10px 20px rgba(160,210,255,.12); }
+  .jar-neck{ position:absolute; left:58px; right:58px; bottom:292px; height:26px; z-index:6; border-radius: 8px;
+    background: linear-gradient(90deg, rgba(200,230,255,.18), rgba(255,255,255,.3) 20%, rgba(200,230,255,.12)); border: 3px solid rgba(200,230,255,.35); border-bottom:none; }
+  .jar-lid{ position:absolute; left:50px; right:50px; bottom:314px; height:40px; z-index:7; border-radius: 10px 10px 6px 6px;
+    background: repeating-linear-gradient(90deg, #ff6b5b 0 10px, #e8544a 10px 13px); box-shadow: 0 4px 0 rgba(0,0,0,.2), inset 0 6px 0 rgba(255,255,255,.2);
+    transform-origin: 50% 100%; transition: transform .5s cubic-bezier(.4,1.3,.6,1); z-index:9; }
+  .jar-scene.lid-off .jar-lid{ transform: translate(-195px, 262px) rotate(-6deg); }
+  .jar-label{ position:absolute; left:50%; bottom:244px; transform: translateX(-50%) rotate(-3deg); z-index:8;
+    background:#f5f0e6; color:#1a1305; font-family:'Archivo Black', sans-serif; font-size:17px; padding: 8px 16px; border-radius: 8px;
+    box-shadow: 0 3px 0 rgba(0,0,0,.2); white-space:nowrap; pointer-events:none; }
+  .jar-count{ position:absolute; left:50%; bottom:222px; transform: translateX(-50%); z-index:8; color: rgba(255,255,255,.85);
+    font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; text-shadow: 0 1px 3px rgba(0,0,0,.8); pointer-events:none; }
+
+  /* ---------- Die-cut stickers ---------- */
+  .sticker{ --sz: 56px; --bg: #ffb627;
+    position:absolute; width: var(--sz); height: var(--sz); margin: calc(var(--sz) / -2) 0 0 calc(var(--sz) / -2);
+    transform-style: preserve-3d; transition: transform .75s cubic-bezier(.3,1.3,.5,1); }
+  .sticker .face{ position:absolute; inset:0; border-radius: 50%; display:flex; align-items:center; justify-content:center;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border: calc(var(--sz) * .07) solid #fff; box-shadow: 0 2px 5px rgba(0,0,0,.35); }
+  .sticker .front{ background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.45), transparent 45%), var(--bg); font-size: calc(var(--sz) * .5); }
+  .sticker .back{ background:#fffdf7; transform: rotateY(180deg); color:#1a1305; font-family:'Archivo Black', sans-serif;
+    font-size: calc(var(--sz) * .2); padding: 0 8%; text-align:center; line-height:1.05; overflow:hidden; word-break: break-word; }
+  .sticker.star .face{ border-radius: 30%; }
+  .sticker.flying{ z-index:30; }
+  .sticker.flipped{ z-index:30; }
+  .jiggle .sticker:not(.flying){ animation: stJiggle .15s ease-in-out infinite alternate; }
+  .jiggle .sticker:nth-child(2n):not(.flying){ animation-duration: .12s; animation-direction: alternate-reverse; }
+  @keyframes stJiggle{ from{ margin-top: calc(var(--sz) / -2); } to{ margin-top: calc(var(--sz) / -2 - 8px); } }
+  .sticker.drop-in{ animation: stDrop .6s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes stDrop{ from{ opacity:0; margin-top: -320px; } to{ opacity:1; margin-top: calc(var(--sz) / -2); } }
+
+  .jar-scene:hover .jar-glass{ border-color: rgba(220,240,255,.5); }
+  .jar-scene.shake .jar-back, .jar-scene.shake .jar-glass, .jar-scene.shake .jar-neck, .jar-scene.shake .stickers{ animation: jarShake .16s ease-in-out infinite alternate; }
+  @keyframes jarShake{ from{ transform: translateX(-4px) rotate(-1.5deg); } to{ transform: translateX(4px) rotate(1.5deg); } }
+
+  /* ---------- Sticker chart ---------- */
+  .chart{ margin-top: 24px; text-align:center; min-height: 64px; }
+  .chart h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
+  .chart-rows{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .chart-item{ display:inline-flex; align-items:center; gap:8px; padding: 4px 12px 4px 4px; border-radius: 20px;
+    background: rgba(255,255,255,.05); border: 1px solid var(--line); font-weight:700; font-size:13px;
+    animation: chartIn .45s cubic-bezier(.3,1.35,.5,1) both; }
+  .chart-item i{ font-style:normal; width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center;
+    font-size:14px; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,.35); }
+  .chart-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes chartIn{ from{ opacity:0; transform: scale(.4) rotate(-20deg); } to{ opacity:1; transform:none; } }
+
+  /* Name on a big sticker in the reveal overlay */
+  .cc-reveal-name.as-sticker{
+    display:inline-block; color:#1a1305; text-shadow:none; font-size: clamp(44px, 10vw, 140px);
+    background:#fffdf7; padding: .2em .8em; border-radius: 999px; border: .09em solid var(--accent, #ffb627);
+    box-shadow: 0 0 0 .06em #fff, 0 18px 44px rgba(0,0,0,.5);
   }
-  .card.show{ transform: translate(-50%, 0) scale(1); opacity:1; }
-  .shaking{ animation: shake .18s ease-in-out infinite !important; }
+
+  body.fs-active .jar-stage{ --s: 1.4; }
+  @media (max-width: 480px){ .jar-stage{ --s: .85; } }
+  @media (prefers-reduced-motion: reduce){
+    .sticker, .chart-item, .jar-lid{ transition:none !important; animation:none !important; }
+    .jiggle .sticker, .jar-scene.shake *{ animation:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -69,17 +130,29 @@ Ava"></textarea>
   </div>
 
   <div id="pickScreen" class="panel" style="display:none;">
-    <div class="stage">
-      <div class="card" id="card">Name</div>
-      <div class="jar" id="jarBtn">🫙</div>
+    <div class="jar-stage">
+      <div class="jar-scene" id="jarBtn" role="button" tabindex="0" aria-label="Pull a sticker from the jar">
+        <div class="jar-shadow"></div>
+        <div class="jar-back"></div>
+        <div class="stickers" id="stickers"></div>
+        <div class="jar-glass"></div>
+        <div class="jar-neck"></div>
+        <div class="jar-lid"></div>
+        <div class="jar-label">Sticker Jar</div>
+        <div class="jar-count" id="jarCount"></div>
+      </div>
     </div>
     <div class="btn-row">
-      <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
+      <button class="btn-gold" id="pullBtn">Pull a Sticker</button>
+      <button class="btn-ghost" id="resetPoolBtn">Refill the Jar</button>
       <button class="btn-ghost" id="editBtn">Edit Names</button>
     </div>
-    <div class="pool" id="pool"></div>
+    <div class="chart">
+      <h3>Sticker chart</h3>
+      <div class="chart-rows" id="chart"></div>
+    </div>
   </div>
-  <div class="hint">Tap the jar to reach in. Everyone gets picked once before names repeat.</div>
+  <div class="hint">Tap the jar (or press Space) to pull a sticker. Everyone gets one before the jar refills.</div>
 
   <div class="related-skins">
     <h3>Try a different mechanic</h3>
@@ -92,9 +165,9 @@ Ava"></textarea>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A playful jar-themed random picker — tap the jar, and a name pops out dressed up with a couple of stickers, using the same fair no-repeat system as every other picker on this site. Once a student's name has come up, it's set aside until everyone else in the class has had a turn, so picking stays fair over the course of a lesson or a full day.</p>
+    <p>A playful jar-themed random picker — tap the jar, a sticker flies out and flips over to show whose turn it is, using the same fair no-repeat system as every other picker on this site. Once a student's name has come up, it's set aside until everyone else in the class has had a turn, so picking stays fair over the course of a lesson or a full day.</p>
     <p>The lighter, more decorative framing tends to suit younger classes especially well, where a plain list or a bare name reveal can feel a bit flat — a small visual reward on each pick keeps the moment feeling fun rather than purely functional. Works for cold-calling, handing out a small task or reward, or deciding turn order for a quick activity.</p>
-    <p>Paste in your class list, tap the jar as many times as you need, and the roster below updates live to show who's still waiting for a turn. No sign-up, and any class size works.</p>
+    <p>Paste in your class list and the jar fills with one sticker per student. Every pick adds that student to the sticker chart below, so the class can see who's had a turn and which sticker they got — once everyone's on the chart, the jar refills for a new round. No sign-up, and any class size works.</p>
   </div>
 </main>
 
@@ -104,14 +177,24 @@ Ava"></textarea>
 <script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
-  const pickScreen = document.getElementById('pickScreen');
-  const namesInput = document.getElementById('namesInput');
-  const nameCount = document.getElementById('nameCount');
-  const jarBtn = document.getElementById('jarBtn');
-  const card = document.getElementById('card');
-  const poolEl = document.getElementById('pool');
+  const pickScreen  = document.getElementById('pickScreen');
+  const namesInput  = document.getElementById('namesInput');
+  const nameCount   = document.getElementById('nameCount');
+  const jarBtn      = document.getElementById('jarBtn');
+  const stickersEl  = document.getElementById('stickers');
+  const chartEl     = document.getElementById('chart');
+  const jarCount    = document.getElementById('jarCount');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let allNames = [], picker = null;
+  // Generic sticker art: emoji on a colored die-cut circle.
+  const ART = [['⭐','#ffb627'],['🌈','#4fa8e0'],['🚀','#9b72cf'],['🍩','#e85d8a'],['🌸','#ff9ecb'],['🍀','#a8d46b'],
+               ['🎈','#ff6b5b'],['🦋','#2ec4b6'],['🍓','#ff8a7a'],['🐼','#cfd8e3'],['🌟','#ffd166'],['🎨','#7fb3ff'],
+               ['🐱','#ffc38a'],['🍉','#7ed6a0'],['🦄','#d6b3ff'],['⚡','#ffe066']];
+
+  let allNames = [], picker = null, busy = false;
+  let art = {};     // name -> [emoji, color], reshuffled each round
+  let slots = {};   // name -> {x, y, rot, sz}
+  let chart = [];
 
   namesInput.addEventListener('input', updateCount);
   function updateCount(){
@@ -130,58 +213,147 @@ Ava"></textarea>
     picker = createPicker(allNames);
     setupScreen.style.display = 'none';
     pickScreen.style.display = 'block';
-    renderPool(allNames);
+    refill();
   });
 
   document.getElementById('editBtn').addEventListener('click', ()=>{
+    if(busy) return;
     pickScreen.style.display = 'none';
     setupScreen.style.display = 'block';
   });
-
-  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
-    picker.reset();
-    card.classList.remove('show');
-    renderPool(allNames);
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{ if(!busy) refill(); });
+  jarBtn.addEventListener('click', pull);
+  document.getElementById('pullBtn').addEventListener('click', pull);
+  jarBtn.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); pull(); } });
+  document.addEventListener('keydown', e=>{
+    if(e.key !== ' ' || pickScreen.style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName;
+    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT' || e.target === jarBtn) return;
+    e.preventDefault(); pull();
   });
 
-  let busy = false;
-  jarBtn.addEventListener('click', pickOne);
-
-  function pickOne(){
-    if(busy || !picker || CCReveal.isOpen()) return;
-    busy = true;
-    card.classList.remove('show');
-    const result = picker.pickNext();
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const wait = reduce ? 200 : 1000;
-    CCReveal.drumroll(wait);
-    jarBtn.classList.add('shaking');
-    setTimeout(()=>{
-      jarBtn.classList.remove('shaking');
-      card.textContent = '⭐ ' + result.name + ' ⭐';
-      card.classList.add('show');
-      renderPool(allNames);
-      setTimeout(()=> CCReveal.show(result.name, {
-        label: 'Out of the jar…',
-        remaining: result.remaining,
-        roundDone: result.justExhausted,
-        onNext: pickOne,
-        onClose: ()=>{
-          if(result.justExhausted){ picker.reset(); renderPool(allNames); }
-          busy = false;
-        }
-      }), reduce ? 50 : 450);
-    }, wait);
+  /* Pile the stickers up from the bottom of the jar, row by row, with a bit of jitter. */
+  function layout(keepArt){
+    const W = 216, H = 262;
+    const names = keepArt ? allNames.filter(n => picker.isRemaining(n)) : allNames;
+    const n = Math.max(1, names.length);
+    const sz = Math.max(30, Math.min(78, Math.floor(Math.sqrt(W * H * 0.9 / n))));
+    const step = sz * 0.86;
+    const perRow = Math.max(1, Math.floor((W - sz) / step) + 1);
+    const order = [...names].sort(()=> Math.random() - 0.5);
+    const deck = [...ART].sort(()=> Math.random() - 0.5);
+    slots = {}; if(!keepArt) art = {};
+    order.forEach((name, i)=>{
+      const row = Math.floor(i / perRow), col = i % perRow;
+      const inRow = Math.min(perRow, n - row * perRow);
+      const rowWidth = (inRow - 1) * step;
+      const x = W / 2 - rowWidth / 2 + col * step + (row % 2 ? step * 0.3 : 0) + (Math.random() - 0.5) * 6;
+      const y = H - sz / 2 - row * sz * 0.8 + (Math.random() - 0.5) * 6;
+      slots[name] = { x: Math.max(sz/2, Math.min(W - sz/2, x)), y: Math.max(sz/2, y), rot: Math.round((Math.random() - 0.5) * 50), sz };
+      if(!keepArt) art[name] = deck[i % deck.length];
+    });
   }
 
-  function renderPool(names){
-    poolEl.innerHTML = '';
-    names.forEach(name=>{
-      const chip = document.createElement('span');
-      chip.className = 'remaining-chip' + (picker.isRemaining(name) ? '' : ' used');
-      chip.textContent = name;
-      poolEl.appendChild(chip);
+  function renderJar(dropIn){
+    stickersEl.innerHTML = '';
+    const inJar = allNames.filter(n => picker.isRemaining(n));
+    inJar.forEach((name, i)=>{
+      const s = slots[name], [emoji, color] = art[name];
+      const el = document.createElement('div');
+      el.className = 'sticker' + (i % 3 === 0 ? ' star' : '') + (dropIn && !reduceMotion ? ' drop-in' : '');
+      el.style.setProperty('--sz', s.sz + 'px');
+      el.style.setProperty('--bg', color);
+      el.style.left = s.x + 'px';
+      el.style.top = s.y + 'px';
+      el.style.transform = `translate(0px, 0px) rotate(${s.rot}deg)`;
+      if(dropIn) el.style.animationDelay = (i * 35) + 'ms';
+      el.dataset.name = name;
+      el.innerHTML = '<div class="face front"></div><div class="face back"></div>';
+      el.querySelector('.front').textContent = emoji;
+      el.querySelector('.back').textContent = name;
+      stickersEl.appendChild(el);
     });
+    jarCount.textContent = inJar.length === 1 ? '1 sticker left' : inJar.length + ' stickers left';
+    jarBtn.setAttribute('aria-label', `Pull a sticker from the jar (${inJar.length} left)`);
+  }
+
+  function renderChart(){
+    chartEl.innerHTML = '';
+    if(!chart.length){ chartEl.innerHTML = '<span class="chart-empty">No stickers given out yet.</span>'; return; }
+    chart.forEach(name=>{
+      const [emoji, color] = art[name];
+      const el = document.createElement('span');
+      el.className = 'chart-item';
+      const icon = document.createElement('i');
+      icon.textContent = emoji; icon.style.background = color;
+      el.appendChild(icon);
+      el.appendChild(document.createTextNode(name));
+      chartEl.appendChild(el);
+    });
+  }
+
+  function refill(){
+    picker.reset();
+    chart = [];
+    layout();
+    renderJar(true);
+    renderChart();
+  }
+
+  function pull(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true;
+    const result = picker.pickNext();
+    const name = result.name;
+    const el = [...stickersEl.children].find(c => c.dataset.name === name);
+
+    const suspense = reduceMotion ? 250 : 1000;
+    CCReveal.drumroll(suspense + 700);
+    jarBtn.classList.add('shake', 'lid-off');
+    stickersEl.classList.add('jiggle');
+
+    setTimeout(()=>{
+      jarBtn.classList.remove('shake');
+      stickersEl.classList.remove('jiggle');
+      if(el){
+        const s = slots[name];
+        // fly up out of the jar's mouth, grow, then flip to show the name
+        const dx = 108 - s.x, dy = -120 - s.y;
+        const grow = Math.max(1.6, 96 / s.sz);
+        el.classList.add('flying');
+        el.style.transform = `translate(${dx}px, ${dy}px) rotate(0deg) scale(${grow})`;
+        setTimeout(()=>{
+          el.classList.add('flipped');
+          el.style.transform = `translate(${dx}px, ${dy}px) rotateY(180deg) scale(${grow})`;
+        }, reduceMotion ? 0 : 650);
+      }
+      setTimeout(()=>{
+        const [emoji, color] = art[name];
+        CCReveal.show(name, {
+          label: emoji + ' A sticker for…',
+          nameClass: 'as-sticker',
+          accent: color,
+          remaining: result.remaining,
+          roundDone: result.justExhausted,
+          onNext: pull,
+          onClose: ()=> finish(name, result.justExhausted)
+        });
+      }, reduceMotion ? 100 : 1350);
+    }, suspense);
+  }
+
+  function finish(name, roundDone){
+    jarBtn.classList.remove('lid-off');
+    chart.push(name);
+    if(roundDone){
+      refill();            // everyone has a sticker: fresh jar, fresh chart
+      busy = false;
+      return;
+    }
+    layout(true);          // remaining stickers settle to the bottom
+    renderJar(false);
+    renderChart();
+    busy = false;
   }
 </script>
 <script src="../js/fullscreen.js"></script>
