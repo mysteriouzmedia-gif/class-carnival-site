@@ -18,6 +18,21 @@
 <style>
   :root{ --track-bg: #16121c; }
   body{ background: radial-gradient(ellipse at top, #241c30 0%, var(--track-bg) 60%) fixed; }
+  .track{ position: relative; }
+  .track .lane{
+    position: relative;
+    background-image: url('../img/bg-ninja-race-ground.jpg');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+  }
+  .track .lane::before{
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(13,10,20,0.4);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .track .lane > *{ position: relative; z-index: 1; }
 </style>
 </head>
 <body>
@@ -101,14 +116,12 @@ Ava"></textarea>
 <script>
   window.RACE_SKIN = {
     avatarType: 'image',
-    flip: true,
     images: [
-      '../img/ninja-black.png',
-      '../img/ninja-darkred.png',
-      '../img/ninja-blue.png',
-      '../img/ninja-green.png',
-      '../img/ninja-gold.png',
-      '../img/ninja-purple.png'
+      '../img/ninja-master.png',
+      '../img/ninja-twindagger.png',
+      '../img/ninja-shuriken-boy.png',
+      '../img/ninja-smokebomb.png',
+      '../img/ninja-sensei.png'
     ]
   };
 </script>
