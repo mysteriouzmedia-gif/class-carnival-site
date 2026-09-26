@@ -16,20 +16,73 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .stage{ text-align:center; padding: 100px 20px 10px; position:relative; min-height: 260px; }
-  .env{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
-  .env:hover{ transform: scale(1.05) rotate(-2deg); }
-  .env.shake{ animation: shake .4s ease; }
-  @keyframes shake{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-6deg); } 75%{ transform: rotate(6deg); } }
-  .card{
-    position:absolute; left:50%; top:20px; transform: translate(-50%, 20px) scale(0.6); opacity:0;
-    background: var(--gold); color:#1a1305; font-family:'Archivo Black', sans-serif;
-    font-size: clamp(20px, 4vw, 32px); padding: 14px 26px; border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  /* ---------- Envelope board (pure CSS) ---------- */
+  .env-board{ --w: 110px; display:flex; flex-wrap:wrap; justify-content:center; gap: calc(var(--w) * .16);
+    padding: calc(var(--w) * .62) 10px 18px; min-height: 260px; align-content:center; perspective: 900px; }
+  .env{
+    --tilt: 0deg;
+    position:relative; width: var(--w); height: calc(var(--w) * 1.36); padding:0; border:none; cursor:pointer;
+    background: transparent; transform: rotate(var(--tilt)); transition: transform .25s ease, opacity .35s ease, filter .25s ease;
+    -webkit-tap-highlight-color: transparent;
   }
-  .card.show{ transform: translate(-50%, 0) scale(1); opacity:1; }
-  .shaking{ animation: shake .18s ease-in-out infinite !important; }
+  .env:hover{ transform: rotate(0deg) translateY(-6px) scale(1.04); }
+  .env:focus-visible{ outline: 3px solid var(--gold); outline-offset: 5px; border-radius: 10px; }
+  .env .body{ position:absolute; inset:0; border-radius: calc(var(--w) * .08); z-index:2; overflow:hidden;
+    background: linear-gradient(160deg, #e8322f 0%, #c4161c 55%, #9e0f15 100%);
+    box-shadow: 0 8px 18px rgba(0,0,0,.4), inset 0 0 0 calc(var(--w) * .03) rgba(255,205,86,.55); }
+  .env .body::before{ content:''; position:absolute; left:10%; right:10%; bottom:9%; height:24%; border-radius:6px;
+    background: repeating-linear-gradient(45deg, rgba(255,205,86,.28) 0 4px, transparent 4px 9px); }
+  .env .body::after{ content:''; position:absolute; inset:0; background: linear-gradient(100deg, rgba(255,255,255,.14), transparent 40%); }
+  .env .flap{ position:absolute; left:0; right:0; top:0; height:46%; z-index:4; transform-origin: 50% 0;
+    transition: transform .55s cubic-bezier(.4,1.6,.6,1), z-index 0s linear .2s; }
+  .env .flap::before{ content:''; position:absolute; inset:0; clip-path: polygon(0 0, 100% 0, 50% 100%);
+    background: linear-gradient(180deg, #f0443f, #b3121a); border-radius: calc(var(--w) * .08) calc(var(--w) * .08) 0 0;
+    filter: drop-shadow(0 3px 2px rgba(0,0,0,.3)); }
+  .env .seal{ position:absolute; left:50%; bottom: calc(var(--w) * -.12); width: calc(var(--w) * .26); height: calc(var(--w) * .26);
+    transform: translateX(-50%) rotate(45deg); border-radius: 4px; display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(135deg, #ffe28a, #ffb627 55%, #d99200); color:#8a1010;
+    box-shadow: 0 2px 4px rgba(0,0,0,.35), inset 0 0 0 2px rgba(138,16,16,.3); }
+  .env .seal b{ transform: rotate(-45deg); font-family:'Archivo Black', sans-serif; font-size: calc(var(--w) * .16); line-height:1; }
+  .env .slip{ position:absolute; left:9%; right:9%; top:8%; bottom:14%; z-index:1; border-radius:6px;
+    background: linear-gradient(180deg, #fffaf0, #f3e7cc); box-shadow: 0 4px 10px rgba(0,0,0,.3);
+    display:flex; align-items:flex-start; justify-content:center; padding-top: 12%;
+    font-family:'Archivo Black', sans-serif; color:#8a1010; font-size: calc(var(--w) * .15); text-align:center; line-height:1.1;
+    transition: transform .6s cubic-bezier(.3,1.4,.5,1) .15s; overflow:hidden; word-break: break-word; }
+
+  /* choose → wiggle → open → slip rises */
+  .env-board.choosing .env:not(.chosen){ opacity:.35; filter: saturate(.5); }
+  .env.chosen{ z-index:20; transform: rotate(0) scale(1.2); }
+  .env.chosen.wiggle{ animation: envWiggle .14s ease-in-out infinite alternate; }
+  @keyframes envWiggle{ from{ transform: scale(1.2) rotate(-4deg); } to{ transform: scale(1.2) rotate(4deg); } }
+  .env.open .flap{ transform: rotateX(180deg); z-index:0; }
+  .env.open .slip{ transform: translateY(-48%); z-index:3; }
+  .env.gone{ opacity:0; transform: scale(.6) translateY(-30px); pointer-events:none; }
+  .env.deal{ animation: deal .5s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes deal{ from{ opacity:0; transform: translateY(-60px) rotate(-20deg) scale(.7); } to{ opacity:1; transform: rotate(var(--tilt)); } }
+
+  .board-note{ text-align:center; color: var(--cream-dim); font-size: 13px; margin-top: -4px; }
+
+  /* ---------- Opened slips tray ---------- */
+  .tray{ margin-top: 22px; text-align:center; min-height: 60px; }
+  .tray h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
+  .tray-slips{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .tray-slip{ display:inline-flex; align-items:center; gap:6px; padding: 6px 12px; border-radius: 6px;
+    background: linear-gradient(180deg, #fffaf0, #f3e7cc); color:#8a1010; font-family:'Archivo Black', sans-serif; font-size:13px;
+    box-shadow: 0 2px 5px rgba(0,0,0,.3), inset 3px 0 0 #c4161c; animation: trayIn .45s cubic-bezier(.3,1.35,.5,1) both; }
+  .tray-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes trayIn{ from{ opacity:0; transform: translateY(-24px) rotate(-6deg); } to{ opacity:1; transform:none; } }
+
+  /* Name on a lucky slip in the reveal overlay */
+  .cc-reveal-name.as-slip{
+    display:inline-block; position:relative; color:#8a1010; text-shadow:none; font-size: clamp(44px, 10vw, 140px);
+    background: linear-gradient(180deg, #fffaf0, #f3e7cc); padding: .18em .8em; border-radius: .12em;
+    box-shadow: 0 18px 44px rgba(0,0,0,.5), inset 0 0 0 .06em #c4161c, inset 0 0 0 .1em #ffb627;
+  }
+
+  body.fs-active .env-board{ padding-top: 10px; }
+  @media (prefers-reduced-motion: reduce){
+    .env, .env .flap, .env .slip, .tray-slip{ transition:none !important; animation:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -51,7 +104,7 @@
   <div class="page-header">
     <div class="eyebrow">🧧 Lucky Envelope</div>
     <h1>Lucky Envelope Picker</h1>
-    <div class="sub">Tap the envelope for a lucky pick — no repeats until everyone in the class has had a turn.</div>
+    <div class="sub">Pick a sealed envelope and see whose name is inside — no repeats until everyone in the class has had a turn.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -69,17 +122,19 @@ Ava"></textarea>
   </div>
 
   <div id="pickScreen" class="panel" style="display:none;">
-    <div class="stage">
-      <div class="card" id="card">Name</div>
-      <div class="env" id="envBtn">🧧</div>
-    </div>
+    <div class="env-board" id="board" aria-label="Sealed envelopes"></div>
+    <div class="board-note" id="boardNote"></div>
     <div class="btn-row">
-      <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
+      <button class="btn-gold" id="randomBtn">Random Envelope</button>
+      <button class="btn-ghost" id="resetPoolBtn">New Envelopes</button>
       <button class="btn-ghost" id="editBtn">Edit Names</button>
     </div>
-    <div class="pool" id="pool"></div>
+    <div class="tray">
+      <h3>Already opened</h3>
+      <div class="tray-slips" id="tray"></div>
+    </div>
   </div>
-  <div class="hint">Tap the envelope to open it. Everyone gets picked once before names repeat.</div>
+  <div class="hint">Let a student tap any envelope, or press Space for a random one. The name inside is always drawn fairly — no repeats until everyone's had a turn.</div>
 
   <div class="related-skins">
     <h3>Try a different mechanic</h3>
@@ -94,7 +149,7 @@ Ava"></textarea>
     <h2>About this tool</h2>
     <p>A red-envelope-themed random picker — tap the envelope, and a name is revealed with the same fair no-repeat logic as every other picker on this site: once a name's been drawn, it's set aside until the rest of the class has had a turn too.</p>
     <p>The lucky envelope framing borrows from a gift-giving tradition many students will recognize, which tends to make the picking moment feel like a small event rather than just a mechanical process — useful when you want cold-calling to carry a bit of anticipation instead of feeling like a chore for whoever gets picked. Works well for warm-ups, review questions, or handing out a small in-class reward or task to a randomly selected student.</p>
-    <p>Paste in your class list, tap the envelope as many times as you need, and the roster below shows who's still waiting for a turn, updating live as you go. No sign-up needed, and any class size works.</p>
+    <p>Paste in your class list and a sealed envelope appears for every student still waiting. Let a student come up and choose one, or hit Random Envelope to keep things moving. The envelopes are anonymous, so whichever one gets tapped, the name inside is always drawn fairly from the students who haven't had a turn yet. Opened slips collect below so everyone can see who's already been picked. No sign-up needed, and any class size works.</p>
   </div>
 </main>
 
@@ -104,14 +159,16 @@ Ava"></textarea>
 <script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
-  const pickScreen = document.getElementById('pickScreen');
-  const namesInput = document.getElementById('namesInput');
-  const nameCount = document.getElementById('nameCount');
-  const envBtn = document.getElementById('envBtn');
-  const card = document.getElementById('card');
-  const poolEl = document.getElementById('pool');
+  const pickScreen  = document.getElementById('pickScreen');
+  const namesInput  = document.getElementById('namesInput');
+  const nameCount   = document.getElementById('nameCount');
+  const board       = document.getElementById('board');
+  const boardNote   = document.getElementById('boardNote');
+  const trayEl      = document.getElementById('tray');
+  const randomBtn   = document.getElementById('randomBtn');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  let allNames = [], picker = null;
+  let allNames = [], picker = null, busy = false, opened = [];
 
   namesInput.addEventListener('input', updateCount);
   function updateCount(){
@@ -130,58 +187,130 @@ Ava"></textarea>
     picker = createPicker(allNames);
     setupScreen.style.display = 'none';
     pickScreen.style.display = 'block';
-    renderPool(allNames);
+    refill();
   });
 
   document.getElementById('editBtn').addEventListener('click', ()=>{
+    if(busy) return;
     pickScreen.style.display = 'none';
     setupScreen.style.display = 'block';
   });
-
-  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
-    picker.reset();
-    card.classList.remove('show');
-    renderPool(allNames);
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{ if(!busy) refill(); });
+  randomBtn.addEventListener('click', ()=> openEnvelope(null));
+  document.addEventListener('keydown', e=>{
+    if(e.key !== ' ' || pickScreen.style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName;
+    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault(); openEnvelope(null);
   });
+  window.addEventListener('resize', sizeEnvelopes);
 
-  let busy = false;
-  envBtn.addEventListener('click', pickOne);
+  function remainingCount(){ return allNames.filter(n => picker.isRemaining(n)).length; }
 
-  function pickOne(){
-    if(busy || !picker || CCReveal.isOpen()) return;
-    busy = true;
-    card.classList.remove('show');
-    const result = picker.pickNext();
-    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const wait = reduce ? 200 : 1000;
-    CCReveal.drumroll(wait);
-    envBtn.classList.add('shaking');
-    setTimeout(()=>{
-      envBtn.classList.remove('shaking');
-      card.textContent = result.name;
-      card.classList.add('show');
-      renderPool(allNames);
-      setTimeout(()=> CCReveal.show(result.name, {
-        label: 'The envelope says…',
-        remaining: result.remaining,
-        roundDone: result.justExhausted,
-        onNext: pickOne,
-        onClose: ()=>{
-          if(result.justExhausted){ picker.reset(); renderPool(allNames); }
-          busy = false;
-        }
-      }), reduce ? 50 : 450);
-    }, wait);
+  /* One sealed envelope per student still waiting. Envelopes are anonymous —
+     the name is only drawn from the fair pool when one is opened. */
+  function dealEnvelopes(animate){
+    board.innerHTML = '';
+    const n = remainingCount();
+    for(let i = 0; i < n; i++){
+      const b = document.createElement('button');
+      b.className = 'env' + (animate && !reduceMotion ? ' deal' : '');
+      b.style.setProperty('--tilt', ((Math.random() - 0.5) * 10).toFixed(1) + 'deg');
+      if(animate) b.style.animationDelay = (i * 40) + 'ms';
+      b.setAttribute('aria-label', 'Open envelope ' + (i + 1));
+      b.innerHTML = '<span class="slip"></span><span class="body"></span><span class="flap"><span class="seal"><b>?</b></span></span>';
+      b.addEventListener('click', ()=> openEnvelope(b));
+      board.appendChild(b);
+    }
+    sizeEnvelopes();
+    updateNote();
   }
 
-  function renderPool(names){
-    poolEl.innerHTML = '';
-    names.forEach(name=>{
-      const chip = document.createElement('span');
-      chip.className = 'remaining-chip' + (picker.isRemaining(name) ? '' : ' used');
-      chip.textContent = name;
-      poolEl.appendChild(chip);
+  // Bigger envelopes for small classes, smaller for big ones, always fitting the board.
+  function sizeEnvelopes(){
+    const n = board.children.length || 1;
+    const fs = document.body.classList.contains('fs-active');
+    const width = board.clientWidth || 800;
+    const maxW = fs ? 170 : 120, minW = 58;
+    let w = maxW;
+    while(w > minW){
+      const perRow = Math.max(1, Math.floor((width + w * .16) / (w * 1.16)));
+      const rows = Math.ceil(n / perRow);
+      const h = rows * w * 1.36 + (rows - 1) * w * .16;
+      if(h <= (fs ? window.innerHeight * .62 : 520)) break;
+      w -= 4;
+    }
+    board.style.setProperty('--w', w + 'px');
+  }
+  document.addEventListener('fullscreenchange', ()=> setTimeout(sizeEnvelopes, 60));
+
+  function updateNote(){
+    const n = remainingCount();
+    boardNote.textContent = n === 1 ? '1 envelope left' : n + ' envelopes left';
+  }
+
+  function renderTray(){
+    trayEl.innerHTML = '';
+    if(!opened.length){ trayEl.innerHTML = '<span class="tray-empty">No envelopes opened yet.</span>'; return; }
+    opened.forEach(name=>{
+      const el = document.createElement('span');
+      el.className = 'tray-slip';
+      el.textContent = name;
+      trayEl.appendChild(el);
     });
+  }
+
+  function refill(){
+    picker.reset();
+    opened = [];
+    dealEnvelopes(true);
+    renderTray();
+  }
+
+  function openEnvelope(envEl){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    const envs = [...board.querySelectorAll('.env:not(.gone)')];
+    if(!envs.length) return;
+    if(!envEl) envEl = envs[Math.floor(Math.random() * envs.length)];
+    busy = true; randomBtn.disabled = true;
+
+    const result = picker.pickNext();
+    envEl.querySelector('.slip').textContent = result.name;
+
+    board.classList.add('choosing');
+    envEl.classList.add('chosen', 'wiggle');
+    const suspense = reduceMotion ? 200 : 1000;
+    CCReveal.drumroll(suspense);
+
+    setTimeout(()=>{
+      envEl.classList.remove('wiggle');
+      envEl.classList.add('open');
+      setTimeout(()=>{
+        CCReveal.show(result.name, {
+          label: 'The envelope says…',
+          nameClass: 'as-slip',
+          remaining: result.remaining,
+          roundDone: result.justExhausted,
+          onNext: ()=> openEnvelope(null),
+          onClose: ()=> finish(envEl, result.name, result.justExhausted)
+        });
+      }, reduceMotion ? 50 : 750);
+    }, suspense);
+  }
+
+  function finish(envEl, name, roundDone){
+    board.classList.remove('choosing');
+    opened.push(name);
+    if(roundDone){
+      refill();
+    } else {
+      envEl.classList.remove('chosen', 'open');
+      envEl.classList.add('gone');
+      setTimeout(()=>{ envEl.remove(); sizeEnvelopes(); }, 350);
+      updateNote();
+      renderTray();
+    }
+    busy = false; randomBtn.disabled = false;
   }
 </script>
 <script src="../js/fullscreen.js"></script>
