@@ -11,18 +11,18 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Samurai Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free samurai race timer! Enter student names and watch armored samurai race through a cherry blossom dojo to decide the order — fun for classroom turn-taking and presentations.">
-<link rel="canonical" href="https://classcarnival.com/tools/samurai-race">
+<title>Halloween Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free Halloween race timer for the classroom! A pumpkin, a friendly ghost, a little witch, a black cat and a mummy race through a moonlit pumpkin patch to decide student order. Kid-friendly, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/halloween-race">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Samurai Race Timer — Random Order Picker | ClassCarnival">
-<meta property="og:description" content="Free samurai race timer! Enter student names and watch armored samurai race through a cherry blossom dojo to decide the order — fun for classroom turn-taking and presentations.">
-<meta property="og:url" content="https://classcarnival.com/tools/samurai-race">
+<meta property="og:title" content="Halloween Race Timer — Random Order Picker | ClassCarnival">
+<meta property="og:description" content="Free Halloween race timer for the classroom! A pumpkin, a friendly ghost, a little witch, a black cat and a mummy race through a moonlit pumpkin patch to decide student order. Kid-friendly, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/halloween-race">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,8 +30,8 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/race-shared.css">
 <style>
-  :root{ --track-bg: #15141c; }
-  body{ background: radial-gradient(ellipse at top, #2a2233 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #12132a; }
+  body{ background: radial-gradient(ellipse at top, #2b2447 0%, var(--track-bg) 60%) fixed; }
 </style>
 </head>
 <body>
@@ -51,9 +51,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🏯 Samurai Race</div>
-    <h1>Samurai Race Timer</h1>
-    <div class="sub">Honor, armor, and pure chance — let the samurai decide who goes first.</div>
+    <div class="eyebrow">🎃 Halloween Race</div>
+    <h1>Halloween Race Timer</h1>
+    <div class="sub">Pumpkins, ghosts and a very fast black cat — a spooky-but-friendly race to decide who goes first.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -72,7 +72,7 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <div class="race-stage scene" style="--scene-bg:url('../img/bg-samurai-race.jpg')">
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-halloween-race.jpg')">
       <div class="finish-label">Finish</div>
       <div class="track fit-lanes" id="track"></div>
     </div>
@@ -97,6 +97,7 @@ Ava"></textarea>
     <h3>Try another theme</h3>
     <div class="skin-links">
       <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/samurai-race.html">🏯 Samurai Race</a>
       <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
       <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
       <a href="/tools/word-race.html">🔤 Word Race</a>
@@ -105,14 +106,13 @@ Ava"></textarea>
       <a href="/tools/cowboy-race.html">🤠 Cowboy Race</a>
       <a href="/tools/pixel-race.html">👾 Pixel Race</a>
       <a href="/tools/cute-critters-race.html">🐰 Cute Critters Race</a>
-      <a href="/tools/halloween-race.html">🎃 Halloween Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A samurai-themed version of the random order race: armored warriors, a young apprentice with a wooden practice sword, a grand general and an old master with a staff race through a cherry blossom dojo garden, and the order they cross the finish line becomes your turn order. It uses the same fair, fully randomized race as every other theme on the site.</p>
-    <p>Use it for presentation order, reading turns, choosing who answers first, or lining up. It fits naturally alongside units on Japan, history, or world cultures, and pairs well with the Ninja Race when students want a rematch in a different theme.</p>
-    <p>Paste in your class list (or load a saved class), press start, and put it in fullscreen on the projector — every lane fits on screen, however big the class. There's no sign-up, and every race is different, so you can run it again as many times as you like.</p>
+    <p>A Halloween race timer for the classroom: a jack-o'-lantern, a friendly little ghost, a young witch on her broom, a black cat and a cheerful mummy race through a moonlit pumpkin patch, and the order they finish becomes your turn order. Everything is cute rather than scary, so it works for kindergarten right up through middle school.</p>
+    <p>Use it through October for presentation order, reading turns, costume-parade line-ups, or deciding who answers first in a Halloween vocabulary review. It's especially handy for ESL classes doing a Halloween unit — the characters double as vocabulary (pumpkin, ghost, witch, black cat, mummy).</p>
+    <p>Paste in your class list or load a saved class, press start, and switch to fullscreen for the projector. Every lane fits on screen however big the class, there's no sign-up, and every race is different.</p>
   </div>
 </main>
 
@@ -122,11 +122,11 @@ Ava"></textarea>
   window.RACE_SKIN = {
     avatarType: 'image',
     images: [
-      '../img/samurai-warrior.png',
-      '../img/samurai-female.png',
-      '../img/samurai-general.png',
-      '../img/samurai-apprentice.png',
-      '../img/samurai-master.png'
+      '../img/halloween-pumpkin.png',
+      '../img/halloween-ghost.png',
+      '../img/halloween-witch.png',
+      '../img/halloween-cat.png',
+      '../img/halloween-mummy.png'
     ]
   };
 </script>
