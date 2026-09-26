@@ -18,6 +18,21 @@
 <style>
   :root{ --track-bg: #1c150e; }
   body{ background: radial-gradient(ellipse at top, #33241a 0%, var(--track-bg) 60%) fixed; }
+  .track{ position: relative; }
+  .track .lane{
+    position: relative;
+    background-image: url('../img/bg-cowboy-race-ground.jpg');
+    background-repeat: repeat-x;
+    background-size: auto 100%;
+  }
+  .track .lane::before{
+    content: '';
+    position: absolute; inset: 0;
+    background: rgba(25,15,8,0.35);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .track .lane > *{ position: relative; z-index: 1; }
 </style>
 </head>
 <body>
