@@ -129,3 +129,88 @@ textarea:focus{ border-color: var(--gold); }
 .skin-links a{ text-decoration:none; background: var(--panel-bg); border:1px solid var(--line); border-radius:10px;
   padding: 10px 16px; font-size:13px; font-weight:700; }
 .skin-links a:hover{ border-color: var(--gold); }
+
+/* =====================================================================
+   Scene layout (opt-in): background art fills the whole race area and
+   every lane always fits on screen. Used by ninja-race.html.
+   Markup:
+     <div class="race-stage scene" style="--scene-bg:url('../img/bg-ninja-race.jpg')">
+       <div class="finish-label">Finish</div>
+       <div class="track fit-lanes" id="track"></div>
+     </div>
+   ===================================================================== */
+.race-stage{
+  --sky: clamp(56px, 11vh, 110px);
+  position: relative; margin-top: 18px; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--line);
+  height: clamp(420px, 72vh, 780px);
+  padding-top: var(--sky);
+  display: flex; flex-direction: column;
+  background:
+    linear-gradient(rgba(10,8,20,0) 0%, rgba(10,8,20,.3) 30%, rgba(10,8,20,.6) 100%),
+    var(--scene-bg, none) center top / cover no-repeat,
+    var(--track-bg, #16121c);
+}
+body.fs-active .race-stage{ height: calc(100vh - 150px); }
+
+.race-stage .finish-label{
+  position: absolute; right: 4px; top: calc(var(--sky) - 30px); z-index: 3;
+  background: #d8413a; color: #fff; font-family: 'Archivo Black', sans-serif; font-size: 13px;
+  padding: 4px 10px; border-radius: 6px 6px 0 6px; box-shadow: 0 3px 8px rgba(0,0,0,.4);
+}
+
+.track.fit-lanes{
+  flex: 1; min-height: 0; max-height: none; margin: 0;
+  border: none; border-radius: 0; overflow: visible;
+  display: flex; flex-direction: column; background: transparent;
+}
+.track.fit-lanes .lane{
+  flex: 1 1 0; height: auto; min-height: 0;
+  border-bottom: none; border-top: 1px solid rgba(255,255,255,.14);
+}
+.track.fit-lanes .lane:last-child{ border-bottom: 1px solid rgba(255,255,255,.14); }
+.track.fit-lanes .lane:nth-child(odd){ background: rgba(16,11,32,.5); }
+.track.fit-lanes .lane:nth-child(even){ background: rgba(28,20,52,.38); }
+
+/* one finish line across every lane (replaces the per-lane flags) */
+.track.fit-lanes .flag{ display: none; }
+.track.fit-lanes::after{
+  content: ""; position: absolute; top: 0; bottom: 0; right: 8px; width: 16px; z-index: 1;
+  background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 16px 16px;
+  box-shadow: 0 0 10px rgba(0,0,0,.6); pointer-events: none;
+}
+/* start line */
+.track.fit-lanes::before{
+  content: ""; position: absolute; top: 0; bottom: 0; left: calc(8px + var(--start-x, 80px)); width: 2px;
+  background: rgba(255,255,255,.35); z-index: 1; pointer-events: none;
+}
+.track.fit-lanes .rail{ left: var(--start-x, 80px); right: 0; opacity: .45; }
+.track.fit-lanes .rank-badge{ display: none; }
+
+/* runners scale with the lane; name tag rides just behind the runner */
+.track.fit-lanes .runner-wrap{
+  display: block; width: auto; height: var(--runner-size, 56px); gap: 0;
+}
+.track.fit-lanes .runner-name-tag{
+  position: absolute; right: 100%; top: 50%; transform: translateY(-50%); margin-right: 4px;
+  font-size: var(--label-size, 15px); padding: .15em .6em; border-radius: 999px;
+  max-width: calc(var(--start-x, 80px) - 8px); background: rgba(10,8,20,.8);
+  border: 1px solid rgba(255,255,255,.18);
+}
+.track.fit-lanes .lane.finished .runner-name-tag{ max-width: none; }
+.track.fit-lanes .tag-rank{ color: var(--gold); margin-right: .2em; }
+/* images: same height for every character, width follows the artwork */
+.track.fit-lanes .runner-body.image{
+  height: 100%; width: auto; max-width: none;
+  filter: drop-shadow(0 0 1.5px rgba(255,255,255,.7)) drop-shadow(0 3px 3px rgba(0,0,0,.5));
+}
+.track.fit-lanes .lane.finished .runner-body.image{
+  box-shadow: none; transform: scale(1.05);
+  filter: drop-shadow(0 0 2px var(--gold)) drop-shadow(0 0 6px var(--gold));
+}
+.track.fit-lanes .runner-body.image.finished-bounce{ animation: none; }
+/* emoji / initials bodies (if another skin opts in) */
+.track.fit-lanes .runner-body:not(.image):not(.custom){
+  width: var(--runner-size, 56px); height: var(--runner-size, 56px);
+  font-size: calc(var(--runner-size, 56px) * 0.45);
+}

@@ -47,6 +47,19 @@ To add a new themed race, copy `tools/dinosaur-race.html`, change the title/meta
 
 **Before naming a new theme, check it's not already on onlinestopwatch.com's race timer or name picker lists** (they cover most obvious animal/fantasy/holiday themes) — pick something original instead of an exact-name match.
 
+## Scene layout (full-background race that always fits)
+
+`ninja-race.html` uses an optional "scene" layout from `css/race-shared.css` + `js/race-engine.js`: the background art fills the whole race area, lanes sit on top of it, every lane always fits on screen (no scrolling, including fullscreen), runners and name tags scale with class size, and there's one finish line across all lanes. To switch another race skin to it, replace its `<img class="race-banner" ...>` + `<div class="track" id="track"></div>` with:
+
+```
+<div class="race-stage scene" style="--scene-bg:url('../img/bg-YOUR-RACE.jpg')">
+  <div class="finish-label">Finish</div>
+  <div class="track fit-lanes" id="track"></div>
+</div>
+```
+
+and delete any solid `.lane:nth-child(...)` background overrides in that page's `<style>` block. Pages that don't do this keep the original layout.
+
 ## The name-picker skin system
 
 `name-picker.html`, `popsicle-stick-picker.html`, `lucky-envelope-picker.html`, and `sticker-jar-picker.html` all use `js/picker-core.js` — a tiny no-repeat pool helper (`createPicker(names)` → `pickNext()`, `reset()`, `isRemaining()`). Each page just renders the pick differently (a plain reveal vs. a tap-to-reveal animation with a different icon).

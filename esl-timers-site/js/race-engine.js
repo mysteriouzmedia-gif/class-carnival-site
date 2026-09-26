@@ -9,6 +9,10 @@
  *     sampleNames: [...]        // optional, falls back to DEFAULT_SAMPLE
  *   };
  *
+ * Optional "scene" layout: give #track the class "fit-lanes" and wrap it in
+ * <div class="race-stage scene" style="--scene-bg:url('../img/your-bg.jpg')">.
+ * All lanes then always fit on screen (no scrolling) and runners scale with lane height.
+ *
  * Expects these element ids to exist in the page:
  *   setupScreen, raceScreen, resultsScreen, namesInput, nameCount,
  *   sampleBtn, startBtn, startRaceBtn, track, liveLeaderboard, finalList,
@@ -49,6 +53,36 @@
     function escapeHtml(str){
       return str.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
     }
+
+    /* --- Fit-lanes mode (track has class "fit-lanes"): every lane always fits, runners scale to lane height --- */
+    function fitMode(){ return trackEl.classList.contains('fit-lanes'); }
+    function startOffset(){
+      if(!fitMode()) return 2;
+      return parseFloat(getComputedStyle(trackEl).getPropertyValue('--start-x')) || 2;
+    }
+    function placeRunner(r){
+      const runner = document.getElementById('runner-'+r.i);
+      if(!runner) return;
+      const w = fitMode() ? runner.offsetWidth : WRAP_WIDTH;
+      const start = startOffset();
+      const maxLeft = runner.parentElement.clientWidth - w;
+      runner.style.left = (start + (r.pos/100)*(maxLeft - start)) + 'px';
+    }
+    function fitLanes(){
+      if(!fitMode()) return;
+      const n = Math.max(racers.length, 1);
+      const laneH = trackEl.clientHeight / n;
+      const size = Math.max(14, Math.min(laneH * 0.84, 110));
+      const label = Math.max(9, Math.min(laneH * 0.3, 20));
+      const start = Math.round(Math.min(Math.max(trackEl.clientWidth * 0.15, 80), 200));
+      trackEl.style.setProperty('--runner-size', size + 'px');
+      trackEl.style.setProperty('--label-size', label + 'px');
+      trackEl.style.setProperty('--start-x', start + 'px');
+      racers.forEach(placeRunner);
+    }
+    if(window.ResizeObserver) new ResizeObserver(fitLanes).observe(trackEl);
+    // image widths are only known once they load, so re-place runners then
+    trackEl.addEventListener('load', e=>{ if(e.target.tagName === 'IMG') racers.forEach(placeRunner); }, true);
 
     function updateCount(){
       const list = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
@@ -141,6 +175,7 @@
           </div>`;
         trackEl.appendChild(lane);
       });
+      fitLanes();
     }
 
     function setControlLabel(text){
@@ -200,9 +235,7 @@
         r.pos = Math.min(r.pos + r.speed * dt, 100);
 
         const runner = document.getElementById('runner-'+r.i);
-        const laneTrack = runner.parentElement;
-        const maxLeft = laneTrack.clientWidth - WRAP_WIDTH;
-        runner.style.left = (2 + (r.pos/100)*maxLeft) + 'px';
+        placeRunner(r);
 
         if(r.pos >= 100){
           r.done = true;
@@ -214,6 +247,10 @@
           const body = runner.querySelector('.runner-body');
           if(body) body.classList.add('finished-bounce');
           document.getElementById('rank-'+r.i).textContent = '#'+finishOrder.length;
+          if(fitMode()){
+            const tag = runner.querySelector('.runner-name-tag');
+            if(tag) tag.innerHTML = `<span class="tag-rank">#${finishOrder.length}</span> ${escapeHtml(r.name)}`;
+          }
           spawnConfetti(lane, r.i);
           const item = document.createElement('div');
           item.className = 'lb-item';
@@ -283,12 +320,8 @@
     });
 
     window.addEventListener('resize', ()=>{
-      racers.forEach(r=>{
-        const runner = document.getElementById('runner-'+r.i);
-        if(!runner) return;
-        const maxLeft = runner.parentElement.clientWidth - WRAP_WIDTH;
-        runner.style.left = (2 + (r.pos/100)*maxLeft) + 'px';
-      });
+      if(fitMode()) fitLanes();
+      else racers.forEach(placeRunner);
     });
   }
 
