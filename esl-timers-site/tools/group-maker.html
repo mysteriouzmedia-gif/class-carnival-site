@@ -63,6 +63,50 @@
   @media (max-width: 640px){ .gm-grid{ --cols: 2 !important; } }
   @media (max-width: 400px){ .gm-grid{ --cols: 1 !important; } }
   @media (prefers-reduced-motion: reduce){ .gm-group, .gm-name{ animation:none !important; } }
+
+  /* ---------- v2: deck, flying cards, mascots, suspense mode ---------- */
+  .gm-reveal-mode{ display:inline-flex; border:1px solid var(--line); border-radius: 12px; overflow:hidden; }
+  .gm-reveal-mode label{ padding: 10px 14px; cursor:pointer; font-weight:700; font-size:13px; color: var(--cream-dim); }
+  .gm-reveal-mode input{ position:absolute; opacity:0; pointer-events:none; }
+  .gm-reveal-mode label:has(input:checked){ background: rgba(255,182,39,.15); color: var(--gold); }
+
+  .gm-table{ display:flex; flex-direction:column; align-items:center; gap: 10px; margin-bottom: 18px; }
+  .gm-deck{ position:relative; width: 150px; height: 64px; }
+  .gm-deck .card-back{ position:absolute; inset:0; border-radius: 12px;
+    background: repeating-linear-gradient(45deg, #ffb627 0 8px, #f5a300 8px 16px); border: 3px solid #fff3c4;
+    box-shadow: 0 6px 14px rgba(0,0,0,.4); }
+  .gm-deck .card-back:nth-child(2){ transform: translate(3px,-3px) rotate(2deg); }
+  .gm-deck .card-back:nth-child(3){ transform: translate(6px,-6px) rotate(-2deg); }
+  .gm-deck .deck-count{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; z-index:5;
+    font-family:'Archivo Black', sans-serif; color:#1a1305; font-size: 15px; text-shadow: 0 1px 0 rgba(255,255,255,.5);
+    transform: translate(6px,-6px) rotate(-2deg); }
+  .gm-deck.shuffling .card-back{ animation: deckShuffle .18s ease-in-out infinite alternate; }
+  .gm-deck.shuffling .card-back:nth-child(2){ animation-delay: .06s; }
+  .gm-deck.shuffling .card-back:nth-child(3){ animation-delay: .12s; }
+  @keyframes deckShuffle{ from{ transform: translate(-14px,0) rotate(-8deg); } to{ transform: translate(14px,-4px) rotate(8deg); } }
+  .gm-deck.empty{ opacity:.25; }
+  .gm-status{ font-size: 14px; font-weight: 800; color: var(--cream-dim); min-height: 1.4em; text-align:center; }
+  .gm-status b{ color: var(--gold); }
+
+  .gm-flyer{ position:fixed; z-index: 250; pointer-events:none; border-radius: 10px; padding: 9px 14px; font-weight:800; font-size: 18px;
+    background:#fffdf7; color:#1a1305; box-shadow: 0 10px 24px rgba(0,0,0,.5); white-space:nowrap; }
+  .gm-flyer.big{ font-family:'Archivo Black', sans-serif; font-size: clamp(28px, 5vw, 56px); padding: 14px 28px; }
+
+  .gm-group h3 .mascot{ font-size: 1.35em; display:inline-block; margin-right: 6px; }
+  .gm-group.pop{ animation: grpPop .45s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes grpPop{ 0%{ transform: scale(1); } 35%{ transform: scale(1.05); } 100%{ transform: scale(1); } }
+  .gm-group.pop .mascot{ animation: mascotJump .5s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes mascotJump{ 0%,100%{ transform: none; } 40%{ transform: translateY(-10px) rotate(-12deg) scale(1.25); } }
+  .gm-group.next{ box-shadow: 0 0 0 3px var(--c), 0 0 24px color-mix(in srgb, var(--c) 45%, transparent); }
+  .gm-group.cheer{ animation: cheer .6s ease-in-out 2; }
+  @keyframes cheer{ 0%,100%{ transform: none; } 25%{ transform: rotate(-1.5deg) translateY(-4px); } 75%{ transform: rotate(1.5deg) translateY(-4px); } }
+  .gm-name.landed{ animation: none; }
+  .gm-name.flash{ animation: nameFlash .7s ease; }
+  @keyframes nameFlash{ 0%{ background: var(--c); color:#1a1305; } 100%{ background:#1b2436; color: inherit; } }
+  .gm-slot{ height: 36px; border-radius: 8px; border: 2px dashed color-mix(in srgb, var(--c) 45%, transparent); }
+
+  body.fs-active .gm-deck{ transform: scale(1.3); margin: 8px 0; }
+  @media (prefers-reduced-motion: reduce){ .gm-group.pop, .gm-group.cheer, .gm-deck .card-back{ animation:none !important; } }
 </style>
 </head>
 <body>
@@ -109,22 +153,31 @@ Ava"></textarea>
         <input type="number" id="numInput" value="3" min="1" max="50" aria-label="Number">
         <button type="button" class="btn-ghost" id="plusBtn" aria-label="More">+</button>
       </div>
-      <label class="gm-check"><input type="checkbox" id="funNames"> Fun team names</label>
+      <div class="gm-reveal-mode" role="radiogroup" aria-label="How to reveal the groups">
+        <label><input type="radio" name="reveal" value="all" checked> Deal them all</label>
+        <label><input type="radio" name="reveal" value="one"> One at a time</label>
+      </div>
+      <label class="gm-check"><input type="checkbox" id="funNames" checked> Team names &amp; mascots</label>
     </div>
     <div class="gm-preview" id="preview"></div>
     <div class="btn-row"><button class="btn-gold" id="startBtn">Make Groups</button></div>
   </div>
 
   <div id="groupScreen" class="panel" style="display:none;">
+    <div class="gm-table">
+      <div class="gm-deck" id="deck" aria-hidden="true"><div class="card-back"></div><div class="card-back"></div><div class="card-back"></div><div class="deck-count" id="deckCount"></div></div>
+      <div class="gm-status" id="status" aria-live="polite"></div>
+    </div>
     <div class="gm-grid" id="grid"></div>
     <div class="btn-row">
+      <button class="btn-gold" id="nextBtn" style="display:none;">🃏 Deal Next</button>
       <button class="btn-gold" id="shuffleBtn">🔀 Shuffle Again</button>
       <button class="btn-ghost" id="copyBtn">Copy Groups</button>
       <button class="btn-ghost" id="editBtn">Edit Names</button>
     </div>
     <div class="gm-copied" id="copied" aria-live="polite"></div>
   </div>
-  <div class="hint">Press Space to shuffle again. Save your class once and it's ready here and on every other tool.</div>
+  <div class="hint">Choose “One at a time” for maximum suspense — press Space to reveal each student. Save your class once and it's ready on every tool.</div>
 
   <div class="related-skins">
     <h3>More classroom tools</h3>
@@ -140,7 +193,7 @@ Ava"></textarea>
     <h2>About this tool</h2>
     <p>A random group generator built for the classroom. Paste in your class list, choose either the size of each group or how many groups you want, and ClassCarnival shuffles everyone fairly and deals the names out into groups on screen — one card at a time, so the whole class can watch their team come together.</p>
     <p>When the numbers don't divide evenly, the extra students are spread across groups so no group is ever more than one person bigger than another, and nobody gets left on their own. Hit Shuffle Again for a completely new mix, or Copy Groups to paste the list into a document, a class chat, or your lesson notes.</p>
-    <p>Use it for pair work, project teams, discussion circles, stations, or splitting the class into teams for a quiz game — it pairs perfectly with the Team Race. Turn on fun team names for younger classes, and use fullscreen mode to put the groups up on your projector. No sign-up needed, and any class size works.</p>
+    <p>Use it for pair work, project teams, discussion circles, stations, or splitting the class into teams for a quiz game — it pairs perfectly with the Team Race. Team names and mascots are on by default (turn them off for plain numbered groups), “One at a time” mode lets you reveal each student with a drumroll, and use fullscreen mode to put the groups up on your projector. No sign-up needed, and any class size works.</p>
   </div>
 </main>
 
@@ -158,64 +211,78 @@ Ava"></textarea>
   const funNames    = document.getElementById('funNames');
   const copiedEl    = document.getElementById('copied');
   const shuffleBtn  = document.getElementById('shuffleBtn');
+  const nextBtn     = document.getElementById('nextBtn');
+  const deckEl      = document.getElementById('deck');
+  const deckCount   = document.getElementById('deckCount');
+  const statusEl    = document.getElementById('status');
   const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   const COLORS = ['#ff6b5b','#2ec4b6','#ffb627','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ff9f43','#54a0ff','#10ac84'];
-  const TEAMS  = ['Tigers','Dolphins','Rockets','Owls','Dragons','Pandas','Comets','Foxes','Sharks','Eagles','Koalas','Penguins',
-                  'Lions','Unicorns','Wolves','Bees','Robots','Wizards','Ninjas','Pirates'];
+  const TEAMS  = [['Tigers','🐯'],['Dolphins','🐬'],['Rockets','🚀'],['Owls','🦉'],['Dragons','🐉'],['Pandas','🐼'],['Comets','☄️'],
+                  ['Foxes','🦊'],['Sharks','🦈'],['Eagles','🦅'],['Koalas','🐨'],['Penguins','🐧'],['Lions','🦁'],['Unicorns','🦄'],
+                  ['Wolves','🐺'],['Bees','🐝'],['Robots','🤖'],['Wizards','🧙'],['Octopuses','🐙'],['Turtles','🐢']];
 
-  let allNames = [], busy = false, timers = [];
+  let allNames = [], current = [], order = [], dealt = 0, phase = 'idle', timers = [], boxes = [];
 
   const getNames = () => namesInput.value.split('\n').map(s => s.trim()).filter(Boolean);
   const mode = () => document.querySelector('input[name="mode"]:checked').value;
+  const oneByOne = () => document.querySelector('input[name="reveal"]:checked').value === 'one';
   const num = () => Math.max(1, Math.min(50, parseInt(numInput.value, 10) || 1));
+  const later = (fn, ms) => { const t = setTimeout(fn, ms); timers.push(t); return t; };
 
   function shuffle(a){
     a = [...a];
-    for(let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
+    for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; }
     return a;
   }
 
-  // How many groups for this class, given the chosen mode.
+  /* ---------- sound (shares the site-wide mute setting) ---------- */
+  let actx = null;
+  function muted(){ try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } }
+  function tone(freq, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = freq;
+      g.gain.setValueAtTime(vol || 0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
+    }catch(e){}
+  }
+  const tick = i => tone(420 + (i % 12) * 40, 0, 0.09, 'square', 0.05);
+  const land = i => { tone(660 + (i % 8) * 30, 0, 0.12, 'triangle', 0.09); tone(990 + (i % 8) * 30, 0.05, 0.12, 'triangle', 0.06); };
+  const shuffleSound = () => { for(let k = 0; k < 8; k++) tone(300 + Math.random() * 200, k * 0.07, 0.05, 'square', 0.035); };
+  const fanfare = () => [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => tone(f, i * 0.1, i === 3 ? 0.6 : 0.2, 'square', 0.07));
+
+  /* ---------- setup screen ---------- */
   function groupCount(n){
     if(n === 0) return 0;
     if(mode() === 'count') return Math.min(num(), n);
-    return Math.max(1, Math.floor(n / num()));   // "groups of N": extras join groups, so nobody is ever left alone
+    return Math.max(1, Math.floor(n / num()));   // extras join groups, so nobody is ever left alone
   }
-
   function sizesText(n){
-    const g = groupCount(n);
-    if(!n) return '';
+    const g = groupCount(n); if(!n) return '';
     const base = Math.floor(n / g), extra = n % g;
     if(g === 1) return `1 group of ${n}`;
     if(extra === 0) return `${g} groups of ${base}`;
     return `${g} groups: ${extra} of ${base + 1} and ${g - extra} of ${base}`;
   }
-
   function updateCount(){
     const n = getNames().length;
     nameCount.textContent = n + (n === 1 ? ' student' : ' students');
     preview.textContent = n ? '→ ' + sizesText(n) : '';
   }
-
   namesInput.addEventListener('input', updateCount);
-  document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', () => {
-    numInput.value = mode() === 'count' ? 4 : 3;
-    updateCount();
-  }));
+  document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener('change', () => { numInput.value = mode() === 'count' ? 4 : 3; updateCount(); }));
   numInput.addEventListener('input', updateCount);
   numInput.addEventListener('change', () => { numInput.value = num(); updateCount(); });
   document.getElementById('minusBtn').addEventListener('click', () => { numInput.value = Math.max(1, num() - 1); updateCount(); });
   document.getElementById('plusBtn').addEventListener('click', () => { numInput.value = Math.min(50, num() + 1); updateCount(); });
-
   document.getElementById('sampleBtn').addEventListener('click', () => {
     namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia','Seojun','Chloe'].join('\n');
     updateCount();
   });
-
   document.getElementById('startBtn').addEventListener('click', () => {
     allNames = getNames();
     if(allNames.length < 2){ alert('Add at least 2 names.'); return; }
@@ -223,85 +290,199 @@ Ava"></textarea>
     groupScreen.style.display = 'block';
     makeGroups();
   });
-
   document.getElementById('editBtn').addEventListener('click', () => {
-    stopDeal();
+    stopAll();
     groupScreen.style.display = 'none';
     setupScreen.style.display = 'block';
   });
 
+  /* ---------- group screen ---------- */
   shuffleBtn.addEventListener('click', makeGroups);
+  nextBtn.addEventListener('click', dealNext);
   document.addEventListener('keydown', e => {
     if(e.key !== ' ' || groupScreen.style.display === 'none') return;
     const t = e.target.tagName;
-    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT') return;
-    e.preventDefault(); makeGroups();
+    if(t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault();
+    if(phase === 'waiting') dealNext();
+    else if(phase === 'done') makeGroups();
   });
 
-  function stopDeal(){ timers.forEach(clearTimeout); timers = []; busy = false; shuffleBtn.disabled = false; }
+  function stopAll(){
+    timers.forEach(clearTimeout); timers = [];
+    document.querySelectorAll('.gm-flyer').forEach(f => f.remove());
+    phase = 'idle';
+  }
 
-  let current = [];
+  function setStatus(html){ statusEl.innerHTML = html; }
+  function updateDeck(){
+    const left = order.length - dealt;
+    deckCount.textContent = left ? left + (left === 1 ? ' card' : ' cards') : '';
+    deckEl.classList.toggle('empty', left === 0);
+  }
+
   function makeGroups(){
-    if(busy) return;
-    const names = shuffle(allNames);
-    const g = groupCount(names.length);
-    const labels = funNames.checked ? shuffle(TEAMS) : null;
+    stopAll();
+    order = shuffle(allNames); dealt = 0;
+    const g = groupCount(order.length);
+    const teams = funNames.checked ? shuffle(TEAMS) : null;
     const colorOffset = Math.floor(Math.random() * COLORS.length);
     current = Array.from({ length: g }, (_, i) => ({
-      name: labels ? 'Team ' + labels[i % labels.length] : 'Group ' + (i + 1),
+      name: teams ? 'Team ' + teams[i % teams.length][0] : 'Group ' + (i + 1),
+      mascot: teams ? teams[i % teams.length][1] : '',
       color: COLORS[(i + colorOffset) % COLORS.length],
       members: []
     }));
-    names.forEach((n, i) => current[i % g].members.push(n));   // round-robin keeps sizes within one of each other
+    order.forEach((n, i) => current[i % g].members.push(n));   // round-robin: sizes stay within one of each other
 
-    // layout: aim for a grid that fits the screen
     const cols = g <= 2 ? g : g === 4 ? 2 : g <= 6 ? 3 : g <= 8 ? 4 : 5;
     grid.style.setProperty('--cols', cols);
-    grid.innerHTML = '';
-    copiedEl.textContent = '';
-    const boxes = current.map((grp, i) => {
+    grid.innerHTML = ''; copiedEl.textContent = '';
+    boxes = current.map((grp, i) => {
       const box = document.createElement('div');
       box.className = 'gm-group';
       box.style.setProperty('--c', grp.color);
       box.style.animationDelay = (i * 40) + 'ms';
       const h = document.createElement('h3');
-      h.textContent = grp.name;
+      const title = document.createElement('span');
+      if(grp.mascot){ const m = document.createElement('span'); m.className = 'mascot'; m.textContent = grp.mascot; title.appendChild(m); }
+      title.appendChild(document.createTextNode(grp.name));
       const small = document.createElement('small');
-      small.textContent = grp.members.length + (grp.members.length === 1 ? ' student' : ' students');
-      h.appendChild(small);
+      small.textContent = '0 / ' + grp.members.length;
+      h.append(title, small);
       const list = document.createElement('div');
       list.className = 'gm-members';
+      grp.members.forEach(() => { const s = document.createElement('div'); s.className = 'gm-slot'; list.appendChild(s); });
       box.append(h, list);
       grid.appendChild(box);
-      return list;
+      return { box, list, small };
     });
 
-    // deal the names out one at a time, round-robin like dealing cards
-    busy = true; shuffleBtn.disabled = true;
-    const step = reduceMotion ? 0 : Math.max(45, Math.min(160, 2400 / names.length));
-    CCReveal.drumroll(step * names.length);
-    names.forEach((n, i) => {
-      timers.push(setTimeout(() => {
-        const el = document.createElement('div');
-        el.className = 'gm-name';
-        el.textContent = n;
-        boxes[i % g].appendChild(el);
-        if(i === names.length - 1){
-          busy = false; shuffleBtn.disabled = false;
-          CCReveal.confetti();
-        }
-      }, 250 + i * step));
-    });
+    shuffleBtn.disabled = true;
+    nextBtn.style.display = oneByOne() ? '' : 'none';
+    nextBtn.disabled = true;
+    updateDeck();
+    setStatus('Shuffling the deck…');
+    phase = 'shuffling';
+    deckEl.classList.add('shuffling');
+    shuffleSound();
+    later(() => {
+      deckEl.classList.remove('shuffling');
+      if(oneByOne()){
+        phase = 'waiting'; nextBtn.disabled = false;
+        highlightNext();
+        setStatus('Press <b>Space</b> or <b>Deal Next</b> to reveal each student.');
+      } else {
+        phase = 'dealing';
+        setStatus('Dealing…');
+        const step = reduceMotion ? 30 : Math.max(90, Math.min(260, 3600 / order.length));
+        order.forEach((_, i) => later(() => flyTo(i, false), i * step));
+      }
+    }, reduceMotion ? 100 : 800);
+  }
+
+  function highlightNext(){
+    boxes.forEach(b => b.box.classList.remove('next'));
+    if(dealt < order.length) boxes[dealt % boxes.length].box.classList.add('next');
+  }
+
+  function slotRect(i){
+    const b = boxes[i % boxes.length], slot = b.list.querySelector('.gm-slot');
+    return (slot || b.list).getBoundingClientRect();
+  }
+
+  // One-at-a-time: a big card flickers through names in the middle of the screen, lands, then flies to its group.
+  function dealNext(){
+    if(phase !== 'waiting') return;
+    phase = 'revealing'; nextBtn.disabled = true;
+    const i = dealt, name = order[i], grp = current[i % current.length];
+    const card = document.createElement('div');
+    card.className = 'gm-flyer big';
+    document.body.appendChild(card);
+    const place = () => {
+      const r = card.getBoundingClientRect();
+      card.style.left = (innerWidth / 2 - r.width / 2) + 'px';
+      card.style.top = (innerHeight / 2 - r.height / 2) + 'px';
+    };
+    const remaining = order.slice(i);
+    let t = 0, gap = 50, total = reduceMotion ? 0 : 750;
+    (function flick(){
+      if(t >= total){
+        card.textContent = name; place();
+        card.style.background = grp.color;
+        land(i);
+        setStatus(`${grp.mascot ? grp.mascot + ' ' : ''}<b></b> joins ${grp.name}!`);
+        statusEl.querySelector('b').textContent = name;
+        later(() => { flyCard(card, i, true); }, reduceMotion ? 0 : 450);
+        return;
+      }
+      card.textContent = remaining[Math.floor(Math.random() * remaining.length)]; place();
+      tick(t / gap | 0);
+      t += gap; gap = Math.min(180, gap * 1.15);
+      later(flick, gap);
+    })();
+  }
+
+  function flyTo(i, big){
+    const card = document.createElement('div');
+    card.className = 'gm-flyer';
+    card.textContent = order[i];
+    document.body.appendChild(card);
+    const d = deckEl.getBoundingClientRect(), r = card.getBoundingClientRect();
+    card.style.left = (d.left + d.width / 2 - r.width / 2) + 'px';
+    card.style.top = (d.top + d.height / 2 - r.height / 2) + 'px';
+    tick(i);
+    flyCard(card, i, big);
+  }
+
+  function flyCard(card, i, big){
+    dealt = Math.max(dealt, i + 1); updateDeck();
+    const from = card.getBoundingClientRect(), to = slotRect(i);
+    const dx = to.left - from.left, dy = to.top - from.top;
+    const sx = Math.min(1, to.width / from.width);
+    const done = () => { card.remove(); placeName(i); };
+    if(reduceMotion || !card.animate){ done(); return; }
+    const anim = card.animate([
+      { transform: 'translate(0,0) rotate(0) scale(1)' },
+      { transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 70}px) rotate(${big ? 8 : 180}deg) scale(${big ? 0.8 : 1.1})`, offset: 0.5 },
+      { transform: `translate(${dx}px, ${dy}px) rotate(360deg) scale(${Math.max(0.4, sx)})` }
+    ], { duration: big ? 520 : 520, easing: 'cubic-bezier(.4,.1,.3,1)' });
+    anim.onfinish = done;
+  }
+
+  function placeName(i){
+    const b = boxes[i % boxes.length], grp = current[i % current.length];
+    const slot = b.list.querySelector('.gm-slot');
+    const el = document.createElement('div');
+    el.className = 'gm-name landed flash';
+    el.textContent = order[i];
+    if(slot) slot.replaceWith(el); else b.list.appendChild(el);
+    const have = b.list.querySelectorAll('.gm-name').length;
+    b.small.textContent = have + ' / ' + grp.members.length;
+    b.box.classList.remove('pop'); void b.box.offsetWidth; b.box.classList.add('pop');
+    if(!oneByOne()) land(i);
+
+    if(i === order.length - 1) return finish();
+    if(oneByOne()){
+      phase = 'waiting'; nextBtn.disabled = false; highlightNext();
+    }
+  }
+
+  function finish(){
+    phase = 'done';
+    boxes.forEach((b, k) => { b.box.classList.remove('next', 'pop'); later(() => b.box.classList.add('cheer'), k * 80); });
+    later(() => boxes.forEach(b => b.box.classList.remove('cheer')), 1600 + boxes.length * 80);
+    fanfare();
+    CCReveal.confetti();
+    setStatus('🎉 <b>Groups ready!</b> Press Space to shuffle again.');
+    shuffleBtn.disabled = false;
+    nextBtn.disabled = true; nextBtn.style.display = 'none';
   }
 
   document.getElementById('copyBtn').addEventListener('click', async () => {
     const text = current.map(grp => grp.name + ': ' + grp.members.join(', ')).join('\n');
-    try{
-      await navigator.clipboard.writeText(text);
-      copiedEl.textContent = 'Copied! Paste the groups anywhere.';
-    }catch(e){
-      copiedEl.textContent = 'Couldn’t copy automatically — select the groups on screen instead.';
-    }
+    try{ await navigator.clipboard.writeText(text); copiedEl.textContent = 'Copied! Paste the groups anywhere.'; }
+    catch(e){ copiedEl.textContent = 'Couldn’t copy automatically — select the groups on screen instead.'; }
   });
 
   updateCount();
