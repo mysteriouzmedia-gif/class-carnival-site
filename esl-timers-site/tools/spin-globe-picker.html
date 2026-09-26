@@ -16,23 +16,64 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .globe-stage{ text-align:center; padding: 20px; }
-  .globe-wrap{ position:relative; width: 280px; height:280px; margin: 0 auto; }
-  .globe{
-    width:100%; height:100%; border-radius:50%;
-    box-shadow: 0 10px 40px rgba(0,0,0,.4), inset -20px -20px 50px rgba(0,0,0,.35), inset 15px 15px 40px rgba(255,255,255,.12);
-    position:relative; overflow:hidden;
-  }
-  .globe::after{
-    content:''; position:absolute; inset:0; border-radius:50%; pointer-events:none;
-    background: repeating-linear-gradient(0deg, transparent 0 8%, rgba(255,255,255,.06) 8% calc(8% + 1px)),
-                repeating-linear-gradient(90deg, transparent 0 8%, rgba(255,255,255,.06) 8% calc(8% + 1px));
-  }
-  .pointer{ position:absolute; top:-6px; left:50%; transform: translateX(-50%);
-    width:0; height:0; border-left:14px solid transparent; border-right:14px solid transparent;
-    border-top:22px solid var(--gold); z-index:5; filter: drop-shadow(0 2px 3px rgba(0,0,0,.4)); }
-  .legend{ margin-top: 24px; text-align:center; }
-  .color-dot{ display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+  /* ---------- Globe on a stand (pure CSS + an inline SVG map strip) ---------- */
+  .globe-stage{ --s: 1; position:relative; height: calc(440px * var(--s)); display:flex; justify-content:center; align-items:flex-start; margin-top: 4px; }
+  .globe-scene{ position:relative; width:360px; height:440px; transform: scale(var(--s)); transform-origin: top center; cursor:pointer; user-select:none; -webkit-tap-highlight-color: transparent; }
+  .globe-scene:focus-visible{ outline: 3px solid var(--gold); outline-offset: 6px; border-radius: 24px; }
+
+  .stand-base{ position:absolute; left:95px; right:95px; bottom:6px; height:34px; border-radius: 50% 50% 14px 14px / 70% 70% 14px 14px;
+    background: linear-gradient(180deg, #e0b25a, #9c6b1f); box-shadow: 0 8px 18px rgba(0,0,0,.45), inset 0 3px 0 rgba(255,255,255,.25); }
+  .stand-neck{ position:absolute; left:50%; bottom:36px; width:22px; height:62px; transform: translateX(-50%);
+    background: linear-gradient(90deg, #9c6b1f, #f0c46a 45%, #9c6b1f); border-radius: 6px; }
+  .tilt{ position:absolute; left:20px; top:20px; width:320px; height:320px; transform: rotate(-20deg); }
+  .ring{ position:absolute; inset:0; border-radius:50%; border: 7px solid #d4a64a; border-left-color: transparent; border-bottom-color: transparent;
+    transform: rotate(45deg); box-shadow: 0 0 0 1px rgba(0,0,0,.2); z-index:3; }
+  .ring-back{ position:absolute; inset:0; border-radius:50%; border: 7px solid #8a6424; border-right-color: transparent; border-top-color: transparent;
+    transform: rotate(45deg); z-index:0; opacity:.9; }
+  .cap{ position:absolute; left:50%; width:14px; height:14px; margin-left:-7px; border-radius:50%; background: radial-gradient(circle at 35% 30%, #ffe28a, #b9861f); z-index:4; }
+  .cap.top{ top:-4px; } .cap.bot{ bottom:-4px; }
+
+  .globe{ position:absolute; left:20px; top:20px; width:280px; height:280px; border-radius:50%; overflow:hidden; z-index:1;
+    background: radial-gradient(circle at 38% 32%, #6fc3ff 0%, #2a8fd6 45%, #135c9e 100%); }
+  .map{ position:absolute; inset:0; background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20400%20200%22%3E%3Cg%20fill%3D%22%236cc070%22%20stroke%3D%22%233f8a47%22%20stroke-width%3D%221.5%22%20stroke-linejoin%3D%22round%22%3E%3Cpath%20d%3D%22M40%2040C60%2025%20110%2025%20130%2040C125%2055%20110%2060%20105%2075C95%2085%2085%2095%2080%20100C70%2090%2060%2080%2055%2070C45%2060%2035%2055%2040%2040Z%22%2F%3E%3Cpath%20d%3D%22M132%2018C142%2012%20158%2015%20156%2026C150%2034%20138%2033%20132%2018Z%22%2F%3E%3Cpath%20d%3D%22M95%20110C110%20105%20125%20115%20125%20130C120%20150%20110%20165%20100%20182C95%20165%2092%20150%2088%20135C85%20125%2088%20115%2095%20110Z%22%2F%3E%3Cpath%20d%3D%22M186%2040C200%2031%20220%2034%20226%2045C216%2055%20200%2058%20190%2055C183%2050%20182%2045%20186%2040Z%22%2F%3E%3Cpath%20d%3D%22M185%2070C205%2062%20230%2068%20235%2085C240%20100%20230%20115%20222%20130C215%20145%20205%20150%20200%20140C195%20125%20190%20110%20182%2095C178%2085%20178%2075%20185%2070Z%22%2F%3E%3Cpath%20d%3D%22M226%2034C260%2021%20320%2024%20352%2040C362%2055%20346%2065%20331%2075C316%2085%20301%2090%20286%2085C276%20100%20266%2098%20262%2086C254%2090%20244%2082%20246%2074C238%2066%20230%2058%20226%2048Z%22%2F%3E%3Cpath%20d%3D%22M296%2096C302%2092%20312%2095%20314%20102C308%20106%20300%20104%20296%2096Z%22%2F%3E%3Cpath%20d%3D%22M318%20104C326%20101%20334%20105%20332%20111C325%20113%20319%20110%20318%20104Z%22%2F%3E%3Cpath%20d%3D%22M310%20130C325%20122%20345%20125%20350%20138C348%20150%20330%20155%20318%20150C308%20145%20305%20137%20310%20130Z%22%2F%3E%3Cpath%20d%3D%22M364%20150C368%20146%20374%20148%20372%20154C368%20158%20363%20156%20364%20150Z%22%2F%3E%3Cpath%20d%3D%22M20%20190C120%20184%20280%20184%20390%20190L390%20200L20%20200Z%22%20fill%3D%22%23e8f1f5%22%20stroke%3D%22%23b9ccd6%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"); background-size: 560px 280px; background-repeat: repeat-x;
+    background-position: 0px 0px; }
+  .globe::after{ content:''; position:absolute; inset:0; border-radius:50%; pointer-events:none;
+    background:
+      radial-gradient(circle at 34% 28%, rgba(255,255,255,.45) 0%, rgba(255,255,255,0) 28%),
+      radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,20,50,.55) 100%),
+      repeating-linear-gradient(0deg, transparent 0 34px, rgba(255,255,255,.08) 34px 35px); }
+
+  /* The pin that drops onto the globe once it stops */
+  .pin{ position:absolute; left:50%; top:118px; width:0; height:0; z-index:10; pointer-events:none; opacity:0;
+    transform: translateY(-160px); transition: transform .55s cubic-bezier(.3,1.6,.5,1), opacity .2s ease; }
+  .pin.drop{ opacity:1; transform: translateY(0); }
+  .pin .head{ position:absolute; left:-13px; top:-44px; width:26px; height:26px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ff9a8f, #e2372b 60%, #9e1a12); box-shadow: 0 3px 6px rgba(0,0,0,.4); }
+  .pin .needle{ position:absolute; left:-1.5px; top:-20px; width:3px; height:22px; background: linear-gradient(90deg, #aaa, #eee, #888); border-radius: 0 0 2px 2px; }
+  .pin .flag{ position:absolute; left:16px; top:-64px; white-space:nowrap; background:#fffdf7; color:#1a1305; font-family:'Archivo Black', sans-serif;
+    font-size:15px; padding: 5px 11px; border-radius: 6px; box-shadow: 0 4px 10px rgba(0,0,0,.4); transform: scale(0); transform-origin: 0 100%;
+    transition: transform .35s cubic-bezier(.3,1.6,.5,1) .35s; }
+  .pin.drop .flag{ transform: scale(1); }
+
+  .globe-scene.spinning .globe{ box-shadow: 0 0 40px rgba(79,168,224,.35); }
+  .globe-count{ text-align:center; color: var(--cream-dim); font-size:13px; margin-top: -2px; }
+  .travel-toggle{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top: 12px; font-size:13px; color: var(--cream-dim); cursor:pointer; }
+  .travel-toggle input{ width:16px; height:16px; accent-color: var(--gold); cursor:pointer; }
+
+  /* ---------- Passport stamps ---------- */
+  .stamps{ margin-top: 22px; text-align:center; min-height: 64px; }
+  .stamps h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 12px; }
+  .stamp-row{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+  .stamp{ --c: #ff6b5b; display:inline-flex; flex-direction:column; align-items:center; padding: 5px 12px; border: 2px dashed var(--c); border-radius: 8px;
+    color: var(--c); font-weight:800; font-size:13px; line-height:1.2; text-transform:uppercase; letter-spacing:.5px;
+    background: rgba(255,255,255,.03); animation: stampIn .4s cubic-bezier(.3,1.6,.5,1) both; }
+  .stamp small{ font-size:10px; opacity:.8; letter-spacing:1px; }
+  .stamps-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes stampIn{ from{ opacity:0; transform: scale(1.8) rotate(var(--r, 0deg)); } to{ opacity:1; transform: scale(1) rotate(var(--r, 0deg)); } }
+
+  body.fs-active .globe-stage{ --s: 1.3; }
+  @media (max-width: 480px){ .globe-stage{ --s: .82; } }
+  @media (prefers-reduced-motion: reduce){ .pin, .pin .flag, .stamp{ transition:none !important; animation:none !important; } }
 </style>
 </head>
 <body>
@@ -73,22 +114,31 @@ Ava"></textarea>
 
   <div id="pickScreen" class="panel" style="display:none;">
     <div class="globe-stage">
-      <div class="globe-wrap">
-        <div class="pointer"></div>
-        <div class="globe" id="globe"></div>
+      <div class="globe-scene" id="globeBtn" role="button" tabindex="0" aria-label="Spin the globe">
+        <div class="stand-base"></div>
+        <div class="stand-neck"></div>
+        <div class="tilt">
+          <div class="ring-back"></div>
+          <div class="globe"><div class="map" id="map"></div></div>
+          <div class="ring"></div>
+          <div class="cap top"></div><div class="cap bot"></div>
+        </div>
+        <div class="pin" id="pin"><div class="needle"></div><div class="head"></div><div class="flag" id="pinFlag"></div></div>
       </div>
-      <div class="picker-display">
-        <div class="picked-name" id="pickedName">&nbsp;</div>
-      </div>
-      <div class="btn-row">
-        <button class="btn-gold" id="spinBtn">Spin the Globe</button>
-        <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
-        <button class="btn-ghost" id="editBtn">Edit Names</button>
-      </div>
-      <div class="legend" id="legend"></div>
+    </div>
+    <div class="globe-count" id="globeCount"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="spinBtn">Spin the Globe</button>
+      <button class="btn-ghost" id="resetPoolBtn">Start Over</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <label class="travel-toggle"><input type="checkbox" id="travelMode" checked> Travel mode: give each student a country to talk about</label>
+    <div class="stamps">
+      <h3>Passport stamps</h3>
+      <div class="stamp-row" id="stamps"></div>
     </div>
   </div>
-  <div class="hint">Everyone gets picked once before names repeat.</div>
+  <div class="hint">Tap the globe (or press Space) to spin. Everyone gets picked once before names repeat.</div>
 
   <div class="related-skins">
     <h3>Try a different mechanic</h3>
@@ -102,32 +152,38 @@ Ava"></textarea>
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A spin-to-pick randomizer styled as a globe rather than a generic prize wheel — the mechanic is the same fair, no-repeat logic used across every picker on this site, but the visual framing fits classes with an international or geography angle particularly well, and works nicely as a general-purpose alternative to a plain list picker.</p>
-    <p>Paste in your class list, hit Spin the Globe, and watch the spin slow to a stop on one student, with a color-coded legend below showing exactly which name matches which segment. As with the other pickers, once a student's been chosen they won't come up again until the rest of the class has had a turn — the pool automatically refills once everyone's had a go.</p>
+    <p>Paste in your class list, hit Spin the Globe, and watch it slow to a stop before a pin drops and reveals whose turn it is. With travel mode on, each pick also lands on a country — a ready-made speaking prompt for ESL and geography classes ("Minji, you're going to Brazil! What would you pack?"). Every pick gets a passport stamp below, and once everyone has had a turn the pool automatically refills for a new round.</p>
     <p>Good for warm-up cold-calling, deciding who answers a review question, or simply adding a bit of suspense to what would otherwise be a plain random pick. No sign-up needed, works for any class size.</p>
   </div>
 </main>
 
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
+<script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
-  const pickScreen = document.getElementById('pickScreen');
-  const namesInput = document.getElementById('namesInput');
-  const nameCount = document.getElementById('nameCount');
-  const globeEl = document.getElementById('globe');
-  const pickedName = document.getElementById('pickedName');
-  const legendEl = document.getElementById('legend');
-  const spinBtn = document.getElementById('spinBtn');
+  const pickScreen  = document.getElementById('pickScreen');
+  const namesInput  = document.getElementById('namesInput');
+  const nameCount   = document.getElementById('nameCount');
+  const globeBtn    = document.getElementById('globeBtn');
+  const spinBtn     = document.getElementById('spinBtn');
+  const mapEl       = document.getElementById('map');
+  const pinEl       = document.getElementById('pin');
+  const pinFlag     = document.getElementById('pinFlag');
+  const stampsEl    = document.getElementById('stamps');
+  const countEl     = document.getElementById('globeCount');
+  const travelMode  = document.getElementById('travelMode');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Ocean/land palette instead of full rainbow, to feel globe-like
-  const PALETTE = ['#2e86ab','#3a7d44','#4fa8e0','#5b9c5e','#1b7a8c','#7fb069','#276678','#4a9e6e'];
+  const COUNTRIES = ['Brazil','Canada','Japan','Egypt','Mexico','Australia','France','Kenya','India','Italy','Peru','Norway',
+    'Thailand','Spain','New Zealand','Argentina','China','Greece','Vietnam','Turkey','Morocco','Iceland','Chile','Germany',
+    'the Philippines','South Africa','Portugal','Ireland','Indonesia','Mongolia','Finland','Nepal','Colombia','Switzerland',
+    'Jamaica','Malaysia','Singapore','the UK','the USA','South Korea'];
+  const STAMP_COLORS = ['#ff6b5b','#2ec4b6','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ffb627'];
 
-  let allNames = [], pool = [];
-
-  function colorFor(name){
-    const i = allNames.indexOf(name);
-    return PALETTE[i % PALETTE.length];
-  }
+  let allNames = [], picker = null, busy = false, mapX = 0;
+  let stamps = [], countryDeck = [];
 
   namesInput.addEventListener('input', updateCount);
   function updateCount(){
@@ -142,85 +198,109 @@ Ava"></textarea>
 
   document.getElementById('startBtn').addEventListener('click', ()=>{
     allNames = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
-    if(allNames.length < 2){ alert('Add at least 2 names to spin.'); return; }
-    pool = [...allNames];
+    if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
+    picker = createPicker(allNames);
     setupScreen.style.display = 'none';
     pickScreen.style.display = 'block';
-    pickedName.textContent = '\u00A0';
-    buildGlobe();
-    renderLegend();
+    startOver();
   });
 
   document.getElementById('editBtn').addEventListener('click', ()=>{
+    if(busy) return;
     pickScreen.style.display = 'none';
     setupScreen.style.display = 'block';
   });
-
-  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
-    pool = [...allNames];
-    pickedName.textContent = '\u00A0';
-    buildGlobe();
-    renderLegend();
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{ if(!busy) startOver(); });
+  spinBtn.addEventListener('click', spin);
+  globeBtn.addEventListener('click', spin);
+  globeBtn.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); spin(); } });
+  document.addEventListener('keydown', e=>{
+    if(e.key !== ' ' || pickScreen.style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName;
+    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT' || e.target === globeBtn) return;
+    e.preventDefault(); spin();
   });
 
-  function buildGlobe(){
-    const n = pool.length;
-    const segAngle = 360 / n;
-    const parts = pool.map((name, i)=> `${colorFor(name)} ${i*segAngle}deg ${(i+1)*segAngle}deg`);
-    globeEl.style.transition = 'none';
-    globeEl.style.transform = 'rotate(0deg)';
-    globeEl.style.background = `conic-gradient(${parts.join(',')})`;
+  function nextCountry(){
+    if(!countryDeck.length) countryDeck = [...COUNTRIES].sort(()=> Math.random() - 0.5);
+    return countryDeck.pop();
   }
 
-  function renderLegend(){
-    legendEl.innerHTML = '';
-    allNames.forEach(name=>{
-      const inPool = pool.includes(name);
-      const chip = document.createElement('span');
-      chip.className = 'remaining-chip' + (inPool ? '' : ' used');
-      chip.innerHTML = `<span class="color-dot" style="background:${colorFor(name)}"></span>${name}`;
-      legendEl.appendChild(chip);
+  function updateCountText(){
+    const n = allNames.filter(x => picker.isRemaining(x)).length;
+    countEl.textContent = n === 1 ? '1 student still waiting' : n + ' students still waiting';
+  }
+
+  function renderStamps(){
+    stampsEl.innerHTML = '';
+    if(!stamps.length){ stampsEl.innerHTML = '<span class="stamps-empty">No stamps yet — spin the globe!</span>'; return; }
+    stamps.forEach((st, i)=>{
+      const el = document.createElement('span');
+      el.className = 'stamp';
+      el.style.setProperty('--c', STAMP_COLORS[i % STAMP_COLORS.length]);
+      el.style.setProperty('--r', st.r + 'deg');
+      el.style.transform = `rotate(${st.r}deg)`;
+      el.textContent = st.name;
+      if(st.country){
+        const sm = document.createElement('small');
+        sm.textContent = '✈ ' + st.country;
+        el.appendChild(sm);
+      }
+      stampsEl.appendChild(el);
     });
   }
 
-  spinBtn.addEventListener('click', spin);
+  function startOver(){
+    picker.reset();
+    stamps = [];
+    pinEl.classList.remove('drop');
+    renderStamps();
+    updateCountText();
+  }
+
   function spin(){
-    if(spinBtn.disabled || CCReveal.isOpen()) return;
-    if(pool.length === 0){ pool = [...allNames]; }
-    buildGlobe();
-    const idx = Math.floor(Math.random() * pool.length);
-    const name = pool[idx];
-    const segAngle = 360 / pool.length;
-    const center = idx * segAngle + segAngle / 2;
-    const spins = 5;
-    const target = spins * 360 + (360 - center);
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true; spinBtn.disabled = true;
+    pinEl.classList.remove('drop');
 
-    spinBtn.disabled = true;
-    CCReveal.drumroll(3300);
-    void globeEl.offsetWidth;
-    globeEl.style.transition = 'transform 3.5s cubic-bezier(.17,.67,.12,.99)';
-    requestAnimationFrame(()=>{ globeEl.style.transform = `rotate(${target}deg)`; });
+    const result = picker.pickNext();
+    const country = travelMode.checked ? nextCountry() : null;
 
-    globeEl.addEventListener('transitionend', function handler(){
-      globeEl.removeEventListener('transitionend', handler);
-      pool.splice(idx, 1);
-      pickedName.textContent = name;
-      renderLegend();
-      const roundDone = pool.length === 0;
-      CCReveal.show(name, {
-        label: 'The globe landed on…',
-        remaining: pool.length,
-        roundDone,
-        onNext: spin,
-        onClose: ()=>{
-          if(roundDone){ pool = [...allNames]; buildGlobe(); renderLegend(); }
-          spinBtn.disabled = false;
-        }
-      });
-    }, { once:true });
+    const duration = reduceMotion ? 400 : 3600;
+    // Scroll the map strip several full turns plus a random amount, easing out like a real spin.
+    mapX -= (reduceMotion ? 1 : 5 + Math.floor(Math.random() * 3)) * 560 + Math.floor(Math.random() * 560);
+    mapEl.style.transition = `background-position ${duration}ms cubic-bezier(.15,.65,.12,1)`;
+    mapEl.style.backgroundPosition = mapX + 'px 0px';
+    globeBtn.classList.add('spinning');
+    CCReveal.drumroll(duration);
+
+    setTimeout(()=>{
+      globeBtn.classList.remove('spinning');
+      pinFlag.textContent = result.name;   // the pin spot is random, so it never claims a real location
+      pinEl.classList.add('drop');
+      setTimeout(()=>{
+        CCReveal.show(result.name, {
+          label: country ? '✈ Next stop: ' + country + '!' : 'The globe landed on…',
+          remaining: result.remaining,
+          roundDone: result.justExhausted,
+          onNext: spin,
+          onClose: ()=> finish(result.name, country, result.justExhausted)
+        });
+      }, reduceMotion ? 100 : 1100);
+    }, duration);
+  }
+
+  function finish(name, country, roundDone){
+    stamps.push({ name, country, r: Math.round((Math.random() - 0.5) * 10) });
+    if(roundDone){
+      picker.reset();
+      stamps = [];
+    }
+    renderStamps();
+    updateCountText();
+    busy = false; spinBtn.disabled = false;
   }
 </script>
-<script src="../js/picker-reveal.js"></script>
 <script src="../js/fullscreen.js"></script>
 </body>
 </html>
