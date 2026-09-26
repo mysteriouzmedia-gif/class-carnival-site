@@ -58,7 +58,7 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <div class="race-stage">
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-dinosaur-race.jpg')">
       <div class="finish-label">Finish</div>
       <div class="track fit-lanes" id="track"></div>
     </div>
@@ -103,7 +103,16 @@ Ava"></textarea>
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
 <script>
-  window.RACE_SKIN = { avatarType: 'emoji', emojis: ['🦖', '🦕', '🐊', '🦎', '🥚'] };
+  window.RACE_SKIN = {
+    avatarType: 'image',
+    images: [
+      '../img/dino-trex.png',
+      '../img/dino-longneck.png',
+      '../img/dino-triceratops.png',
+      '../img/dino-stegosaurus.png',
+      '../img/dino-baby-egg.png'
+    ]
+  };
 </script>
 <script src="../js/race-sound.js"></script>
 <script src="../js/race-engine.js"></script>
