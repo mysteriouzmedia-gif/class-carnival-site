@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Review Game — Auto Teams, Team Race &amp; Bomb Board | ClassCarnival</title>
+<meta name="description" content="Free classroom review game for teachers. Auto-made teams, fair student picks, and two modes: a team race to the finish or the classic ESL bomb game board. Add your own questions or ask out loud. No sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/review-game">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Random Group Maker for Teachers — Split Your Class Into Groups | ClassCarnival">
+<meta property="og:description" content="Free random group generator for teachers. Split your class into groups of any size or a set number of teams, dealt out live on the projector. Balanced groups, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/review-game">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .rg-step{ font-family:'Archivo Black', sans-serif; font-size: 17px; margin: 24px 0 12px; }
+  .rg-step:first-child{ margin-top: 0; }
+  .rg-modes{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rg-mode{ position:relative; display:flex; flex-direction:column; gap:4px; padding: 16px 18px; border:2px solid var(--line); border-radius: 14px; cursor:pointer; background: rgba(255,255,255,.02); }
+  .rg-mode input{ position:absolute; opacity:0; }
+  .rg-mode:has(input:checked){ border-color: var(--gold); background: rgba(255,182,39,.08); }
+  .rg-mode:has(input:focus-visible){ outline: 2px solid var(--gold); outline-offset: 2px; }
+  .rg-mode-icon{ font-size: 30px; }
+  .rg-mode b{ font-family:'Archivo Black', sans-serif; font-size: 17px; }
+  .rg-mode small{ color: var(--cream-dim); font-size: 13px; line-height: 1.45; }
+  .rg-settings{ display:flex; flex-wrap:wrap; gap: 14px 26px; margin-top: 16px; align-items:center; }
+  .rg-settings > label{ display:flex; align-items:center; gap: 10px; font-weight:700; font-size: 14px; color: var(--cream-dim); }
+  .rg-settings select{ background:#0f1522; color: var(--cream); border:1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-family:'Work Sans', sans-serif; font-size:14px; }
+  .gm-stepper{ display:inline-flex; align-items:center; gap:6px; }
+  .gm-stepper button{ width:36px; height:36px; padding:0; font-size:18px; line-height:1; }
+  .gm-stepper input{ width:52px; height:36px; text-align:center; background:#0f1522; color: var(--cream); border:1px solid var(--line); border-radius: 10px; font-family:'Archivo Black', sans-serif; font-size:16px; -moz-appearance:textfield; }
+  .gm-stepper input::-webkit-outer-spin-button, .gm-stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .rg-questions{ margin-top: 22px; border:1px solid var(--line); border-radius: 14px; padding: 14px 16px; }
+  .rg-questions summary{ cursor:pointer; font-family:'Archivo Black', sans-serif; font-size: 17px; }
+  .rg-questions summary span{ font-family:'Work Sans', sans-serif; font-size: 13px; font-weight:600; color: var(--cream-dim); }
+  .rg-help{ color: var(--cream-dim); font-size: 13px; margin: 10px 0; }
+  .rg-questions textarea{ min-height: 120px; }
+
+  .rg-title{ font-family:'Archivo Black', sans-serif; text-align:center; font-size: 24px; margin: 0 0 18px; }
+  .rg-team-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+  .rg-team{ --c:#ff6b5b; border-radius: 14px; border:1px solid var(--line); border-top: 6px solid var(--c); padding: 12px 14px; background: rgba(255,255,255,.03);
+    animation: rgIn .45s cubic-bezier(.3,1.4,.5,1) both; }
+  @keyframes rgIn{ from{ opacity:0; transform: translateY(16px) scale(.9); } to{ opacity:1; transform:none; } }
+  .rg-team h3{ margin:0 0 8px; font-family:'Archivo Black', sans-serif; font-size: 17px; color: var(--c); }
+  .rg-team h3 span{ font-size: 1.3em; margin-right: 6px; }
+  .rg-team ul{ margin:0; padding:0; list-style:none; display:flex; flex-wrap:wrap; gap:6px; }
+  .rg-team li{ background:#1b2436; border-radius: 16px; padding: 4px 10px; font-size: 13px; font-weight:700; }
+
+  /* play */
+  .rg-turn{ text-align:center; margin-bottom: 12px; min-height: 64px; }
+  .rg-turn .team{ font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 3.2vw, 34px); color: var(--c); }
+  .rg-turn .who{ font-size: clamp(16px, 2vw, 22px); font-weight:800; margin-top: 2px; }
+  .rg-turn .who b{ color: var(--gold); }
+  .rg-turn.bump{ animation: turnBump .5s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes turnBump{ 0%{ transform: scale(.85); opacity:.3; } 100%{ transform: none; opacity:1; } }
+  .rg-scores{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; margin-bottom: 16px; }
+  .rg-chip{ --c:#ff6b5b; position:relative; display:inline-flex; align-items:center; gap:8px; padding: 6px 14px; border-radius: 22px; border:2px solid var(--line); background: rgba(255,255,255,.03); font-weight:800; }
+  .rg-chip.active{ border-color: var(--c); background: color-mix(in srgb, var(--c) 18%, transparent); transform: scale(1.06); }
+  .rg-chip .pts{ font-family:'Archivo Black', sans-serif; color: var(--c); min-width: 2ch; text-align:right; }
+  .rg-chip .ice{ display:none; } .rg-chip.frozen .ice{ display:inline; }
+  .rg-chip .fire{ display:none; } .rg-chip.onfire .fire{ display:inline; }
+  .rg-float{ position:absolute; left:50%; top:-6px; transform: translateX(-50%); font-family:'Archivo Black', sans-serif; font-size: 18px; pointer-events:none;
+    animation: floatUp 1.1s ease-out forwards; white-space:nowrap; }
+  @keyframes floatUp{ from{ opacity:1; transform: translate(-50%, 0); } to{ opacity:0; transform: translate(-50%, -46px); } }
+
+  .rg-race{ display:flex; flex-direction:column; gap: 8px; }
+  .rg-lane{ --c:#ff6b5b; position:relative; height: clamp(46px, 7vh, 72px); border-radius: 12px; background:
+      repeating-linear-gradient(90deg, transparent 0 calc(var(--step) - 2px), rgba(255,255,255,.07) calc(var(--step) - 2px) var(--step)), rgba(255,255,255,.03);
+    border:1px solid var(--line); overflow:visible; margin-right: 44px; }
+  .rg-lane.active{ border-color: var(--c); box-shadow: 0 0 0 1px var(--c) inset; }
+  .rg-lane::after{ content:'🏁'; position:absolute; right:-40px; top:50%; transform: translateY(-50%); font-size: 26px; }
+  .rg-runner{ position:absolute; top:50%; left: 0; transform: translate(0,-50%); display:flex; align-items:center; gap:8px; transition: left .8s cubic-bezier(.3,1.3,.5,1); white-space:nowrap; }
+  .rg-runner .m{ font-size: clamp(28px, 4.5vh, 44px); line-height:1; display:inline-block; }
+  .rg-runner.hop .m{ animation: hop .8s ease; }
+  @keyframes hop{ 0%,100%{ transform: none; } 30%{ transform: translateY(-16px) rotate(-10deg); } 60%{ transform: translateY(0) rotate(6deg); } }
+  .rg-runner .n{ font-weight:800; font-size: 14px; color: var(--c); background:#141b28cc; padding: 2px 8px; border-radius: 10px; }
+
+  .rg-board{ display:grid; grid-template-columns: repeat(var(--cols,5), 1fr); gap: 10px; }
+  .rg-tile{ position:relative; aspect-ratio: 16/9; border-radius: 14px; border:none; padding:0; cursor:pointer; font-family:'Archivo Black', sans-serif; font-size: clamp(20px, 3.4vw, 40px);
+    color:#1a1305; background: linear-gradient(160deg, #ffd166, #ffb627 55%, #e89b00); box-shadow: 0 5px 0 #a86f00, 0 8px 18px rgba(0,0,0,.35); transition: transform .12s ease; }
+  .rg-tile:hover:not(:disabled){ transform: translateY(-3px); }
+  .rg-tile:disabled{ cursor:default; }
+  .rg-tile.shake{ animation: tileShake .09s linear infinite alternate; }
+  @keyframes tileShake{ from{ transform: rotate(-4deg) scale(1.05); } to{ transform: rotate(4deg) scale(1.05); } }
+  .rg-tile.used{ background: #1b2436; color: var(--cream-dim); box-shadow: none; font-size: clamp(16px, 2.4vw, 28px); animation: flipIn .5s ease; }
+  .rg-tile.used small{ display:block; font-family:'Work Sans', sans-serif; font-size: 11px; font-weight:800; }
+  @keyframes flipIn{ from{ transform: rotateY(90deg); } to{ transform: none; } }
+
+  .rg-qpanel{ margin-top: 16px; border-radius: 16px; border:2px solid var(--gold); background: rgba(255,182,39,.07); padding: 20px; text-align:center; animation: rgIn .4s cubic-bezier(.3,1.4,.5,1); }
+  .rg-q{ font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 3.4vw, 40px); line-height:1.2; overflow-wrap:anywhere; }
+  .rg-q.plain{ font-family:'Work Sans', sans-serif; font-weight:800; font-size: clamp(17px, 2.2vw, 24px); color: var(--cream-dim); }
+  .rg-a{ margin-top: 10px; font-size: clamp(18px, 2.4vw, 28px); font-weight:800; color: #a8d46b; }
+  .rg-yes, .rg-no{ font-size: 16px; padding: 12px 26px; color:#101418; }
+  .rg-yes{ background:#a8d46b; } .rg-no{ background:#ff6b5b; }
+  .rg-foot{ margin-top: 18px; }
+  .rg-foot button{ font-size: 13px; padding: 9px 14px; }
+
+  .rg-overlay{ position:fixed; inset:0; z-index: 300; display:flex; align-items:center; justify-content:center; padding: 24px; text-align:center;
+    background: radial-gradient(ellipse at center, rgba(28,39,64,.93), rgba(8,12,20,.96)); }
+  .rg-overlay[hidden]{ display:none; }
+  .rg-overlay-inner{ max-width: 92vw; animation: ovIn .5s cubic-bezier(.3,1.5,.5,1) both; }
+  @keyframes ovIn{ from{ transform: scale(.4); opacity:0; } to{ transform:none; opacity:1; } }
+  .rg-big{ font-size: clamp(80px, 16vw, 180px); line-height:1; }
+  .rg-headline{ font-family:'Archivo Black', sans-serif; font-size: clamp(36px, 7vw, 84px); margin: 10px 0; }
+  .rg-sub{ font-size: clamp(16px, 2.2vw, 24px); font-weight:700; color: var(--cream); }
+  .rg-pick{ display:flex; flex-wrap:wrap; gap: 10px; justify-content:center; margin-top: 20px; }
+  .rg-pick button{ --c:#ff6b5b; background: color-mix(in srgb, var(--c) 22%, #141b28); color: var(--cream); border:2px solid var(--c); font-size:16px; padding: 12px 18px; }
+  .rg-rank{ list-style:none; padding:0; margin: 18px auto 0; max-width: 460px; text-align:left; }
+  .rg-rank li{ --c:#ff6b5b; display:flex; justify-content:space-between; gap: 12px; padding: 10px 16px; border-radius: 12px; margin-bottom: 8px; background: rgba(255,255,255,.05);
+    border-left: 6px solid var(--c); font-weight:800; font-size: 18px; animation: rgIn .5s cubic-bezier(.3,1.4,.5,1) both; }
+  .rg-rank li:first-child{ font-size: 22px; background: color-mix(in srgb, var(--c) 25%, transparent); }
+  .shake-screen{ animation: screenShake .5s linear; }
+  @keyframes screenShake{ 10%,50%,90%{ transform: translate(-10px, 4px); } 30%,70%{ transform: translate(10px, -4px); } 0%,100%{ transform:none; } }
+  .flash-screen::after{ content:''; position:fixed; inset:0; background:#fff; z-index: 299; pointer-events:none; animation: flash .45s ease-out forwards; }
+  @keyframes flash{ from{ opacity:.85; } to{ opacity:0; } }
+
+  .rg-scores[hidden], .rg-race[hidden], .rg-board[hidden], .rg-qpanel[hidden], .rg-settings > label[hidden]{ display:none !important; }
+  body.fs-active .rg-lane{ height: clamp(56px, 9vh, 90px); }
+  @media (max-width: 640px){ .rg-modes{ grid-template-columns: 1fr; } .rg-board{ --cols: 4 !important; } }
+  @media (prefers-reduced-motion: reduce){ .rg-runner{ transition:none; } .rg-tile.shake, .shake-screen, .rg-runner.hop .m{ animation:none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🏆 Review Game</div>
+    <h1>Classroom Review Game</h1>
+    <div class="sub">Auto-made teams, a fair pick of who answers, and two ways to play: race to the finish or risk the bomb board.</div>
+  </div>
+
+  <!-- ============ SETUP ============ -->
+  <div id="setupScreen" class="panel">
+    <h2 class="rg-step">1. Your class</h2>
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+
+    <h2 class="rg-step">2. Pick a game</h2>
+    <div class="rg-modes" role="radiogroup" aria-label="Game style">
+      <label class="rg-mode"><input type="radio" name="game" value="race" checked>
+        <span class="rg-mode-icon">🏁</span><b>Team Race</b>
+        <small>Each correct answer moves your team's mascot forward. First team to the finish line wins.</small></label>
+      <label class="rg-mode"><input type="radio" name="game" value="board">
+        <span class="rg-mode-icon">💣</span><b>Bomb Board</b>
+        <small>Teams pick hidden tiles: points, bombs, swaps, steals, doubles and freezes. Highest score wins.</small></label>
+    </div>
+
+    <div class="rg-settings">
+      <label>Teams
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="teamMinus" aria-label="Fewer teams">−</button><input type="number" id="teamsInput" value="4" min="2" max="8" aria-label="Number of teams"><button type="button" class="btn-ghost" id="teamPlus" aria-label="More teams">+</button></span>
+      </label>
+      <label class="for-race">Race length
+        <select id="goalInput"><option value="5">Short (5 steps)</option><option value="8" selected>Medium (8 steps)</option><option value="12">Long (12 steps)</option></select>
+      </label>
+      <label class="for-board" hidden>Board size
+        <select id="tilesInput"><option>16</option><option selected>20</option><option>25</option><option>30</option></select>
+      </label>
+      <label class="for-board" hidden>Bomb
+        <select id="bombInput"><option value="20" selected>Lose 20 points</option><option value="half">Lose half your points</option><option value="all">Lose everything (brutal!)</option></select>
+      </label>
+    </div>
+
+    <details class="rg-questions">
+      <summary>3. Questions <span>(optional — skip this to ask your own out loud)</span></summary>
+      <p class="rg-help">One per line. Add the answer after a <b>|</b> if you like — it stays hidden until you reveal it.</p>
+      <textarea id="questionsInput" placeholder="What is the past tense of &quot;go&quot;? | went
+Name three farm animals.
+How do you say 사과 in English? | apple
+7 × 8 = ? | 56"></textarea>
+      <div class="count" id="qCount"></div>
+    </details>
+
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Make Teams</button></div>
+  </div>
+
+  <!-- ============ MEET THE TEAMS ============ -->
+  <div id="teamsScreen" class="panel" style="display:none;">
+    <h2 class="rg-title">Meet the teams!</h2>
+    <div class="rg-team-grid" id="teamGrid"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="playBtn">▶ Start the Game</button>
+      <button class="btn-ghost" id="reshuffleBtn">🔀 Reshuffle Teams</button>
+      <button class="btn-ghost" id="backBtn">Back</button>
+    </div>
+  </div>
+
+  <!-- ============ PLAY ============ -->
+  <div id="playScreen" class="panel" style="display:none;">
+    <div class="rg-turn" id="turnBar"></div>
+    <div class="rg-scores" id="scoreBar"></div>
+    <div class="rg-race" id="raceArea"></div>
+    <div class="rg-board" id="boardArea"></div>
+    <div class="rg-qpanel" id="qPanel" hidden>
+      <div class="rg-q" id="qText"></div>
+      <div class="rg-a" id="aText" hidden></div>
+      <div class="btn-row">
+        <button class="btn-ghost" id="showAnsBtn">Show Answer</button>
+        <button class="rg-yes" id="yesBtn">✓ Correct</button>
+        <button class="rg-no" id="noBtn">✗ Incorrect</button>
+      </div>
+    </div>
+    <div class="btn-row rg-foot">
+      <button class="btn-ghost" id="skipBtn">Skip turn</button>
+      <button class="btn-ghost" id="endBtn">End game</button>
+      <button class="btn-ghost" id="editBtn">Edit setup</button>
+    </div>
+  </div>
+  <div class="hint">Keyboard: <b>C</b> = correct, <b>X</b> = incorrect, <b>A</b> = show answer. Works great in fullscreen on the projector.</div>
+
+  <div class="rg-overlay" id="overlay" hidden><div class="rg-overlay-inner" id="overlayInner"></div></div>
+
+  <div class="related-skins">
+    <h3>More classroom tools</h3>
+    <div class="skin-links">
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+      <a href="/tools/team-race.html">🚩 Team Race</a>
+      <a href="/tools/gumball-machine-picker.html">🍬 Gumball Machine</a>
+      <a href="/tools/countdown.html">⏳ Countdown</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A free classroom review game that does the setup for you. Paste in your class list, choose how many teams you want, and ClassCarnival deals everyone into balanced teams with names and mascots. Every turn, the game picks the team and a student from that team to answer — fairly, so nobody is picked twice until everyone on their team has had a go.</p>
+    <h3>Two ways to play</h3>
+    <p><b>Team Race:</b> each correct answer moves your team's mascot one step along the track, and a streak of three correct answers in a row gives a double step. The first team across the finish line wins. <b>Bomb Board:</b> the classic ESL bomb game — teams take turns choosing a numbered tile, which might hide 10, 20 or 30 points, a bomb, a swap, a steal, a double or a freeze. The highest score when the board is cleared wins.</p>
+    <h3>With or without questions</h3>
+    <p>Paste in your own questions (with optional hidden answers) and they'll appear on screen one at a time, or skip that step and ask your questions out loud — then just tap Correct or Incorrect. It works for vocabulary review, grammar practice, maths facts, test prep, or any quiz, with no sign-up and no student devices needed.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const screens = { setup: $('setupScreen'), teams: $('teamsScreen'), play: $('playScreen') };
+  const namesInput = $('namesInput'), questionsInput = $('questionsInput');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const COLORS = ['#ff6b5b','#2ec4b6','#ffb627','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ff9f43'];
+  const TEAMS  = [['Tigers','🐯'],['Dolphins','🐬'],['Rockets','🚀'],['Owls','🦉'],['Dragons','🐉'],['Pandas','🐼'],['Foxes','🦊'],
+                  ['Sharks','🦈'],['Eagles','🦅'],['Koalas','🐨'],['Penguins','🐧'],['Lions','🦁'],['Unicorns','🦄'],['Turtles','🐢'],['Bees','🐝'],['Robots','🤖']];
+
+  let teams = [], turn = 0, questions = [], qIndex = 0, game = 'race', goal = 8, awaiting = null, busy = false, over = false;
+
+  const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean);
+  const shuffle = a => { a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const gameType = () => document.querySelector('input[name="game"]:checked').value;
+  const teamCount = () => Math.max(2, Math.min(8, parseInt($('teamsInput').value, 10) || 2));
+
+  /* ---------- sound ---------- */
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.setValueAtTime(f, t);
+      g.gain.setValueAtTime(vol || 0.08, t); g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + 0.02);
+      return o;
+    }catch(e){}
+  }
+  const S = {
+    turn:   () => { tone(523, 0, .12, 'square', .05); tone(784, .1, .18, 'square', .05); },
+    right:  () => [659, 784, 1047].forEach((f, i) => tone(f, i * .08, .2, 'triangle', .1)),
+    wrong:  () => { tone(220, 0, .25, 'sawtooth', .06); tone(160, .18, .35, 'sawtooth', .06); },
+    points: () => [880, 1175].forEach((f, i) => tone(f, i * .07, .15, 'square', .06)),
+    boom:   () => { const o = tone(160, 0, .9, 'sawtooth', .14); if(o) o.frequency.exponentialRampToValueAtTime(30, actx.currentTime + .9); tone(80, 0, .6, 'square', .1); },
+    swap:   () => { tone(500, 0, .12); tone(700, .12, .12); tone(500, .24, .12); tone(700, .36, .15); },
+    steal:  () => [900, 700, 500].forEach((f, i) => tone(f, i * .08, .12, 'square', .06)),
+    double: () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .06, .18, 'triangle', .09)),
+    freeze: () => [1568, 1319, 1175, 988].forEach((f, i) => tone(f, i * .09, .3, 'sine', .08)),
+    fire:   () => [784, 988, 1175, 1568].forEach((f, i) => tone(f, i * .05, .15, 'square', .06)),
+    win:    () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, i * .12, i === 5 ? .8 : .18, 'square', .08))
+  };
+
+  /* ---------- setup ---------- */
+  function updateCounts(){
+    const n = lines(namesInput.value).length;
+    $('nameCount').textContent = n + (n === 1 ? ' student' : ' students');
+    const q = lines(questionsInput.value).length;
+    $('qCount').textContent = q ? q + (q === 1 ? ' question' : ' questions') + ' — they’ll repeat in a new order if the game runs longer' : '';
+  }
+  namesInput.addEventListener('input', updateCounts);
+  questionsInput.addEventListener('input', updateCounts);
+  $('sampleBtn').addEventListener('click', () => {
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia'].join('\n');
+    namesInput.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  document.querySelectorAll('input[name="game"]').forEach(r => r.addEventListener('change', () => {
+    const board = gameType() === 'board';
+    document.querySelectorAll('.for-board').forEach(el => el.hidden = !board);
+    document.querySelectorAll('.for-race').forEach(el => el.hidden = board);
+  }));
+  $('teamMinus').addEventListener('click', () => { $('teamsInput').value = Math.max(2, teamCount() - 1); });
+  $('teamPlus').addEventListener('click', () => { $('teamsInput').value = Math.min(8, teamCount() + 1); });
+  $('teamsInput').addEventListener('change', () => { $('teamsInput').value = teamCount(); });
+
+  function show(name){ Object.entries(screens).forEach(([k, el]) => el.style.display = k === name ? 'block' : 'none'); window.scrollTo({ top: 0 }); }
+
+  $('startBtn').addEventListener('click', () => {
+    const names = lines(namesInput.value);
+    if(names.length < 2){ alert('Add at least 2 names.'); return; }
+    if(teamCount() > names.length){ $('teamsInput').value = names.length; }
+    dealTeams();
+    show('teams');
+  });
+  $('reshuffleBtn').addEventListener('click', dealTeams);
+  $('backBtn').addEventListener('click', () => show('setup'));
+  $('editBtn').addEventListener('click', () => { closeOverlay(); show('setup'); });
+
+  function dealTeams(){
+    const names = shuffle(lines(namesInput.value));
+    const n = Math.min(teamCount(), names.length);
+    const picks = shuffle(TEAMS), off = Math.floor(Math.random() * COLORS.length);
+    teams = Array.from({ length: n }, (_, i) => ({
+      name: 'Team ' + picks[i][0], mascot: picks[i][1], color: COLORS[(i + off) % COLORS.length],
+      members: [], score: 0, pos: 0, streak: 0, frozen: false, picker: null
+    }));
+    names.forEach((nm, i) => teams[i % n].members.push(nm));
+    const grid = $('teamGrid'); grid.innerHTML = '';
+    teams.forEach((t, i) => {
+      const card = document.createElement('div');
+      card.className = 'rg-team'; card.style.setProperty('--c', t.color); card.style.animationDelay = (i * 90) + 'ms';
+      const h = document.createElement('h3'); const m = document.createElement('span'); m.textContent = t.mascot;
+      h.append(m, document.createTextNode(t.name));
+      const ul = document.createElement('ul');
+      t.members.forEach(x => { const li = document.createElement('li'); li.textContent = x; ul.appendChild(li); });
+      card.append(h, ul); grid.appendChild(card);
+    });
+    S.swap();
+  }
+
+  /* ---------- game ---------- */
+  $('playBtn').addEventListener('click', startGame);
+
+  function parseQuestions(){
+    return shuffle(lines(questionsInput.value).map(l => {
+      const k = l.indexOf('|');
+      return k === -1 ? { q: l, a: '' } : { q: l.slice(0, k).trim(), a: l.slice(k + 1).trim() };
+    }).filter(x => x.q));
+  }
+  function nextQuestion(){
+    if(!questions.length) return null;
+    if(qIndex >= questions.length){ questions = shuffle(questions); qIndex = 0; }
+    return questions[qIndex++];
+  }
+
+  function startGame(){
+    game = gameType(); goal = parseInt($('goalInput').value, 10) || 8;
+    questions = parseQuestions(); qIndex = 0; over = false; busy = false;
+    teams.forEach(t => { t.score = 0; t.pos = 0; t.streak = 0; t.frozen = false; t.picker = createPicker(t.members); t.current = null; });
+    turn = Math.floor(Math.random() * teams.length);
+    $('raceArea').innerHTML = ''; $('boardArea').innerHTML = '';
+    $('raceArea').hidden = game !== 'race'; $('boardArea').hidden = game !== 'board';
+    $('scoreBar').hidden = game !== 'board';
+    if(game === 'race') buildRace(); else buildBoard();
+    renderScores();
+    show('play');
+    beginTurn(true);
+  }
+
+  // Who's up: the team, plus a fairly-picked student from that team.
+  function beginTurn(first){
+    if(over) return;
+    let guard = 0, skipped = [];
+    while(teams[turn].frozen && guard++ < teams.length){
+      teams[turn].frozen = false;
+      skipped.push(teams[turn].name);
+      turn = (turn + 1) % teams.length;
+    }
+    const t = teams[turn];
+    t.current = t.picker.pickNext().name;
+    const bar = $('turnBar');
+    bar.style.setProperty('--c', t.color);
+    bar.innerHTML = '';
+    const a = document.createElement('div'); a.className = 'team'; a.textContent = t.mascot + ' ' + t.name + '’s turn!';
+    const b = document.createElement('div'); b.className = 'who';
+    const nm = document.createElement('b'); nm.textContent = t.current;
+    b.append(nm, document.createTextNode(game === 'board' ? ' — pick a tile!' : ' answers'));
+    bar.append(a, b);
+    bar.classList.remove('bump'); void bar.offsetWidth; bar.classList.add('bump');
+    renderScores(); highlightLane();
+    skipped.forEach(n => flashNote('🧊 ' + n + ' was frozen — turn skipped!'));
+    S.turn();
+    if(game === 'race') askQuestion(null);
+    else { $('qPanel').hidden = true; setTiles(true); }
+  }
+
+  function advanceTurn(){ turn = (turn + 1) % teams.length; setTimeout(() => beginTurn(false), reduceMotion ? 50 : 500); }
+
+  /* question panel (race: every turn; board: point tiles when questions exist) */
+  function askQuestion(tileValue){
+    const q = nextQuestion(), panel = $('qPanel'), qt = $('qText'), at = $('aText');
+    awaiting = { tileValue };
+    qt.className = 'rg-q' + (q ? '' : ' plain');
+    qt.textContent = q ? q.q : 'Ask ' + teams[turn].current + ' a question…';
+    at.hidden = true; at.textContent = q && q.a ? 'Answer: ' + q.a : '';
+    $('showAnsBtn').style.display = q && q.a ? '' : 'none';
+    panel.hidden = false;
+    panel.style.animation = 'none'; void panel.offsetWidth; panel.style.animation = '';
+  }
+  $('showAnsBtn').addEventListener('click', () => { $('aText').hidden = false; });
+  $('yesBtn').addEventListener('click', () => answer(true));
+  $('noBtn').addEventListener('click', () => answer(false));
+  $('skipBtn').addEventListener('click', () => { if(over || busy) return; closeOverlay(); $('qPanel').hidden = true; awaiting = null; advanceTurn(); });
+  $('endBtn').addEventListener('click', () => { if(!over) finish(); });
+
+  document.addEventListener('keydown', e => {
+    if(screens.play.style.display === 'none' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    const k = e.key.toLowerCase();
+    if(awaiting && k === 'c'){ e.preventDefault(); answer(true); }
+    else if(awaiting && k === 'x'){ e.preventDefault(); answer(false); }
+    else if(k === 'a'){ $('aText').hidden = false; }
+    else if(k === 'escape' && !$('overlay').hidden && !over){ closeOverlay(); }
+  });
+
+  function answer(ok){
+    if(!awaiting || busy) return;
+    const { tileValue } = awaiting; awaiting = null;
+    $('qPanel').hidden = true;
+    const t = teams[turn];
+    if(game === 'race'){
+      if(ok){
+        t.streak++;
+        const steps = t.streak >= 3 ? 2 : 1;
+        if(t.streak === 3) { S.fire(); flashNote('🔥 ' + t.name + ' is on fire! Double step!'); } else S.right();
+        moveRunner(t, steps);
+        if(t.streak >= 3) t.streak = 0;
+        if(t.pos >= goal) return setTimeout(finish, reduceMotion ? 100 : 900);
+      } else { t.streak = 0; S.wrong(); }
+      advanceTurn();
+    } else {
+      if(ok){ S.right(); addScore(turn, tileValue); } else S.wrong();
+      advanceTurn();
+    }
+  }
+
+  /* ---------- race ---------- */
+  function buildRace(){
+    const area = $('raceArea');
+    teams.forEach(t => {
+      const lane = document.createElement('div'); lane.className = 'rg-lane';
+      lane.style.setProperty('--c', t.color);
+      lane.style.setProperty('--step', (100 / goal) + '%');
+      const r = document.createElement('div'); r.className = 'rg-runner';
+      const m = document.createElement('span'); m.className = 'm'; m.textContent = t.mascot;
+      const n = document.createElement('span'); n.className = 'n'; n.textContent = t.name.replace('Team ', '');
+      r.append(m, n); lane.appendChild(r); area.appendChild(lane);
+      t.lane = lane; t.runner = r;
+      placeRunner(t);
+    });
+  }
+  function placeRunner(t){
+    const pct = Math.min(1, t.pos / goal);
+    t.runner.style.left = `calc(${pct * 100}% - ${pct * 60}px)`;
+  }
+  function moveRunner(t, steps){
+    t.pos = Math.min(goal, t.pos + steps);
+    placeRunner(t);
+    t.runner.classList.remove('hop'); void t.runner.offsetWidth; t.runner.classList.add('hop');
+  }
+  function highlightLane(){ teams.forEach((t, i) => t.lane && t.lane.classList.toggle('active', i === turn)); }
+
+  /* ---------- bomb board ---------- */
+  let tiles = [];
+  function buildBoard(){
+    const n = parseInt($('tilesInput').value, 10) || 20;
+    const specials = { bomb: Math.max(2, Math.round(n * .12)), swap: Math.max(1, Math.round(n * .07)), steal: Math.max(1, Math.round(n * .07)),
+                       double: Math.max(1, Math.round(n * .05)), freeze: Math.max(1, Math.round(n * .04)) };
+    let deck = [];
+    Object.entries(specials).forEach(([k, c]) => { for(let i = 0; i < c; i++) deck.push({ type: k }); });
+    while(deck.length < n) deck.push({ type: 'points', value: [10, 10, 20, 20, 30][Math.floor(Math.random() * 5)] });
+    tiles = shuffle(deck);
+    const cols = n === 16 ? 4 : n === 30 ? 6 : 5;
+    const area = $('boardArea'); area.style.setProperty('--cols', cols);
+    tiles.forEach((tile, i) => {
+      const b = document.createElement('button'); b.className = 'rg-tile'; b.textContent = i + 1;
+      b.addEventListener('click', () => pickTile(i));
+      area.appendChild(b); tile.el = b;
+    });
+  }
+  function setTiles(on){ tiles.forEach(t => { if(!t.used) t.el.disabled = !on; }); }
+
+  function pickTile(i){
+    const tile = tiles[i];
+    if(busy || tile.used || awaiting || over) return;
+    busy = true; setTiles(false);
+    tile.el.classList.add('shake');
+    if(window.CCReveal) CCReveal.drumroll(reduceMotion ? 100 : 900);
+    setTimeout(() => {
+      tile.el.classList.remove('shake');
+      tile.used = true; tile.el.disabled = true; tile.el.classList.add('used');
+      const icon = { points: '⭐', bomb: '💣', swap: '🔄', steal: '🦝', double: '✖️2', freeze: '🧊' }[tile.type];
+      tile.el.innerHTML = '';
+      tile.el.append(document.createTextNode(tile.type === 'points' ? tile.value : icon));
+      const sm = document.createElement('small'); sm.textContent = tile.type === 'points' ? 'points' : tile.type; tile.el.appendChild(sm);
+      busy = false;
+      resolveTile(tile);
+    }, reduceMotion ? 100 : 900);
+  }
+
+  function resolveTile(tile){
+    const t = teams[turn], others = teams.map((x, i) => i).filter(i => i !== turn);
+    const afterEvent = () => { closeOverlay(); if(tiles.every(x => x.used)) return finish(); advanceTurn(); };
+    switch(tile.type){
+      case 'points':
+        if(questions.length){ askQuestion(tile.value); return; }
+        S.points(); addScore(turn, tile.value);
+        if(tiles.every(x => x.used)) return setTimeout(finish, 700);
+        return advanceTurn();
+      case 'bomb': {
+        S.boom(); shakeScreen();
+        const mode = $('bombInput').value;
+        const loss = mode === 'all' ? t.score : mode === 'half' ? Math.ceil(t.score / 2) : Math.min(20, t.score);
+        overlay('💣', 'BOOM!', `${t.name} loses ${loss} point${loss === 1 ? '' : 's'}!`, null, afterEvent);
+        return addScore(turn, -loss);
+      }
+      case 'double':
+        S.double();
+        overlay('✖️2', 'DOUBLE!', `${t.name}’s score doubles!`, null, afterEvent);
+        return addScore(turn, t.score);
+      case 'freeze': {
+        S.freeze();
+        const next = (turn + 1) % teams.length;
+        if(teams.length > 1) teams[next].frozen = true;
+        overlay('🧊', 'FREEZE!', `${teams[next].name} loses their next turn!`, null, afterEvent);
+        return renderScores();
+      }
+      case 'swap':
+        S.swap();
+        return overlay('🔄', 'SWAP!', `${t.name}, choose a team to swap scores with:`, others, j => {
+          const a = t.score, b = teams[j].score;
+          addScore(turn, b - a); addScore(j, a - b); S.swap(); afterEvent();
+        });
+      case 'steal':
+        S.steal();
+        return overlay('🦝', 'STEAL!', `${t.name}, steal 20 points from…`, others, j => {
+          const amt = Math.min(20, teams[j].score);
+          addScore(j, -amt); addScore(turn, amt); S.points(); afterEvent();
+        });
+    }
+  }
+
+  function renderScores(){
+    const bar = $('scoreBar'); bar.innerHTML = '';
+    teams.forEach((t, i) => {
+      const c = document.createElement('div');
+      c.className = 'rg-chip' + (i === turn ? ' active' : '') + (t.frozen ? ' frozen' : '');
+      c.style.setProperty('--c', t.color);
+      const nm = document.createElement('span'); nm.textContent = t.mascot + ' ' + t.name.replace('Team ', '');
+      const ice = document.createElement('span'); ice.className = 'ice'; ice.textContent = '🧊';
+      const pts = document.createElement('span'); pts.className = 'pts'; pts.textContent = t.shown != null ? t.shown : t.score;
+      c.append(nm, ice, pts); bar.appendChild(c); t.chip = c; t.ptsEl = pts;
+    });
+  }
+  function addScore(i, delta){
+    const t = teams[i]; const from = t.score; t.score = Math.max(0, t.score + delta);
+    renderScores();
+    if(delta){
+      const f = document.createElement('span'); f.className = 'rg-float';
+      f.textContent = (t.score - from >= 0 ? '+' : '') + (t.score - from); f.style.color = t.score >= from ? '#a8d46b' : '#ff6b5b';
+      t.chip.appendChild(f); setTimeout(() => f.remove(), 1200);
+    }
+    // count-up tween
+    const start = performance.now(), dur = reduceMotion ? 1 : 600;
+    t.shown = from;
+    (function step(now){
+      const p = Math.min(1, (now - start) / dur);
+      t.shown = Math.round(from + (t.score - from) * p);
+      if(t.ptsEl) t.ptsEl.textContent = t.shown;
+      if(p < 1) requestAnimationFrame(step); else t.shown = null;
+    })(start);
+  }
+
+  /* ---------- overlay ---------- */
+  let overlayDone = null;
+  function overlay(big, head, sub, pickFrom, done){
+    const inner = $('overlayInner'); inner.innerHTML = '';
+    const a = document.createElement('div'); a.className = 'rg-big'; a.textContent = big;
+    const h = document.createElement('div'); h.className = 'rg-headline'; h.textContent = head;
+    const s = document.createElement('div'); s.className = 'rg-sub'; s.textContent = sub;
+    inner.append(a, h, s);
+    if(pickFrom && pickFrom.length){
+      const row = document.createElement('div'); row.className = 'rg-pick';
+      pickFrom.forEach(j => {
+        const b = document.createElement('button'); b.style.setProperty('--c', teams[j].color);
+        b.textContent = teams[j].mascot + ' ' + teams[j].name + ' (' + teams[j].score + ')';
+        b.addEventListener('click', () => { overlayDone = null; closeOverlay(); done(j); });
+        row.appendChild(b);
+      });
+      inner.appendChild(row); overlayDone = null;
+    } else {
+      const row = document.createElement('div'); row.className = 'btn-row';
+      const ok = document.createElement('button'); ok.className = 'btn-gold'; ok.textContent = 'Continue ▶';
+      ok.addEventListener('click', () => { const d = overlayDone; overlayDone = null; closeOverlay(); if(d) d(); });
+      row.appendChild(ok); inner.appendChild(row); overlayDone = done;
+      setTimeout(() => ok.focus(), 50);
+    }
+    $('overlay').hidden = false;
+    inner.style.animation = 'none'; void inner.offsetWidth; inner.style.animation = '';
+  }
+  function closeOverlay(){ $('overlay').hidden = true; }
+  let noteTimer = null;
+  function flashNote(text){
+    const bar = $('turnBar');
+    const n = document.createElement('div'); n.className = 'who'; n.style.color = 'var(--gold)'; n.textContent = text;
+    bar.appendChild(n); clearTimeout(noteTimer); noteTimer = setTimeout(() => n.remove(), 2200);
+  }
+  function shakeScreen(){
+    if(reduceMotion) return;
+    const m = document.querySelector('main');
+    document.body.classList.remove('flash-screen'); m.classList.remove('shake-screen'); void m.offsetWidth;
+    m.classList.add('shake-screen'); document.body.classList.add('flash-screen');
+    setTimeout(() => { m.classList.remove('shake-screen'); document.body.classList.remove('flash-screen'); }, 600);
+  }
+
+  /* ---------- finale ---------- */
+  function finish(){
+    over = true; awaiting = null; $('qPanel').hidden = true; setTiles(false);
+    const ranked = [...teams].sort((a, b) => game === 'race' ? (b.pos - a.pos) : (b.score - a.score));
+    const w = ranked[0];
+    const inner = $('overlayInner'); inner.innerHTML = '';
+    const a = document.createElement('div'); a.className = 'rg-big'; a.textContent = '🏆';
+    const h = document.createElement('div'); h.className = 'rg-headline'; h.style.color = w.color; const val = t => game === 'race' ? t.pos : t.score;
+    const tied = ranked.filter(t => val(t) === val(w));
+    h.textContent = tied.length > 1 ? 'It’s a tie! ' + tied.map(t => t.mascot + ' ' + t.name.replace('Team ', '')).join(' & ') : w.mascot + ' ' + w.name + ' wins!';
+    if(tied.length > 1) h.style.color = 'var(--gold)';
+    const ol = document.createElement('ol'); ol.className = 'rg-rank';
+    ranked.forEach((t, i) => {
+      const li = document.createElement('li'); li.style.setProperty('--c', t.color); li.style.animationDelay = (300 + i * 120) + 'ms';
+      const l = document.createElement('span'); l.textContent = (['🥇','🥈','🥉'][ranked.findIndex(x => (game === 'race' ? x.pos : x.score) === (game === 'race' ? t.pos : t.score))] || (i + 1) + '.') + ' ' + t.mascot + ' ' + t.name;
+      const r = document.createElement('span'); r.textContent = game === 'race' ? t.pos + ' / ' + goal : t.score + ' pts';
+      li.append(l, r); ol.appendChild(li);
+    });
+    const row = document.createElement('div'); row.className = 'btn-row';
+    const again = document.createElement('button'); again.className = 'btn-gold'; again.textContent = '🔁 Play Again (same teams)';
+    again.addEventListener('click', () => { closeOverlay(); startGame(); });
+    const newT = document.createElement('button'); newT.className = 'btn-ghost'; newT.textContent = '🔀 New Teams';
+    newT.addEventListener('click', () => { closeOverlay(); dealTeams(); show('teams'); });
+    row.append(again, newT);
+    inner.append(a, h, ol, row);
+    $('overlay').hidden = false;
+    S.win(); if(window.CCReveal) { CCReveal.confetti(); setTimeout(() => CCReveal.confetti(), 700); }
+  }
+
+  updateCounts();
+})();
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>
