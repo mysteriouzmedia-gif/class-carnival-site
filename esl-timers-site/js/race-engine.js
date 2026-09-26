@@ -16,7 +16,7 @@
  */
 (function(){
   const DEFAULT_SAMPLE = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'];
-  const WRAP_WIDTH = 66; // px — must match .runner-wrap width in CSS
+  const WRAP_WIDTH = 92; // px — must match .runner-wrap width in CSS
 
   function initRaceEngine(){
     const skin = Object.assign({ avatarType: 'initials', emoji: '🏃', sampleNames: DEFAULT_SAMPLE }, window.RACE_SKIN || {});

@@ -18,21 +18,8 @@
 <style>
   :root{ --track-bg: #16121c; }
   body{ background: radial-gradient(ellipse at top, #241c30 0%, var(--track-bg) 60%) fixed; }
-  .track{ position: relative; }
-  .track .lane{
-    position: relative;
-    background-image: url('../img/bg-ninja-race-ground.jpg');
-    background-repeat: repeat-x;
-    background-size: auto 100%;
-  }
-  .track .lane::before{
-    content: '';
-    position: absolute; inset: 0;
-    background: rgba(13,10,20,0.4);
-    pointer-events: none;
-    z-index: 0;
-  }
-  .track .lane > *{ position: relative; z-index: 1; }
+  .lane:nth-child(odd){ background: #201a2b; }
+  .lane:nth-child(even){ background: #271f35; }
 </style>
 </head>
 <body>
@@ -73,6 +60,7 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
+    <img class="race-banner" src="../img/bg-ninja-race.jpg" alt="Moonlit bamboo forest">
     <div class="track" id="track"></div>
     <div class="leaderboard">
       <h3>Finish Order</h3>

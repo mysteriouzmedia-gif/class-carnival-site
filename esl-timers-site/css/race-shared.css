@@ -1,38 +1,41 @@
 /* Shared styles for race-engine powered pages: race-timer, and all themed race skins */
-.track{ border: 1px solid var(--line); border-radius: 16px; overflow:hidden; margin-top: 18px; }
-.lane{ position:relative; height: 70px; display:flex; align-items:center; border-bottom: 1px dashed #384a66; }
+.track{
+  border: 1px solid var(--line); border-radius: 16px; overflow-x:hidden; overflow-y:auto;
+  margin-top: 18px; max-height: 640px;
+}
+.lane{ position:relative; height: 88px; display:flex; align-items:center; border-bottom: 1px solid rgba(255,255,255,0.06); }
 .lane:last-child{ border-bottom:none; }
 .lane:nth-child(odd){ background: var(--lane-alt); }
 .lane-track{ position:relative; flex:1; height:100%; margin: 0 8px; }
-.rail{ position:absolute; top:50%; left:0; right:40px; height:2px; transform: translateY(-1px);
+.rail{ position:absolute; top:50%; left:0; right:44px; height:2px; transform: translateY(-1px);
   background: repeating-linear-gradient(90deg, var(--line) 0 10px, transparent 10px 20px); }
-.flag{ position:absolute; right:0; top:10px; bottom:10px; width:16px; border-radius:4px;
-  background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 8px 8px; opacity:.85; }
+.flag{ position:absolute; right:0; top:12px; bottom:12px; width:18px; border-radius:4px;
+  background-image: repeating-conic-gradient(#111 0 25%, #f5f0e6 0 50%); background-size: 9px 9px; opacity:.85; }
 
 /* --- Illustrated runner character: name tag + colored body + animated legs --- */
 .runner-wrap{
   position:absolute; top:50%; transform: translate(0,-50%);
-  width: 66px; display:flex; flex-direction:column; align-items:center; gap:2px;
+  width: 92px; display:flex; flex-direction:column; align-items:center; gap:3px;
   z-index: 2;
 }
 .runner-name-tag{
-  font-size: 12px; font-weight: 800; color: var(--cream);
-  background: rgba(0,0,0,.45); padding: 2px 7px; border-radius: 7px;
-  white-space: nowrap; max-width: 66px; overflow: hidden; text-overflow: ellipsis;
+  font-size: 15px; font-weight: 800; color: var(--cream);
+  background: rgba(0,0,0,.55); padding: 3px 9px; border-radius: 8px;
+  white-space: nowrap; max-width: 92px; overflow: hidden; text-overflow: ellipsis;
 }
 .runner-body{
-  width: 40px; height: 40px; border-radius: 50%;
+  width: 56px; height: 56px; border-radius: 50%;
   display:flex; align-items:center; justify-content:center;
-  font-size: 17px; font-weight: 800; color:#101418;
+  font-size: 23px; font-weight: 800; color:#101418;
   box-shadow: 0 3px 7px rgba(0,0,0,.4);
 }
-.runner-body.emoji{ font-size: 24px; background: rgba(255,255,255,0.06) !important; }
+.runner-body.emoji{ font-size: 32px; background: rgba(255,255,255,0.06) !important; }
 .runner-body.custom{
   width: auto; height: auto; border-radius: 0; box-shadow: none; background: none !important;
   display: block;
 }
 .runner-body.image{
-  width: 48px; height: 48px; border-radius: 0; box-shadow: none; background: none !important;
+  width: 64px; height: 64px; border-radius: 0; box-shadow: none; background: none !important;
   object-fit: contain;
 }
 .runner-body.image.flip-x{ transform: scaleX(-1); } /* only for source art that faces the wrong way by default */
@@ -116,6 +119,11 @@ textarea:focus{ border-color: var(--gold); }
 .lb-name{ font-weight:700; }
 
 .related-skins{ margin-top: 40px; }
+.race-banner{
+  width: 100%; height: 150px; object-fit: cover; display: block;
+  border-radius: 16px 16px 0 0; margin-top: 18px;
+}
+.race-banner + .track{ margin-top: 0; border-radius: 0 0 16px 16px; }
 .related-skins h3{ font-size:12px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 12px; text-align:center; }
 .skin-links{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 .skin-links a{ text-decoration:none; background: var(--panel-bg); border:1px solid var(--line); border-radius:10px;
