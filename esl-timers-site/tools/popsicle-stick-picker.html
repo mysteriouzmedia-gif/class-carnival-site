@@ -16,19 +16,99 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .stage{ text-align:center; padding: 40px 20px 10px; position:relative; min-height: 220px; }
-  .cup{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
-  .cup:hover{ transform: scale(1.05) rotate(-2deg); }
-  .cup.shake{ animation: shake .4s ease; }
-  @keyframes shake{ 0%,100%{ transform: rotate(0); } 25%{ transform: rotate(-6deg); } 75%{ transform: rotate(6deg); } }
-  .card{
-    position:absolute; left:50%; top:20px; transform: translate(-50%, 20px) scale(0.6); opacity:0;
-    background: var(--gold); color:#1a1305; font-family:'Archivo Black', sans-serif;
-    font-size: clamp(20px, 4vw, 32px); padding: 14px 26px; border-radius: 12px;
-    box-shadow: 0 10px 30px rgba(0,0,0,.4);
-    transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  /* ---------- Cup-of-sticks scene (pure CSS, scales for fullscreen) ---------- */
+  .stick-stage{ --s: 1; position:relative; height: calc(460px * var(--s)); display:flex; justify-content:center; align-items:flex-end; margin-top: 6px; }
+  .cup-scene{ position:relative; width:300px; height:460px; transform: scale(var(--s)); transform-origin: bottom center; cursor:pointer; user-select:none; -webkit-tap-highlight-color: transparent; }
+  .cup-scene:focus-visible{ outline: 3px solid var(--gold); outline-offset: 8px; border-radius: 16px; }
+
+  .cup-shadow{ position:absolute; left:40px; right:40px; bottom:-10px; height:24px; border-radius:50%; background: rgba(0,0,0,.35); filter: blur(6px); }
+  .cup-mouth{ position:absolute; left:34px; right:34px; bottom:176px; height:34px; border-radius:50%;
+    background: radial-gradient(ellipse at center, #0a2322 0%, #123d3b 70%); z-index:0; }
+  .sticks{ position:absolute; left:0; right:0; bottom:44px; height:360px; z-index:1; }
+
+  .stick{
+    --tip: var(--c1);
+    position:absolute; bottom:0; width:32px; height:258px; margin-left:-16px;
+    border-radius: 16px;
+    background: linear-gradient(90deg, #d9a760 0%, #f3d49b 30%, #f7dfaf 55%, #e3b672 100%);
+    box-shadow: 0 2px 6px rgba(0,0,0,.35), inset 0 0 0 1px rgba(120,80,30,.25);
+    transform-origin: 50% 100%;
+    transition: transform .7s cubic-bezier(.3,1.35,.5,1), opacity .3s ease;
   }
-  .card.show{ transform: translate(-50%, -70px) scale(1); opacity:1; }
+  .stick::before{ content:''; position:absolute; left:0; right:0; top:0; height:34px; border-radius:16px 16px 5px 5px; background: var(--tip);
+    box-shadow: inset 0 -2px 0 rgba(0,0,0,.15), inset 3px 0 0 rgba(255,255,255,.25); }
+  .stick span{
+    position:absolute; top:42px; left:0; right:0; margin:auto;
+    writing-mode: vertical-rl; text-orientation: mixed;
+    font-family:'Archivo Black', sans-serif; font-size:15px; color:#4a3212; letter-spacing:.5px;
+    white-space:nowrap; max-height: 200px; overflow:hidden; text-overflow: ellipsis;
+    display:flex; align-items:center; justify-content:flex-start; width:100%;
+  }
+  .stick.rising{ z-index:30; box-shadow: 0 12px 30px rgba(0,0,0,.5), 0 0 0 3px var(--gold); }
+  .stick.drop-in{ animation: dropIn .6s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes dropIn{ from{ opacity:0; margin-bottom: 180px; } to{ opacity:1; margin-bottom: 0; } }
+  .jiggle .stick:not(.rising){ animation: jiggle .16s ease-in-out infinite alternate; }
+  .jiggle .stick:nth-child(2n):not(.rising){ animation-duration: .13s; animation-direction: alternate-reverse; }
+  .jiggle .stick:nth-child(3n):not(.rising){ animation-duration: .19s; }
+  @keyframes jiggle{ from{ margin-bottom: 0; } to{ margin-bottom: 10px; } }
+
+  .cup{
+    position:absolute; left:28px; right:28px; bottom:0; height:190px; z-index:10;
+    clip-path: polygon(0 0, 100% 0, 91% 100%, 9% 100%);
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,255,255,.22) 0 7px, transparent 8px) 0 0 / 46px 46px,
+      linear-gradient(90deg, rgba(0,0,0,.25) 0%, rgba(255,255,255,.12) 22%, rgba(255,255,255,0) 45%, rgba(0,0,0,.28) 100%),
+      #1f9e97;
+  }
+  .cup-lip{ position:absolute; left:22px; right:22px; bottom:176px; height:24px; border-radius:12px; z-index:11;
+    background: linear-gradient(180deg, #37c2ba, #168079); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+  .cup-label{ position:absolute; left:50%; bottom:60px; transform: translateX(-50%) rotate(-3deg); z-index:12;
+    background: #f5f0e6; color:#1a1305; font-family:'Archivo Black', sans-serif; font-size:17px;
+    padding: 8px 16px; border-radius: 8px; box-shadow: 0 3px 0 rgba(0,0,0,.2); white-space:nowrap; }
+  .cup-count{ position:absolute; left:50%; bottom:28px; transform: translateX(-50%); z-index:12;
+    color: rgba(255,255,255,.85); font-size:12px; font-weight:800; letter-spacing:1px; text-transform:uppercase; white-space:nowrap; }
+
+  .cup-scene:hover .cup, .cup-scene:hover .cup-lip{ filter: brightness(1.06); }
+  .cup-scene.shake .cup, .cup-scene.shake .cup-lip, .cup-scene.shake .cup-label, .cup-scene.shake .cup-count{ animation: cupShake .18s ease-in-out infinite alternate; }
+  @keyframes cupShake{ from{ transform: translateX(-3px) rotate(-1.2deg); } to{ transform: translateX(3px) rotate(1.2deg); } }
+  .cup-scene.shake .cup-label{ animation-name: labelShake; }
+  @keyframes labelShake{ from{ transform: translateX(calc(-50% - 3px)) rotate(-4deg); } to{ transform: translateX(calc(-50% + 3px)) rotate(-2deg); } }
+  .cup-scene.shake .cup-count{ animation-name: countShake; }
+  @keyframes countShake{ from{ transform: translateX(calc(-50% - 3px)); } to{ transform: translateX(calc(-50% + 3px)); } }
+
+  .cup-empty{ position:absolute; left:0; right:0; bottom:230px; text-align:center; color: var(--cream-dim); font-size:14px; z-index:2; }
+
+  /* ---------- "Already picked" tray ---------- */
+  .tray{ margin-top: 26px; text-align:center; min-height: 64px; }
+  .tray h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
+  .tray-sticks{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .tray-stick{
+    --tip: var(--c1);
+    display:inline-flex; align-items:center; height:30px; padding: 0 14px 0 26px; position:relative;
+    border-radius: 15px; font-family:'Archivo Black', sans-serif; font-size:13px; color:#4a3212;
+    background: linear-gradient(180deg, #f7dfaf, #d9a760); box-shadow: 0 2px 5px rgba(0,0,0,.3);
+    animation: trayIn .45s cubic-bezier(.3,1.35,.5,1) both;
+  }
+  .tray-stick::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:16px; border-radius: 15px 4px 4px 15px; background: var(--tip); }
+  .tray-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes trayIn{ from{ opacity:0; transform: translateY(-30px) rotate(-8deg); } to{ opacity:1; transform:none; } }
+
+  /* Name on a giant stick in the reveal overlay */
+  .cc-reveal-name.as-stick{
+    display:inline-block; position:relative; color:#4a3212; text-shadow:none;
+    font-size: clamp(44px, 10vw, 140px);
+    background: linear-gradient(180deg, #f7dfaf 0%, #f3d49b 45%, #d9a760 100%);
+    padding: .12em .7em .12em 1.15em; border-radius: 999px;
+    box-shadow: 0 16px 40px rgba(0,0,0,.45), inset 0 -6px 0 rgba(120,80,30,.2);
+  }
+  .cc-reveal-name.as-stick::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:.6em; border-radius: 999px .12em .12em 999px; background: var(--accent, var(--c1)); }
+
+  body.fs-active .stick-stage{ --s: 1.45; }
+  @media (max-width: 480px){ .stick-stage{ --s: .82; } }
+  @media (prefers-reduced-motion: reduce){
+    .stick, .tray-stick{ transition:none; animation:none !important; }
+    .jiggle .stick, .cup-scene.shake *{ animation:none !important; }
+  }
 </style>
 </head>
 <body>
@@ -68,17 +148,28 @@ Ava"></textarea>
   </div>
 
   <div id="pickScreen" class="panel" style="display:none;">
-    <div class="stage">
-      <div class="card" id="card">Name</div>
-      <div class="cup" id="cupBtn">🥤</div>
+    <div class="stick-stage">
+      <div class="cup-scene" id="cupBtn" role="button" tabindex="0" aria-label="Pull a stick from the cup">
+        <div class="cup-shadow"></div>
+        <div class="cup-mouth"></div>
+        <div class="sticks" id="sticks"></div>
+        <div class="cup-lip"></div>
+        <div class="cup"></div>
+        <div class="cup-label">Pick a Stick!</div>
+        <div class="cup-count" id="cupCount"></div>
+      </div>
     </div>
     <div class="btn-row">
-      <button class="btn-ghost" id="resetPoolBtn">Reset Pool</button>
+      <button class="btn-gold" id="pullBtn">Pull a Stick</button>
+      <button class="btn-ghost" id="resetPoolBtn">Put All Sticks Back</button>
       <button class="btn-ghost" id="editBtn">Edit Names</button>
     </div>
-    <div class="pool" id="pool"></div>
+    <div class="tray">
+      <h3>Already picked</h3>
+      <div class="tray-sticks" id="tray"></div>
+    </div>
   </div>
-  <div class="hint">Tap the cup to pull a stick. Everyone gets picked once before names repeat.</div>
+  <div class="hint">Tap the cup (or press Space) to pull a stick. Everyone gets picked once before the sticks go back in.</div>
 
   <div class="related-skins">
     <h3>Try a different mechanic</h3>
@@ -100,16 +191,25 @@ Ava"></textarea>
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
 <script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
-  const pickScreen = document.getElementById('pickScreen');
-  const namesInput = document.getElementById('namesInput');
-  const nameCount = document.getElementById('nameCount');
-  const cupBtn = document.getElementById('cupBtn');
-  const card = document.getElementById('card');
-  const poolEl = document.getElementById('pool');
+  const pickScreen  = document.getElementById('pickScreen');
+  const namesInput  = document.getElementById('namesInput');
+  const nameCount   = document.getElementById('nameCount');
+  const cupBtn      = document.getElementById('cupBtn');
+  const sticksEl    = document.getElementById('sticks');
+  const trayEl      = document.getElementById('tray');
+  const cupCount    = document.getElementById('cupCount');
 
-  let allNames = [], picker = null;
+  const TIPS = ['#ff6b5b','#2ec4b6','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ffb627'];
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  let allNames = [], picker = null, busy = false;
+  let slots = {};      // name -> {x, dy, angle} position inside the cup (shuffled each round)
+  let picked = [];     // names in the tray, in pick order
+
+  const tipFor = name => TIPS[allNames.indexOf(name) % TIPS.length];
 
   namesInput.addEventListener('input', updateCount);
   function updateCount(){
@@ -126,42 +226,139 @@ Ava"></textarea>
     allNames = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
     if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
     picker = createPicker(allNames);
+    picked = [];
     setupScreen.style.display = 'none';
     pickScreen.style.display = 'block';
-    renderPool(allNames);
+    shuffleSlots();
+    renderCup(true);
+    renderTray();
   });
 
   document.getElementById('editBtn').addEventListener('click', ()=>{
+    if(busy) return;
     pickScreen.style.display = 'none';
     setupScreen.style.display = 'block';
   });
 
   document.getElementById('resetPoolBtn').addEventListener('click', ()=>{
-    picker.reset();
-    card.classList.remove('show');
-    renderPool(allNames);
+    if(busy) return;
+    refill();
   });
 
-  cupBtn.addEventListener('click', ()=>{
-    cupBtn.classList.remove('shake'); void cupBtn.offsetWidth; cupBtn.classList.add('shake');
-    card.classList.remove('show'); void card.offsetWidth;
-    const result = picker.pickNext();
-    card.textContent = result.name;
-    setTimeout(()=> card.classList.add('show'), 120);
-    renderPool(allNames);
-    if(result.justExhausted){
-      setTimeout(()=>{ picker.reset(); renderPool(allNames); }, 1400);
-    }
+  cupBtn.addEventListener('click', pull);
+  document.getElementById('pullBtn').addEventListener('click', pull);
+  cupBtn.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); pull(); } });
+  document.addEventListener('keydown', e=>{
+    if(e.key !== ' ' || pickScreen.style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName;
+    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT' || e.target === cupBtn) return;
+    e.preventDefault(); pull();
   });
 
-  function renderPool(names){
-    poolEl.innerHTML = '';
-    names.forEach(name=>{
-      const chip = document.createElement('span');
-      chip.className = 'remaining-chip' + (picker.isRemaining(name) ? '' : ' used');
-      chip.textContent = name;
-      poolEl.appendChild(chip);
+  /* Lay the sticks out in a fan: spread across the cup mouth, tilted outward, staggered heights. */
+  function shuffleSlots(){
+    const order = [...allNames].sort(()=> Math.random() - 0.5);
+    const n = order.length;
+    const spread = Math.min(168, 26 + n * 20);
+    slots = {};
+    order.forEach((name, i)=>{
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      const x = 150 + (t - 0.5) * spread + (Math.random() - 0.5) * 6;
+      const angle = (t - 0.5) * Math.min(22, 6 + n * 2) + (Math.random() - 0.5) * 4;
+      const dy = -Math.round(Math.random() * 34);
+      slots[name] = { x, dy, angle, z: 1 + Math.round(Math.random() * 5) };
     });
+  }
+
+  function renderCup(dropIn){
+    sticksEl.innerHTML = '';
+    const inCup = allNames.filter(n => picker.isRemaining(n));
+    inCup.forEach((name, i)=>{
+      const s = slots[name];
+      const el = document.createElement('div');
+      el.className = 'stick' + (dropIn && !reduceMotion ? ' drop-in' : '');
+      el.style.left = s.x + 'px';
+      el.style.zIndex = s.z;
+      el.style.setProperty('--tip', tipFor(name));
+      el.style.transform = `translate(0px, ${s.dy}px) rotate(${s.angle}deg)`;
+      if(dropIn) el.style.animationDelay = (i * 45) + 'ms';
+      el.dataset.name = name;
+      const label = document.createElement('span');
+      label.textContent = name;
+      el.appendChild(label);
+      sticksEl.appendChild(el);
+    });
+    cupCount.textContent = inCup.length === 1 ? '1 stick left' : inCup.length + ' sticks left';
+    cupBtn.setAttribute('aria-label', `Pull a stick from the cup (${inCup.length} left)`);
+  }
+
+  function renderTray(){
+    trayEl.innerHTML = '';
+    if(!picked.length){
+      trayEl.innerHTML = '<span class="tray-empty">No sticks pulled yet.</span>';
+      return;
+    }
+    picked.forEach(name=>{
+      const el = document.createElement('span');
+      el.className = 'tray-stick';
+      el.style.setProperty('--tip', tipFor(name));
+      el.textContent = name;
+      trayEl.appendChild(el);
+    });
+  }
+
+  function refill(){
+    picker.reset();
+    picked = [];
+    shuffleSlots();
+    renderCup(true);
+    renderTray();
+  }
+
+  function pull(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true;
+
+    const result = picker.pickNext();
+    const name = result.name;
+    const stickEl = [...sticksEl.children].find(el => el.dataset.name === name);
+
+    const suspense = reduceMotion ? 250 : 1100;
+    CCReveal.drumroll(suspense);
+    cupBtn.classList.add('shake');
+    sticksEl.classList.add('jiggle');
+
+    setTimeout(()=>{
+      cupBtn.classList.remove('shake');
+      sticksEl.classList.remove('jiggle');
+      if(stickEl){
+        const s = slots[name];
+        stickEl.classList.add('rising');
+        stickEl.style.transform = `translate(${150 - s.x}px, -165px) rotate(0deg)`;
+      }
+      setTimeout(()=>{
+        CCReveal.show(name, {
+          label: 'The stick says…',
+          nameClass: 'as-stick',
+          accent: tipFor(name),
+          remaining: result.remaining,
+          roundDone: result.justExhausted,
+          onNext: pull,
+          onClose: ()=> finish(name, result.justExhausted)
+        });
+      }, reduceMotion ? 50 : 650);
+    }, suspense);
+  }
+
+  function finish(name, roundDone){
+    picked.push(name);
+    if(roundDone){
+      refill();            // everyone's had a turn: all sticks drop back into the cup
+    } else {
+      renderCup(false);
+      renderTray();
+    }
+    busy = false;
   }
 </script>
 <script src="../js/fullscreen.js"></script>

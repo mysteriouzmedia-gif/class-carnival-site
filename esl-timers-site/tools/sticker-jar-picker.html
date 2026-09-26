@@ -16,7 +16,7 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .stage{ text-align:center; padding: 40px 20px 10px; position:relative; min-height: 220px; }
+  .stage{ text-align:center; padding: 100px 20px 10px; position:relative; min-height: 260px; }
   .jar{ font-size: 90px; cursor:pointer; user-select:none; transition: transform .15s ease; display:inline-block; }
   .jar:hover{ transform: scale(1.05) rotate(-2deg); }
   .jar.shake{ animation: shake .4s ease; }
@@ -28,7 +28,8 @@
     box-shadow: 0 10px 30px rgba(0,0,0,.4);
     transition: transform .45s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
   }
-  .card.show{ transform: translate(-50%, -70px) scale(1); opacity:1; }
+  .card.show{ transform: translate(-50%, 0) scale(1); opacity:1; }
+  .shaking{ animation: shake .18s ease-in-out infinite !important; }
 </style>
 </head>
 <body>
@@ -100,6 +101,7 @@ Ava"></textarea>
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
 <script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
   const pickScreen = document.getElementById('pickScreen');
@@ -142,17 +144,35 @@ Ava"></textarea>
     renderPool(allNames);
   });
 
-  jarBtn.addEventListener('click', ()=>{
-    jarBtn.classList.remove('shake'); void jarBtn.offsetWidth; jarBtn.classList.add('shake');
-    card.classList.remove('show'); void card.offsetWidth;
+  let busy = false;
+  jarBtn.addEventListener('click', pickOne);
+
+  function pickOne(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true;
+    card.classList.remove('show');
     const result = picker.pickNext();
-    card.textContent = '⭐ ' + result.name + ' ⭐';
-    setTimeout(()=> card.classList.add('show'), 120);
-    renderPool(allNames);
-    if(result.justExhausted){
-      setTimeout(()=>{ picker.reset(); renderPool(allNames); }, 1400);
-    }
-  });
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const wait = reduce ? 200 : 1000;
+    CCReveal.drumroll(wait);
+    jarBtn.classList.add('shaking');
+    setTimeout(()=>{
+      jarBtn.classList.remove('shaking');
+      card.textContent = '⭐ ' + result.name + ' ⭐';
+      card.classList.add('show');
+      renderPool(allNames);
+      setTimeout(()=> CCReveal.show(result.name, {
+        label: 'Out of the jar…',
+        remaining: result.remaining,
+        roundDone: result.justExhausted,
+        onNext: pickOne,
+        onClose: ()=>{
+          if(result.justExhausted){ picker.reset(); renderPool(allNames); }
+          busy = false;
+        }
+      }), reduce ? 50 : 450);
+    }, wait);
+  }
 
   function renderPool(names){
     poolEl.innerHTML = '';

@@ -183,7 +183,9 @@ Ava"></textarea>
     });
   }
 
-  spinBtn.addEventListener('click', ()=>{
+  spinBtn.addEventListener('click', spin);
+  function spin(){
+    if(spinBtn.disabled || CCReveal.isOpen()) return;
     if(pool.length === 0){ pool = [...allNames]; }
     buildGlobe();
     const idx = Math.floor(Math.random() * pool.length);
@@ -194,6 +196,7 @@ Ava"></textarea>
     const target = spins * 360 + (360 - center);
 
     spinBtn.disabled = true;
+    CCReveal.drumroll(3300);
     void globeEl.offsetWidth;
     globeEl.style.transition = 'transform 3.5s cubic-bezier(.17,.67,.12,.99)';
     requestAnimationFrame(()=>{ globeEl.style.transform = `rotate(${target}deg)`; });
@@ -202,14 +205,22 @@ Ava"></textarea>
       globeEl.removeEventListener('transitionend', handler);
       pool.splice(idx, 1);
       pickedName.textContent = name;
-      spinBtn.disabled = false;
       renderLegend();
-      if(pool.length === 0){
-        setTimeout(()=>{ pool = [...allNames]; buildGlobe(); renderLegend(); }, 1400);
-      }
+      const roundDone = pool.length === 0;
+      CCReveal.show(name, {
+        label: 'The globe landed on…',
+        remaining: pool.length,
+        roundDone,
+        onNext: spin,
+        onClose: ()=>{
+          if(roundDone){ pool = [...allNames]; buildGlobe(); renderLegend(); }
+          spinBtn.disabled = false;
+        }
+      });
     }, { once:true });
-  });
+  }
 </script>
+<script src="../js/picker-reveal.js"></script>
 <script src="../js/fullscreen.js"></script>
 </body>
 </html>
