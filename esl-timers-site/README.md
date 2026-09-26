@@ -62,9 +62,9 @@ and delete any solid `.lane:nth-child(...)` background overrides in that page's 
 
 ## The name-picker skin system
 
-`name-picker.html`, `popsicle-stick-picker.html`, `lucky-envelope-picker.html`, and `sticker-jar-picker.html` all use `js/picker-core.js` — a tiny no-repeat pool helper (`createPicker(names)` → `pickNext()`, `reset()`, `isRemaining()`). Each page just renders the pick differently (a plain reveal vs. a tap-to-reveal animation with a different icon).
+`name-picker.html`, `popsicle-stick-picker.html`, `lucky-envelope-picker.html`, `sticker-jar-picker.html`, `spin-globe-picker.html`, and `gumball-machine-picker.html` all use `js/picker-core.js` — a tiny no-repeat pool helper (`createPicker(names)` → `pickNext()`, `reset()`, `isRemaining()`). Each page just renders the pick differently (a plain reveal vs. a tap-to-reveal animation with a different icon).
 
-`spin-globe-picker.html` manages its own pool array directly, since it needs to know a name's wheel position *before* removing it, to animate the spin landing on the right segment — this one isn't built on `picker-core.js`.
+Every picker also loads `js/picker-reveal.js`, the shared full-screen reveal (big name, confetti, drumroll and ta-da sounds, Next pick / Space). Call `CCReveal.drumroll(ms)` while the page's own animation runs, then `CCReveal.show(name, { label, nameClass, accent, remaining, roundDone, onNext, onClose })`. Each page draws its own scene in plain CSS (cup of sticks, envelope board, sticker jar, globe on a stand, gumball machine) — no image files.
 
 To add a new picker mechanic that's just a different reveal animation (e.g. a treasure chest, a slot machine), copy `sticker-jar-picker.html` and swap the icon/animation/markup — it can keep using `picker-core.js` as-is.
 

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gumball Machine Name Picker | ClassCarnival</title>
+<meta name="description" content="Free gumball machine name picker for the classroom. Turn the crank and a gumball rolls out with a student's name. No repeats until everyone's had a turn.">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  /* ---------- Gumball machine (pure CSS, scales for fullscreen) ---------- */
+  .gm-stage{ --s: 1; position:relative; height: calc(480px * var(--s)); display:flex; justify-content:center; align-items:flex-end; margin-top: 4px; }
+  .gm-scene{ position:relative; width:320px; height:480px; transform: scale(var(--s)); transform-origin: bottom center; cursor:pointer; user-select:none; -webkit-tap-highlight-color: transparent; }
+  .gm-scene:focus-visible{ outline: 3px solid var(--gold); outline-offset: 8px; border-radius: 20px; }
+  .gm-shadow{ position:absolute; left:50px; right:50px; bottom:-10px; height:22px; border-radius:50%; background: rgba(0,0,0,.4); filter: blur(6px); }
+
+  .gm-cap{ position:absolute; left:50%; top:4px; width:70px; height:34px; margin-left:-35px; border-radius: 35px 35px 6px 6px; z-index:6;
+    background: linear-gradient(180deg, #ff6b5b, #c4161c); box-shadow: inset 0 5px 0 rgba(255,255,255,.25); }
+  .gm-cap::before{ content:''; position:absolute; left:50%; top:-12px; width:18px; height:18px; margin-left:-9px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, #ff9a8f, #c4161c); }
+  .gm-globe{ position:absolute; left:30px; top:30px; width:260px; height:260px; border-radius:50%; z-index:2;
+    background: radial-gradient(circle at 50% 55%, rgba(180,220,255,.10), rgba(180,220,255,.04) 70%); }
+  .gm-balls{ position:absolute; left:40px; top:40px; width:240px; height:240px; z-index:3; }
+  .gm-glass{ position:absolute; left:30px; top:30px; width:260px; height:260px; border-radius:50%; z-index:5; pointer-events:none;
+    border: 3px solid rgba(200,230,255,.35);
+    background:
+      radial-gradient(ellipse at 30% 22%, rgba(255,255,255,.5) 0%, rgba(255,255,255,0) 22%),
+      radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 62%, rgba(120,170,220,.22) 100%); }
+  .gm-collar{ position:absolute; left:92px; top:276px; width:136px; height:22px; z-index:6; border-radius: 6px;
+    background: linear-gradient(180deg, #ff6b5b, #c4161c); box-shadow: 0 3px 0 rgba(0,0,0,.2); }
+  .gm-body{ position:absolute; left:62px; top:294px; width:196px; height:172px; z-index:6;
+    clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); border-radius: 0 0 10px 10px;
+    background: linear-gradient(90deg, #a3121a 0%, #e8322f 30%, #ff5a4f 45%, #d8282b 70%, #9e0f15 100%); }
+  .gm-label{ position:absolute; left:50%; top:310px; transform: translateX(-50%); z-index:8; background:#fffdf7; color:#1a1305;
+    font-family:'Archivo Black', sans-serif; font-size:13px; letter-spacing:1px; padding: 4px 10px; border-radius: 6px; white-space:nowrap; pointer-events:none; }
+  .gm-crank{ position:absolute; left:50%; top:348px; width:54px; height:54px; margin-left:-27px; border-radius:50%; z-index:8;
+    background: radial-gradient(circle at 35% 30%, #fff3c4, #ffb627 50%, #c88400); box-shadow: 0 3px 6px rgba(0,0,0,.4);
+    transition: transform .9s cubic-bezier(.5,.1,.3,1); }
+  .gm-crank::before{ content:''; position:absolute; left:50%; top:6px; width:10px; height:42px; margin-left:-5px; border-radius:5px; background: #b9861f; }
+  .gm-crank::after{ content:''; position:absolute; left:50%; top:22px; width:12px; height:12px; margin-left:-6px; border-radius:50%; background:#fff3c4; }
+  .gm-chute{ position:absolute; left:50%; top:418px; width:62px; height:34px; margin-left:-31px; z-index:8; border-radius: 8px 8px 4px 4px;
+    background: linear-gradient(180deg, #2a0b0c, #4a1416); box-shadow: inset 0 4px 8px rgba(0,0,0,.6), 0 0 0 3px #c4c4c4; }
+  .gm-chute::after{ content:''; position:absolute; left:4px; right:4px; top:4px; height:10px; border-radius: 4px; background: linear-gradient(180deg, #d9d9d9, #9a9a9a);
+    transform-origin: 50% 0; transition: transform .25s ease; }
+  .gm-scene.dispense .gm-chute::after{ transform: rotateX(80deg); }
+  .gm-count{ position:absolute; left:50%; top:262px; transform: translateX(-50%); z-index:9; color:#fff; font-size:11px; font-weight:800; letter-spacing:1px;
+    text-transform:uppercase; white-space:nowrap; text-shadow: 0 1px 3px rgba(0,0,0,.9); pointer-events:none; opacity:.9; }
+
+  /* gumballs */
+  .ball{ --sz: 44px; --c: #ff6b5b; position:absolute; width: var(--sz); height: var(--sz); margin: calc(var(--sz) / -2) 0 0 calc(var(--sz) / -2); border-radius:50%;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.85) 0 8%, rgba(255,255,255,0) 26%), radial-gradient(circle at 50% 50%, var(--c) 55%, rgba(0,0,0,.25) 100%);
+    box-shadow: 0 2px 3px rgba(0,0,0,.3); transition: transform .45s cubic-bezier(.5,0,.5,1), opacity .3s ease; }
+  .jiggle .ball{ animation: gbJiggle .12s ease-in-out infinite alternate; }
+  .jiggle .ball:nth-child(2n){ animation-duration: .1s; animation-direction: alternate-reverse; }
+  @keyframes gbJiggle{ from{ margin-top: calc(var(--sz) / -2); } to{ margin-top: calc(var(--sz) / -2 - 7px); } }
+  .ball.drop-in{ animation: gbDrop .6s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes gbDrop{ from{ opacity:0; margin-top: -260px; } to{ opacity:1; margin-top: calc(var(--sz) / -2); } }
+  .ball.sink{ opacity:0; }
+
+  /* the gumball that comes out of the chute */
+  .out-ball{ position:absolute; left:160px; top:437px; width:40px; height:40px; margin:-20px 0 0 -20px; border-radius:50%; z-index:20; opacity:0; pointer-events:none;
+    display:flex; align-items:center; justify-content:center; text-align:center; color:#fff; font-family:'Archivo Black', sans-serif; font-size:0;
+    background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.85) 0 8%, rgba(255,255,255,0) 26%), radial-gradient(circle at 50% 50%, var(--c, #ff6b5b) 55%, rgba(0,0,0,.25) 100%);
+    box-shadow: 0 6px 16px rgba(0,0,0,.45); text-shadow: 0 2px 4px rgba(0,0,0,.45); line-height:1.05; padding: 10px; overflow:hidden; word-break: break-word; }
+  .out-ball.roll{ opacity:1; animation: gbRoll .6s cubic-bezier(.3,1.2,.5,1) forwards; }
+  @keyframes gbRoll{ from{ transform: translate(0, 0) rotate(0); } to{ transform: translate(118px, 12px) rotate(540deg); } }
+  .out-ball.grow{ opacity:1; transform: translate(118px, -120px); width:130px; height:130px; margin:-65px 0 0 -65px; font-size:20px;
+    transition: transform .55s cubic-bezier(.3,1.4,.5,1), width .55s ease, height .55s ease, margin .55s ease, font-size .3s ease .3s; }
+
+  .gm-scene.shake .gm-body, .gm-scene.shake .gm-collar, .gm-scene.shake .gm-glass, .gm-scene.shake .gm-globe{ animation: gmShake .14s ease-in-out infinite alternate; }
+  @keyframes gmShake{ from{ transform: translateX(-2px); } to{ transform: translateX(2px); } }
+
+  /* ---------- Picked tray ---------- */
+  .tray{ margin-top: 24px; text-align:center; min-height: 64px; }
+  .tray h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
+  .tray-items{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .tray-item{ display:inline-flex; align-items:center; gap:8px; padding: 4px 12px 4px 4px; border-radius: 20px; background: rgba(255,255,255,.05);
+    border: 1px solid var(--line); font-weight:700; font-size:13px; animation: trayIn .45s cubic-bezier(.3,1.35,.5,1) both; }
+  .tray-item i{ width:22px; height:22px; border-radius:50%; background: radial-gradient(circle at 32% 28%, rgba(255,255,255,.8) 0 10%, transparent 30%), var(--c); }
+  .tray-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes trayIn{ from{ opacity:0; transform: translateX(-30px) rotate(-90deg); } to{ opacity:1; transform:none; } }
+
+  /* Name on a giant gumball in the reveal overlay */
+  .cc-reveal-name.as-gumball{
+    display:inline-block; color:#fff; font-size: clamp(44px, 10vw, 140px); padding: .25em .9em; border-radius: 999px;
+    background: radial-gradient(ellipse at 25% 20%, rgba(255,255,255,.7) 0 6%, rgba(255,255,255,0) 22%), var(--accent, #ff6b5b);
+    text-shadow: 0 4px 12px rgba(0,0,0,.35); box-shadow: 0 18px 44px rgba(0,0,0,.5), inset 0 -.12em 0 rgba(0,0,0,.18);
+  }
+
+  body.fs-active .gm-stage{ --s: 1.3; }
+  @media (max-width: 480px){ .gm-stage{ --s: .82; } }
+  @media (prefers-reduced-motion: reduce){
+    .ball, .out-ball, .tray-item, .gm-crank{ transition:none !important; animation:none !important; }
+    .jiggle .ball, .gm-scene.shake *{ animation:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/tools/race-timer.html">Race Timer</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/tools/name-picker.html">Name Picker</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🍬 Gumball Machine</div>
+    <h1>Gumball Machine Name Picker</h1>
+    <div class="sub">Turn the crank and a gumball rolls out with a name on it — no repeats until everyone in the class has had a turn.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Start Picking</button></div>
+  </div>
+
+  <div id="pickScreen" class="panel" style="display:none;">
+    <div class="gm-stage">
+      <div class="gm-scene" id="gmBtn" role="button" tabindex="0" aria-label="Turn the crank to get a gumball">
+        <div class="gm-shadow"></div>
+        <div class="gm-cap"></div>
+        <div class="gm-globe"></div>
+        <div class="gm-balls" id="balls"></div>
+        <div class="gm-glass"></div>
+        <div class="gm-collar"></div>
+        <div class="gm-body"></div>
+        <div class="gm-label" id="gmCount">GUMBALLS</div>
+        <div class="gm-crank" id="crank"></div>
+        <div class="gm-chute"></div>
+        <div class="out-ball" id="outBall"></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gold" id="pullBtn">Turn the Crank</button>
+      <button class="btn-ghost" id="resetPoolBtn">Refill the Machine</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="tray">
+      <h3>Already picked</h3>
+      <div class="tray-items" id="tray"></div>
+    </div>
+  </div>
+  <div class="hint">Tap the machine (or press Space) to turn the crank. Everyone gets a gumball before the machine refills.</div>
+
+  <div class="related-skins">
+    <h3>Try a different mechanic</h3>
+    <div class="skin-links">
+      <a href="/tools/name-picker.html">📋 List Picker</a>
+      <a href="/tools/popsicle-stick-picker.html">🥤 Popsicle Stick Cup</a>
+      <a href="/tools/lucky-envelope-picker.html">🧧 Lucky Envelope</a>
+      <a href="/tools/spin-globe-picker.html">🌍 Spin the Globe</a>
+      <a href="/tools/sticker-jar-picker.html">🫙 Sticker Jar</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A gumball machine name picker for the classroom: turn the crank, the machine rattles, and a gumball rolls out of the chute with a student's name on it. It runs on the same fair no-repeat system as every picker on this site, so once a student has had their gumball, they're set aside until everyone else in the class has had a turn too.</p>
+    <p>The machine fills with one gumball per student, so the class can watch the pile shrink as the lesson goes on, and every pick lands in the "Already picked" tray below. The rattle and the roll out of the chute give cold-calling a bit of game-show suspense, which works especially well with younger learners and ESL classes, where being picked feels less stressful when it feels like a game.</p>
+    <p>Use it for warm-up questions, choosing who reads next, deciding turn order, or handing out classroom jobs. Paste in your class list, turn the crank as many times as you need, and use fullscreen mode to put the machine up on your projector. No sign-up, and any class size works.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
+<script>
+  const setupScreen = document.getElementById('setupScreen');
+  const pickScreen  = document.getElementById('pickScreen');
+  const namesInput  = document.getElementById('namesInput');
+  const nameCount   = document.getElementById('nameCount');
+  const gmBtn       = document.getElementById('gmBtn');
+  const ballsEl     = document.getElementById('balls');
+  const outBall     = document.getElementById('outBall');
+  const crank       = document.getElementById('crank');
+  const trayEl      = document.getElementById('tray');
+  const gmCount     = document.getElementById('gmCount');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const COLORS = ['#ff6b5b','#2ec4b6','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ffb627','#ff9f43','#54a0ff','#5f27cd','#10ac84','#ee5253'];
+
+  let allNames = [], picker = null, busy = false, crankTurns = 0;
+  let color = {}, slots = {}, picked = [];
+
+  namesInput.addEventListener('input', updateCount);
+  function updateCount(){
+    const list = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    nameCount.textContent = list.length + (list.length===1 ? ' student' : ' students');
+  }
+
+  document.getElementById('sampleBtn').addEventListener('click', ()=>{
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'].join('\n');
+    updateCount();
+  });
+
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    allNames = namesInput.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
+    picker = createPicker(allNames);
+    setupScreen.style.display = 'none';
+    pickScreen.style.display = 'block';
+    refill();
+  });
+
+  document.getElementById('editBtn').addEventListener('click', ()=>{
+    if(busy) return;
+    pickScreen.style.display = 'none';
+    setupScreen.style.display = 'block';
+  });
+  document.getElementById('resetPoolBtn').addEventListener('click', ()=>{ if(!busy) refill(); });
+  gmBtn.addEventListener('click', pull);
+  document.getElementById('pullBtn').addEventListener('click', pull);
+  gmBtn.addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); pull(); } });
+  document.addEventListener('keydown', e=>{
+    if(e.key !== ' ' || pickScreen.style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName;
+    if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT' || e.target === gmBtn) return;
+    e.preventDefault(); pull();
+  });
+
+  /* Pile the gumballs up from the bottom of the round globe, row by row. */
+  function layout(keepColors){
+    const R = 116, C = 120;                       // globe radius / center inside the 240px box
+    const names = keepColors ? allNames.filter(n => picker.isRemaining(n)) : allNames;
+    const n = Math.max(1, names.length);
+    const sz = Math.max(24, Math.min(58, Math.floor(Math.sqrt(Math.PI * R * R * 0.55 / n))));
+    const order = [...names].sort(()=> Math.random() - 0.5);
+    slots = {};
+    if(!keepColors){
+      color = {};
+      allNames.forEach((name, i)=>{ color[name] = COLORS[(i * 5) % COLORS.length]; });
+    }
+    let placed = 0, row = 0;
+    while(placed < order.length && row < 40){
+      const y = C + R - sz / 2 - 4 - row * sz * 0.86;
+      const dy = Math.abs(y - C);
+      const half = Math.sqrt(Math.max(0, (R - sz / 2 - 3) ** 2 - dy * dy));
+      const fit = Math.max(1, Math.floor((half * 2) / (sz * 0.95)) + 1);
+      const count = Math.min(fit, order.length - placed);
+      const span = (count - 1) * sz * 0.95;
+      for(let i = 0; i < count; i++){
+        const x = C - span / 2 + i * sz * 0.95 + (Math.random() - 0.5) * 4;
+        slots[order[placed]] = { x, y: y + (Math.random() - 0.5) * 4, sz };
+        placed++;
+      }
+      row++;
+    }
+  }
+
+  function renderBalls(dropIn){
+    ballsEl.innerHTML = '';
+    const inMachine = allNames.filter(n => picker.isRemaining(n));
+    inMachine.forEach((name, i)=>{
+      const s = slots[name]; if(!s) return;
+      const el = document.createElement('div');
+      el.className = 'ball' + (dropIn && !reduceMotion ? ' drop-in' : '');
+      el.style.setProperty('--sz', s.sz + 'px');
+      el.style.setProperty('--c', color[name]);
+      el.style.left = s.x + 'px'; el.style.top = s.y + 'px';
+      if(dropIn) el.style.animationDelay = (i * 30) + 'ms';
+      el.dataset.name = name;
+      ballsEl.appendChild(el);
+    });
+    gmCount.textContent = inMachine.length === 1 ? '1 gumball' : inMachine.length + ' gumballs';
+    gmBtn.setAttribute('aria-label', `Turn the crank to get a gumball (${inMachine.length} left)`);
+  }
+
+  function renderTray(){
+    trayEl.innerHTML = '';
+    if(!picked.length){ trayEl.innerHTML = '<span class="tray-empty">No gumballs yet.</span>'; return; }
+    picked.forEach(name=>{
+      const el = document.createElement('span');
+      el.className = 'tray-item';
+      const dot = document.createElement('i');
+      dot.style.setProperty('--c', color[name]);
+      el.appendChild(dot);
+      el.appendChild(document.createTextNode(name));
+      trayEl.appendChild(el);
+    });
+  }
+
+  function refill(){
+    picker.reset();
+    picked = [];
+    layout(false);
+    renderBalls(true);
+    renderTray();
+  }
+
+  function resetOutBall(){
+    outBall.className = 'out-ball';
+    outBall.removeAttribute('style');
+    outBall.textContent = '';
+  }
+
+  function pull(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true;
+    resetOutBall();
+    const result = picker.pickNext();
+    const name = result.name;
+    const ball = [...ballsEl.children].find(c => c.dataset.name === name);
+
+    const suspense = reduceMotion ? 250 : 1100;
+    CCReveal.drumroll(suspense + 600);
+    crankTurns++;
+    crank.style.transform = `rotate(${crankTurns * 360}deg)`;
+    gmBtn.classList.add('shake');
+    ballsEl.classList.add('jiggle');
+
+    setTimeout(()=>{
+      gmBtn.classList.remove('shake');
+      ballsEl.classList.remove('jiggle');
+      if(ball){
+        // the chosen gumball drops down through the neck of the globe
+        ball.style.transform = `translate(${120 - slots[name].x}px, ${250 - slots[name].y}px) scale(.6)`;
+        ball.classList.add('sink');
+      }
+      setTimeout(()=>{
+        gmBtn.classList.add('dispense');
+        outBall.style.setProperty('--c', color[name]);
+        outBall.textContent = name;
+        outBall.classList.add('roll');
+        setTimeout(()=>{
+          outBall.classList.remove('roll');
+          outBall.style.transform = 'translate(118px, 12px) rotate(540deg)';
+          void outBall.offsetWidth;
+          outBall.style.removeProperty('transform');
+          outBall.classList.add('grow');
+        }, reduceMotion ? 0 : 620);
+        setTimeout(()=>{
+          CCReveal.show(name, {
+            label: 'Out rolls a gumball for…',
+            nameClass: 'as-gumball',
+            accent: color[name],
+            remaining: result.remaining,
+            roundDone: result.justExhausted,
+            onNext: pull,
+            onClose: ()=> finish(name, result.justExhausted)
+          });
+        }, reduceMotion ? 100 : 1300);
+      }, reduceMotion ? 50 : 420);
+    }, suspense);
+  }
+
+  function finish(name, roundDone){
+    gmBtn.classList.remove('dispense');
+    resetOutBall();
+    picked.push(name);
+    if(roundDone){
+      refill();
+    } else {
+      layout(true);
+      renderBalls(false);
+      renderTray();
+    }
+    busy = false;
+  }
+</script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>
