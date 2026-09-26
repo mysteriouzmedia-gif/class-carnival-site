@@ -85,6 +85,7 @@ Ava"></textarea>
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="../privacy-policy.html">Privacy Policy</a> · <a href="../terms.html">Terms of Use</a></div></footer>
 
 <script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
   const pickScreen = document.getElementById('pickScreen');
@@ -127,14 +128,42 @@ Ava"></textarea>
     renderPool(allNames);
   });
 
-  document.getElementById('pickBtn').addEventListener('click', ()=>{
+  let busy = false;
+  const pickBtn = document.getElementById('pickBtn');
+  pickBtn.addEventListener('click', pickOne);
+
+  // Names flicker past like a slot machine, slow down, then the big reveal.
+  function pickOne(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true; pickBtn.disabled = true;
     const result = picker.pickNext();
-    pickedName.textContent = result.name;
-    renderPool(allNames);
-    if(result.justExhausted){
-      setTimeout(()=>{ picker.reset(); renderPool(allNames); }, 1200);
-    }
-  });
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const total = reduce ? 200 : 1300;
+    CCReveal.drumroll(total);
+    pickedName.classList.add('shuffling');
+    let elapsed = 0, gap = 50;
+    (function flick(){
+      if(elapsed >= total){
+        pickedName.classList.remove('shuffling');
+        pickedName.textContent = result.name;
+        renderPool(allNames);
+        CCReveal.show(result.name, {
+          label: 'Your turn!',
+          remaining: result.remaining,
+          roundDone: result.justExhausted,
+          onNext: pickOne,
+          onClose: ()=>{
+            if(result.justExhausted){ picker.reset(); renderPool(allNames); }
+            busy = false; pickBtn.disabled = false;
+          }
+        });
+        return;
+      }
+      pickedName.textContent = allNames[Math.floor(Math.random() * allNames.length)];
+      elapsed += gap; gap = Math.min(220, gap * 1.12);
+      setTimeout(flick, gap);
+    })();
+  }
 
   function renderPool(names){
     poolEl.innerHTML = '';
