@@ -18,8 +18,6 @@
 <style>
   :root{ --track-bg: #14152a; }
   body{ background: radial-gradient(ellipse at top, #232544 0%, var(--track-bg) 60%) fixed; }
-  .lane:nth-child(odd){ background: #181933; }
-  .lane:nth-child(even){ background: #1f213e; }
 </style>
 </head>
 <body>
@@ -60,8 +58,10 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <img class="race-banner" src="../img/bg-sushi-race.jpg" alt="Night market street">
-    <div class="track" id="track"></div>
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-sushi-race.jpg');">
+      <div class="finish-label">Finish</div>
+      <div class="track fit-lanes" id="track"></div>
+    </div>
     <div class="leaderboard">
       <h3>Finish Order</h3>
       <div id="liveLeaderboard"></div>

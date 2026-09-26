@@ -18,8 +18,6 @@
 <style>
   :root{ --track-bg: #1c150e; }
   body{ background: radial-gradient(ellipse at top, #33241a 0%, var(--track-bg) 60%) fixed; }
-  .lane:nth-child(odd){ background: #201810; }
-  .lane:nth-child(even){ background: #292019; }
 </style>
 </head>
 <body>
@@ -60,8 +58,10 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <img class="race-banner" src="../img/bg-cowboy-race.jpg" alt="Wild west desert">
-    <div class="track" id="track"></div>
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-cowboy-race.jpg');">
+      <div class="finish-label">Finish</div>
+      <div class="track fit-lanes" id="track"></div>
+    </div>
     <div class="leaderboard">
       <h3>Finish Order</h3>
       <div id="liveLeaderboard"></div>

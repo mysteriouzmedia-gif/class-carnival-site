@@ -19,8 +19,6 @@
   :root{ --track-bg: #0d1420; }
   body{ background: radial-gradient(ellipse at top, #182238 0%, var(--track-bg) 60%) fixed; }
   .runner-body.image{ image-rendering: pixelated; }
-  .lane:nth-child(odd){ background: #131d30; }
-  .lane:nth-child(even){ background: #1a2740; }
 </style>
 </head>
 <body>
@@ -61,8 +59,10 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <img class="race-banner" src="../img/bg-pixel-race.jpg" alt="Retro 8-bit landscape" style="image-rendering: pixelated;">
-    <div class="track" id="track"></div>
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-pixel-race.jpg'); image-rendering:pixelated;">
+      <div class="finish-label">Finish</div>
+      <div class="track fit-lanes" id="track"></div>
+    </div>
     <div class="leaderboard">
       <h3>Finish Order</h3>
       <div id="liveLeaderboard"></div>
