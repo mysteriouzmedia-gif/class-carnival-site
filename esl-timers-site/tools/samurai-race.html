@@ -11,18 +11,18 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cute Critters Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free cute critters race timer! Enter student names and watch a random race of adorable characters decide the order — fun for classroom turn-taking and presentations.">
-<link rel="canonical" href="https://classcarnival.com/tools/cute-critters-race">
+<title>Samurai Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free samurai race timer! Enter student names and watch armored samurai race through a cherry blossom dojo to decide the order — fun for classroom turn-taking and presentations.">
+<link rel="canonical" href="https://classcarnival.com/tools/samurai-race">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Cute Critters Race Timer — Random Order Picker | ClassCarnival">
-<meta property="og:description" content="Free cute critters race timer! Enter student names and watch a random race of adorable characters decide the order — fun for classroom turn-taking and presentations.">
-<meta property="og:url" content="https://classcarnival.com/tools/cute-critters-race">
+<meta property="og:title" content="Samurai Race Timer — Random Order Picker | ClassCarnival">
+<meta property="og:description" content="Free samurai race timer! Enter student names and watch armored samurai race through a cherry blossom dojo to decide the order — fun for classroom turn-taking and presentations.">
+<meta property="og:url" content="https://classcarnival.com/tools/samurai-race">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -30,8 +30,8 @@
 <link rel="stylesheet" href="../css/theme.css">
 <link rel="stylesheet" href="../css/race-shared.css">
 <style>
-  :root{ --track-bg: #1c2814; }
-  body{ background: radial-gradient(ellipse at top, #2e4020 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #15141c; }
+  body{ background: radial-gradient(ellipse at top, #2a2233 0%, var(--track-bg) 60%) fixed; }
 </style>
 </head>
 <body>
@@ -51,9 +51,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🐰 Cute Critters Race</div>
-    <h1>Cute Critters Race Timer</h1>
-    <div class="sub">A pack of adorable critters race across the meadow — totally random, every time.</div>
+    <div class="eyebrow">🏯 Samurai Race</div>
+    <h1>Samurai Race Timer</h1>
+    <div class="sub">Honor, armor, and pure chance — let the samurai decide who goes first.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -72,7 +72,7 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <div class="race-stage scene" style="--scene-bg:url('../img/bg-critters-race.jpg');">
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-samurai-race.jpg')">
       <div class="finish-label">Finish</div>
       <div class="track fit-lanes" id="track"></div>
     </div>
@@ -104,14 +104,14 @@ Ava"></textarea>
       <a href="/tools/pirate-race.html">🏴‍☠️ Pirate Race</a>
       <a href="/tools/cowboy-race.html">🤠 Cowboy Race</a>
       <a href="/tools/pixel-race.html">👾 Pixel Race</a>
-      <a href="/tools/samurai-race.html">🏯 Samurai Race</a>
+      <a href="/tools/cute-critters-race.html">🐰 Cute Critters Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A cute-animal twist on the random order race — same fair, fully randomized mechanic as the classic Race Timer, with a pack of adorable characters (a bunny, a bear cub, a cat, a fluffy one-eyed monster, and a happy slime) racing across a meadow toward the finish line instead of plain icons. Paste in your student list, hit start, and let the critters decide who goes first.</p>
-    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The soft, friendly character designs tend to land especially well with younger classes, or any group that responds better to cute over intense.</p>
-    <p>As with every race on this site, there's no limit on class size, no account required, and results are different every single time — reset and race again as many times as you like during a lesson.</p>
+    <p>A samurai-themed version of the random order race: armored warriors, a young apprentice with a wooden practice sword, a grand general and an old master with a staff race through a cherry blossom dojo garden, and the order they cross the finish line becomes your turn order. It uses the same fair, fully randomized race as every other theme on the site.</p>
+    <p>Use it for presentation order, reading turns, choosing who answers first, or lining up. It fits naturally alongside units on Japan, history, or world cultures, and pairs well with the Ninja Race when students want a rematch in a different theme.</p>
+    <p>Paste in your class list (or load a saved class), press start, and put it in fullscreen on the projector — every lane fits on screen, however big the class. There's no sign-up, and every race is different, so you can run it again as many times as you like.</p>
   </div>
 </main>
 
@@ -121,11 +121,11 @@ Ava"></textarea>
   window.RACE_SKIN = {
     avatarType: 'image',
     images: [
-      '../img/critter-bunny.png',
-      '../img/critter-bear.png',
-      '../img/critter-cat.png',
-      '../img/critter-monster.png',
-      '../img/critter-slime.png'
+      '../img/samurai-warrior.png',
+      '../img/samurai-female.png',
+      '../img/samurai-general.png',
+      '../img/samurai-apprentice.png',
+      '../img/samurai-master.png'
     ]
   };
 </script>
