@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Random Partner Picker — Mystery Partners for Pair Work | ClassCarnival</title>
+<meta name="description" content="Free random partner picker for teachers. Pairs are revealed one mystery pair at a time with flipping cards, odd numbers handled, and no repeat partners from last round. No sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/partner-picker">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Random Partner Picker — Mystery Partners for Pair Work | ClassCarnival">
+<meta property="og:description" content="Free random partner picker for teachers. Pairs are revealed one mystery pair at a time with flipping cards, odd numbers handled, and no repeat partners from last round. No sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/partner-picker">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .pp-options{ display:flex; flex-wrap:wrap; gap: 12px 26px; justify-content:center; align-items:center; margin-top: 18px; }
+  .pp-options > label{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:14px; color: var(--cream-dim); }
+  .pp-options select{ background:#0f1522; color: var(--cream); border:1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-family:'Work Sans', sans-serif; font-size:14px; }
+  .gm-check{ display:inline-flex; align-items:center; gap:8px; font-size:14px; color: var(--cream-dim); cursor:pointer; }
+  .gm-check input{ width:16px; height:16px; accent-color: var(--gold); }
+  .gm-status{ font-size: 15px; font-weight: 800; color: var(--cream-dim); min-height: 1.4em; text-align:center; margin-top: 6px; }
+  .gm-status b{ color: var(--gold); }
+  .gm-copied{ text-align:center; color: var(--gold); font-size:13px; font-weight:700; min-height:1.2em; margin-top:8px; }
+
+  .pp-stage{ display:flex; align-items:center; justify-content:center; gap: clamp(10px, 3vw, 34px); min-height: 230px; padding: 16px 0 6px; perspective: 1000px; flex-wrap: wrap; }
+  .pp-card{ --c:#ffb627; width: clamp(150px, 26vw, 290px); height: clamp(120px, 17vw, 190px); }
+  .pp-inner{ position:relative; width:100%; height:100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,1.3,.5,1); }
+  .pp-card.flipped .pp-inner{ transform: rotateY(180deg); }
+  .pp-face{ position:absolute; inset:0; border-radius: 18px; display:flex; align-items:center; justify-content:center; text-align:center; padding: 10px;
+    backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 10px 26px rgba(0,0,0,.45); }
+  .pp-back{ background: repeating-linear-gradient(45deg, #2a3654 0 12px, #243049 12px 24px); border: 3px solid #3a4a70; color: #6b7ca8;
+    font-family:'Archivo Black', sans-serif; font-size: clamp(48px, 7vw, 84px); }
+  .pp-front{ transform: rotateY(180deg); background: #fffdf7; color:#1a1305; border: 5px solid var(--c);
+    font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 3.6vw, 44px); overflow-wrap:anywhere; line-height:1.1; }
+  .pp-card.wiggle .pp-inner{ animation: ppWiggle .12s ease-in-out infinite alternate; }
+  @keyframes ppWiggle{ from{ transform: rotate(-3deg) translateY(-3px); } to{ transform: rotate(3deg) translateY(3px); } }
+  .pp-link{ font-size: clamp(34px, 5vw, 60px); opacity: .25; transform: scale(.6); transition: opacity .3s ease, transform .5s cubic-bezier(.3,1.8,.5,1); }
+  .pp-link.on{ opacity: 1; transform: scale(1); }
+  .pp-third{ flex-basis: 100%; max-width: clamp(150px, 26vw, 290px); }
+
+  .pp-list{ display:grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-top: 18px; }
+  .pp-pair{ --c:#ffb627; display:flex; align-items:center; gap: 10px; padding: 10px 14px; border-radius: 12px; background: rgba(255,255,255,.04);
+    border-left: 6px solid var(--c); font-weight:800; font-size: 15px; animation: ppIn .5s cubic-bezier(.3,1.4,.5,1) both; }
+  .pp-pair .num{ font-family:'Archivo Black', sans-serif; color: var(--c); min-width: 1.6em; }
+  .pp-pair .amp{ color: var(--cream-dim); font-weight:600; }
+  @keyframes ppIn{ from{ opacity:0; transform: translateY(-14px) scale(.9); } to{ opacity:1; transform:none; } }
+  body.fs-active .pp-card{ width: clamp(200px, 30vw, 380px); height: clamp(150px, 20vw, 250px); }
+  @media (prefers-reduced-motion: reduce){ .pp-inner, .pp-link{ transition:none; } .pp-card.wiggle .pp-inner, .pp-pair{ animation:none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🤝 Mystery Partners</div>
+    <h1>Random Partner Picker</h1>
+    <div class="sub">Pair up your class with a flip of the cards — one mystery pair at a time, and no repeat partners from last time.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="pp-options">
+      <label>Odd number of students?
+        <select id="oddInput"><option value="trio" selected>Make one group of 3</option><option value="solo">One student works with the teacher</option></select>
+      </label>
+      <label class="gm-check"><input type="checkbox" id="avoidInput" checked> Avoid last round’s partners</label>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Find Partners</button></div>
+  </div>
+
+  <div id="pairScreen" class="panel" style="display:none;">
+    <div class="pp-stage" id="stage">
+      <div class="pp-card" id="cardA"><div class="pp-inner"><div class="pp-face pp-back">?</div><div class="pp-face pp-front" id="nameA"></div></div></div>
+      <div class="pp-link" id="link">🤝</div>
+      <div class="pp-card" id="cardB"><div class="pp-inner"><div class="pp-face pp-back">?</div><div class="pp-face pp-front" id="nameB"></div></div></div>
+      <div class="pp-card pp-third" id="cardC" hidden><div class="pp-inner"><div class="pp-face pp-back">?</div><div class="pp-face pp-front" id="nameC"></div></div></div>
+    </div>
+    <div class="gm-status" id="status" aria-live="polite"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="nextBtn">🃏 Reveal Next Pair</button>
+      <button class="btn-ghost" id="allBtn">Reveal All</button>
+      <button class="btn-ghost" id="againBtn">🔀 New Partners</button>
+      <button class="btn-ghost" id="copyBtn">Copy Pairs</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+    <div class="pp-list" id="pairList"></div>
+  </div>
+  <div class="hint">Press Space to reveal the next pair. “New Partners” avoids repeating the pairs you just had.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
+      <a href="/tools/review-game.html">🏆 Review Game</a>
+      <a href="/tools/gumball-machine-picker.html">🍬 Gumball Machine</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A random partner picker made for pair work. Paste in your class list and ClassCarnival shuffles everyone into pairs, then reveals them one mystery pair at a time: two face-down cards flip over together to show who's working with whom. It turns "find a partner" into a moment the whole class watches, and means nobody is left standing around waiting to be chosen.</p>
+    <p>With an odd number of students, choose whether one pair becomes a group of three or whether one student works with you. Turn on "Avoid last round's partners" and each new shuffle does its best to give everyone someone new — ideal for speaking practice, peer marking, or think-pair-share where students should mix.</p>
+    <p>Reveal the pairs one at a time with the Space bar, or all at once, then copy the list into your notes or class chat. Save your class once and it's ready on every ClassCarnival tool. No sign-up needed.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const namesInput = $('namesInput');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const COLORS = ['#ff6b5b','#2ec4b6','#ffb627','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ff9f43','#54a0ff','#10ac84'];
+  const LINKS = ['🤝','⭐','✨','🎉','💫','👯','🙌'];
+
+  let allNames = [], pairs = [], shown = 0, busy = false, lastPairs = new Set();
+  const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean);
+  const shuffle = a => { a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const key = (a, b) => [a, b].sort().join('\u0000');
+
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02);
+    }catch(e){}
+  }
+  const flipSound = () => { tone(700, 0, .08, 'square', .05); tone(1050, .06, .1, 'square', .05); };
+  const pairSound = () => [659, 880, 1175].forEach((f, i) => tone(f, .05 + i * .07, .2, 'triangle', .09));
+  const fanfare = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .1, i === 3 ? .6 : .2, 'square', .07));
+
+  function updateCount(){ const n = lines(namesInput.value).length; $('nameCount').textContent = n + (n === 1 ? ' student' : ' students'); }
+  namesInput.addEventListener('input', updateCount);
+  $('sampleBtn').addEventListener('click', () => {
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia','Seojun'].join('\n');
+    namesInput.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+
+  // Build pairs; with "avoid" on, try many shuffles and keep the one with the fewest repeat partners.
+  function makePairs(){
+    const avoid = $('avoidInput').checked && lastPairs.size;
+    let best = null, bestRepeats = Infinity;
+    for(let attempt = 0; attempt < (avoid ? 400 : 1); attempt++){
+      const order = shuffle(allNames), ps = [];
+      for(let i = 0; i + 1 < order.length; i += 2) ps.push([order[i], order[i + 1]]);
+      if(order.length % 2){
+        const odd = order[order.length - 1];
+        if($('oddInput').value === 'trio' && ps.length) ps[ps.length - 1].push(odd); else ps.push([odd, 'the teacher']);
+      }
+      let repeats = 0;
+      ps.forEach(p => { for(let a = 0; a < p.length; a++) for(let b = a + 1; b < p.length; b++) if(lastPairs.has(key(p[a], p[b]))) repeats++; });
+      if(repeats < bestRepeats){ best = ps; bestRepeats = repeats; }
+      if(repeats === 0) break;
+    }
+    return best;
+  }
+  function remember(){
+    lastPairs = new Set();
+    pairs.forEach(p => { for(let a = 0; a < p.length; a++) for(let b = a + 1; b < p.length; b++) lastPairs.add(key(p[a], p[b])); });
+  }
+
+  $('startBtn').addEventListener('click', () => {
+    allNames = lines(namesInput.value);
+    if(allNames.length < 2){ alert('Add at least 2 names.'); return; }
+    $('setupScreen').style.display = 'none'; $('pairScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    newRound();
+  });
+  $('editBtn').addEventListener('click', () => { $('pairScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('againBtn').addEventListener('click', () => { if(busy) return; remember(); newRound(); });
+  $('nextBtn').addEventListener('click', revealNext);
+  $('allBtn').addEventListener('click', () => { if(busy) return; while(shown < pairs.length) addToList(shown++); resetCards(); setStatus('All pairs revealed!'); finish(); });
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('pairScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT' || t === 'SELECT') return;
+    e.preventDefault();
+    if(shown < pairs.length) revealNext(); else if(!busy){ remember(); newRound(); }
+  });
+  $('copyBtn').addEventListener('click', async () => {
+    const text = pairs.map((p, i) => (i + 1) + '. ' + p.join(' & ')).join('\n');
+    try{ await navigator.clipboard.writeText(text); $('copied').textContent = 'Copied! Paste the pairs anywhere.'; }
+    catch(e){ $('copied').textContent = 'Couldn’t copy automatically — select the list on screen instead.'; }
+  });
+
+  function setStatus(html){ $('status').innerHTML = html; }
+  function resetCards(){
+    ['cardA','cardB','cardC'].forEach(id => $(id).classList.remove('flipped', 'wiggle'));
+    $('link').classList.remove('on'); $('cardC').hidden = true;
+  }
+  function newRound(){
+    pairs = makePairs(); shown = 0; busy = false;
+    $('pairList').innerHTML = ''; $('copied').textContent = '';
+    resetCards();
+    $('nextBtn').disabled = false; $('allBtn').disabled = false;
+    setStatus(pairs.length + (pairs.length === 1 ? ' pair' : ' pairs') + ' hidden in the deck — press <b>Space</b> to reveal the first!');
+  }
+
+  function revealNext(){
+    if(busy || shown >= pairs.length) return;
+    busy = true; $('nextBtn').disabled = true;
+    const p = pairs[shown], color = COLORS[shown % COLORS.length];
+    const cards = [$('cardA'), $('cardB'), $('cardC')];
+    // flip any previous pair face-down first
+    const wasFlipped = cards.some(c => c.classList.contains('flipped'));
+    resetCards();
+    setTimeout(() => {
+      $('cardC').hidden = p.length < 3;
+      cards.forEach((c, i) => { c.style.setProperty('--c', color); if(p[i]) $(['nameA','nameB','nameC'][i]).textContent = p[i]; });
+      cards.slice(0, p.length).forEach(c => c.classList.add('wiggle'));
+      setStatus('Who’s working together…?');
+      if(window.CCReveal) CCReveal.drumroll(reduceMotion ? 100 : 900);
+      setTimeout(() => {
+        cards.forEach(c => c.classList.remove('wiggle'));
+        cards[0].classList.add('flipped'); flipSound();
+        setTimeout(() => {
+          cards.slice(1, p.length).forEach(c => c.classList.add('flipped')); flipSound();
+          setTimeout(() => {
+            const link = $('link'); link.textContent = LINKS[shown % LINKS.length]; link.classList.add('on');
+            pairSound();
+            setStatus('<b></b> are partners!');
+            $('status').querySelector('b').textContent = p.join(p.length > 2 ? ', ' : ' & ').replace(/, ([^,]*)$/, ' & $1');
+            addToList(shown); shown++;
+            busy = false; $('nextBtn').disabled = shown >= pairs.length;
+            if(shown >= pairs.length) finish();
+          }, reduceMotion ? 50 : 500);
+        }, reduceMotion ? 0 : 350);
+      }, reduceMotion ? 100 : 900);
+    }, wasFlipped && !reduceMotion ? 450 : 0);
+  }
+
+  function addToList(i){
+    const p = pairs[i], row = document.createElement('div');
+    row.className = 'pp-pair'; row.style.setProperty('--c', COLORS[i % COLORS.length]);
+    const n = document.createElement('span'); n.className = 'num'; n.textContent = i + 1;
+    row.appendChild(n);
+    p.forEach((nm, k) => {
+      if(k){ const a = document.createElement('span'); a.className = 'amp'; a.textContent = '&'; row.appendChild(a); }
+      const s = document.createElement('span'); s.textContent = nm; row.appendChild(s);
+    });
+    $('pairList').appendChild(row);
+  }
+  function finish(){
+    $('nextBtn').disabled = true; $('allBtn').disabled = true;
+    fanfare(); if(window.CCReveal) CCReveal.confetti();
+    setTimeout(() => { if(shown >= pairs.length) setStatus('🎉 <b>Everyone has a partner!</b> Press Space for new partners.'); }, 1400);
+  }
+  updateCount();
+})();
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>

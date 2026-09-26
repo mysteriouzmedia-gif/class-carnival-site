@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Wheel — Spin to Pick Random Teams | ClassCarnival</title>
+<meta name="description" content="Free team spinner wheel for the classroom. Each student spins to find their team, with team mascots and colors — and the teams always come out balanced. Projector-ready, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/team-wheel">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Team Wheel — Spin to Pick Random Teams | ClassCarnival">
+<meta property="og:description" content="Free team spinner wheel for the classroom. Each student spins to find their team, with team mascots and colors — and the teams always come out balanced. Projector-ready, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/team-wheel">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .pp-options{ display:flex; flex-wrap:wrap; gap: 12px 26px; justify-content:center; align-items:center; margin-top: 18px; }
+  .pp-options > label{ display:flex; align-items:center; gap:10px; font-weight:700; font-size:14px; color: var(--cream-dim); }
+  .gm-stepper{ display:inline-flex; align-items:center; gap:6px; }
+  .gm-stepper button{ width:36px; height:36px; padding:0; font-size:18px; line-height:1; }
+  .gm-stepper input{ width:52px; height:36px; text-align:center; background:#0f1522; color: var(--cream); border:1px solid var(--line); border-radius: 10px; font-family:'Archivo Black', sans-serif; font-size:16px; -moz-appearance:textfield; }
+  .gm-stepper input::-webkit-outer-spin-button, .gm-stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; margin:0; }
+  .gm-preview{ color: var(--cream-dim); font-size: 13px; }
+  .gm-status{ font-size: 15px; font-weight: 800; color: var(--cream-dim); min-height: 1.4em; text-align:center; margin-top: 8px; }
+  .gm-status b{ color: var(--gold); }
+  .gm-copied{ text-align:center; color: var(--gold); font-size:13px; font-weight:700; min-height:1.2em; margin-top:8px; }
+
+  .tw-top{ display:grid; grid-template-columns: minmax(260px, 420px) 1fr; gap: 26px; align-items:center; }
+  .tw-wheel-wrap{ position:relative; width:100%; aspect-ratio: 1; }
+  .tw-wheel{ width:100%; height:100%; transform: rotate(0deg); filter: drop-shadow(0 12px 26px rgba(0,0,0,.5)); }
+  .tw-wheel text{ font-family:'Archivo Black', sans-serif; fill:#1a1305; font-size: 11px; }
+  .tw-wheel .emo{ font-size: 20px; }
+  .tw-pointer{ position:absolute; left:50%; top:-8px; transform: translateX(-50%); z-index:3; width:0; height:0;
+    border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 34px solid #fffdf7; filter: drop-shadow(0 3px 4px rgba(0,0,0,.5)); }
+  .tw-pointer.tick{ animation: tick .12s ease; }
+  @keyframes tick{ 50%{ transform: translateX(-50%) rotate(-14deg); } }
+  .tw-hub{ position:absolute; left:50%; top:50%; width: 24%; aspect-ratio:1; transform: translate(-50%,-50%); border-radius:50%; padding:0; z-index:2;
+    background: radial-gradient(circle at 35% 30%, #fff3c4, #ffb627 55%, #c88400); color:#1a1305; font-family:'Archivo Black', sans-serif; font-size: clamp(13px, 2vw, 20px);
+    box-shadow: 0 4px 10px rgba(0,0,0,.45), inset 0 -4px 0 rgba(0,0,0,.15); border: 4px solid #fffdf7; }
+  .tw-hub:disabled{ cursor:default; filter: saturate(.7); }
+  .tw-side{ text-align:center; }
+  .tw-up-label{ font-size: 12px; letter-spacing: 3px; font-weight:800; text-transform: uppercase; color: var(--cream-dim); }
+  .tw-up{ font-family:'Archivo Black', sans-serif; font-size: clamp(34px, 5.5vw, 68px); color: var(--gold); margin: 6px 0 4px; min-height: 1.2em; overflow-wrap:anywhere; line-height:1.1; }
+  .tw-up.pop{ animation: upPop .5s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes upPop{ from{ transform: scale(.5); opacity:0; } to{ transform:none; opacity:1; } }
+
+  .tw-teams{ display:grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; margin-top: 22px; }
+  .tw-team{ --c:#ff6b5b; border-radius: 14px; border:1px solid var(--line); border-top: 6px solid var(--c); padding: 10px 12px; background: rgba(255,255,255,.03); transition: box-shadow .3s ease; }
+  .tw-team h3{ margin: 0 0 8px; font-family:'Archivo Black', sans-serif; font-size: 16px; color: var(--c); display:flex; justify-content:space-between; gap:6px; }
+  .tw-team h3 small{ font-family:'Work Sans', sans-serif; font-size: 12px; color: var(--cream-dim); font-weight:800; }
+  .tw-team.full h3 small{ color: var(--c); }
+  .tw-team.hit{ box-shadow: 0 0 0 3px var(--c), 0 0 26px color-mix(in srgb, var(--c) 50%, transparent); }
+  .tw-team ul{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:5px; }
+  .tw-team li{ background:#1b2436; border-left: 4px solid var(--c); border-radius: 8px; padding: 5px 9px; font-weight:800; font-size: 14px; animation: liIn .5s cubic-bezier(.3,1.5,.5,1) both; }
+  @keyframes liIn{ from{ opacity:0; transform: scale(.6) translateY(-12px); } to{ opacity:1; transform:none; } }
+  body.fs-active .tw-top{ grid-template-columns: minmax(300px, 520px) 1fr; }
+  @media (max-width: 700px){ .tw-top{ grid-template-columns: 1fr; } .tw-wheel-wrap{ max-width: 340px; margin: 0 auto; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🎡 Team Wheel</div>
+    <h1>Spin the Team Wheel</h1>
+    <div class="sub">Every student spins the wheel to find out their team — and the teams still come out perfectly balanced.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="pp-options">
+      <label>Number of teams
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="teamMinus" aria-label="Fewer teams">−</button><input type="number" id="teamsInput" value="4" min="2" max="8" aria-label="Number of teams"><button type="button" class="btn-ghost" id="teamPlus" aria-label="More teams">+</button></span>
+      </label>
+      <span class="gm-preview" id="preview"></span>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Build the Wheel</button></div>
+  </div>
+
+  <div id="wheelScreen" class="panel" style="display:none;">
+    <div class="tw-top">
+      <div class="tw-wheel-wrap">
+        <div class="tw-pointer"></div>
+        <svg class="tw-wheel" id="wheel" viewBox="-110 -110 220 220" aria-hidden="true"></svg>
+        <button class="tw-hub" id="hubBtn" aria-label="Spin">SPIN</button>
+      </div>
+      <div class="tw-side">
+        <div class="tw-up-label">Up next</div>
+        <div class="tw-up" id="upNext"></div>
+        <div class="gm-status" id="status" aria-live="polite"></div>
+        <div class="btn-row">
+          <button class="btn-gold" id="spinBtn">🎡 Spin!</button>
+          <button class="btn-ghost" id="fastBtn">⏩ Spin Everyone</button>
+        </div>
+      </div>
+    </div>
+    <div class="tw-teams" id="teams"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="againBtn">🔀 Start Over</button>
+      <button class="btn-ghost" id="copyBtn">Copy Teams</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+  </div>
+  <div class="hint">Press Space (or tap the wheel) to spin for the next student.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+      <a href="/tools/partner-picker.html">🤝 Mystery Partners</a>
+      <a href="/tools/review-game.html">🏆 Review Game</a>
+      <a href="/tools/spin-globe-picker.html">🌍 Spin the Globe</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A team spinner wheel for the classroom. Choose how many teams you want and the wheel fills with team colours and mascots. Then, one at a time, each student's name comes up and the wheel spins to decide their team — the kind of moment that gets the whole room cheering (or groaning).</p>
+    <p>Unlike a plain spinner, the Team Wheel keeps things fair: the teams are balanced behind the scenes, so they always end up within one student of each other in size, and a team that's full is marked on screen. Short on time? "Spin Everyone" whizzes through the rest of the class in seconds.</p>
+    <p>Use it to split the class for games, projects, or competitions, then take your teams straight into the Review Game. Copy the finished teams with one click, and save your class so it's ready on every ClassCarnival tool. No sign-up needed.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const namesInput = $('namesInput');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const COLORS = ['#ff6b5b','#2ec4b6','#ffb627','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ff9f43'];
+  const TEAMS  = [['Tigers','🐯'],['Dolphins','🐬'],['Rockets','🚀'],['Owls','🦉'],['Dragons','🐉'],['Pandas','🐼'],['Foxes','🦊'],
+                  ['Sharks','🦈'],['Eagles','🦅'],['Koalas','🐨'],['Penguins','🐧'],['Lions','🦁'],['Unicorns','🦄'],['Turtles','🐢'],['Bees','🐝'],['Robots','🤖']];
+
+  let allNames = [], teams = [], order = [], plan = [], idx = 0, angle = 0, busy = false, fast = false;
+  const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean);
+  const shuffle = a => { a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const teamCount = () => Math.max(2, Math.min(8, parseInt($('teamsInput').value, 10) || 2));
+
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02);
+    }catch(e){}
+  }
+  const tickSound = () => tone(1200, 0, .03, 'square', .03);
+  const landSound = () => [659, 880, 1175].forEach((f, i) => tone(f, i * .07, .2, 'triangle', .09));
+  const fanfare = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, i * .1, i === 3 ? .6 : .2, 'square', .07));
+
+  function updateCount(){
+    const n = lines(namesInput.value).length, g = Math.min(teamCount(), Math.max(n, 2));
+    $('nameCount').textContent = n + (n === 1 ? ' student' : ' students');
+    if(!n){ $('preview').textContent = ''; return; }
+    const base = Math.floor(n / g), extra = n % g;
+    $('preview').textContent = '→ ' + (extra ? `${extra} team${extra > 1 ? 's' : ''} of ${base + 1}, ${g - extra} of ${base}` : `${g} teams of ${base}`);
+  }
+  namesInput.addEventListener('input', updateCount);
+  $('teamMinus').addEventListener('click', () => { $('teamsInput').value = Math.max(2, teamCount() - 1); updateCount(); });
+  $('teamPlus').addEventListener('click', () => { $('teamsInput').value = Math.min(8, teamCount() + 1); updateCount(); });
+  $('teamsInput').addEventListener('change', () => { $('teamsInput').value = teamCount(); updateCount(); });
+  $('sampleBtn').addEventListener('click', () => {
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia'].join('\n');
+    namesInput.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+
+  $('startBtn').addEventListener('click', () => {
+    allNames = lines(namesInput.value);
+    if(allNames.length < 2){ alert('Add at least 2 names.'); return; }
+    $('setupScreen').style.display = 'none'; $('wheelScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    setup();
+  });
+  $('editBtn').addEventListener('click', () => { fast = false; $('wheelScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('againBtn').addEventListener('click', () => { if(!busy) setup(); });
+  $('spinBtn').addEventListener('click', spin);
+  $('hubBtn').addEventListener('click', spin);
+  $('fastBtn').addEventListener('click', () => { if(busy || idx >= order.length) return; fast = true; spin(); });
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('wheelScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault(); if(idx < order.length) spin(); else if(!busy) setup();
+  });
+  $('copyBtn').addEventListener('click', async () => {
+    const text = teams.map(t => t.name + ': ' + t.members.join(', ')).join('\n');
+    try{ await navigator.clipboard.writeText(text); $('copied').textContent = 'Copied! Paste the teams anywhere.'; }
+    catch(e){ $('copied').textContent = 'Couldn’t copy automatically — select the teams on screen instead.'; }
+  });
+
+  // Plan balanced teams up front (round-robin over a shuffled class); the wheel then "decides" each one.
+  function setup(){
+    const g = Math.min(teamCount(), allNames.length);
+    const picks = shuffle(TEAMS), off = Math.floor(Math.random() * COLORS.length);
+    teams = Array.from({ length: g }, (_, i) => ({ name: 'Team ' + picks[i][0], mascot: picks[i][1], color: COLORS[(i + off) % COLORS.length], members: [], size: 0 }));
+    order = shuffle(allNames);
+    const slots = shuffle(order.map((_, i) => i % g));   // exact balanced sizes, random order of teams
+    plan = slots; order.forEach((_, i) => teams[plan[i]].size++);
+    idx = 0; busy = false; fast = false; $('copied').textContent = '';
+    drawWheel(); renderTeams(); showUpNext();
+    $('spinBtn').disabled = false; $('fastBtn').disabled = false; $('hubBtn').disabled = false;
+    setStatus('Press <b>Space</b> or tap the wheel to spin!');
+  }
+
+  function drawWheel(){
+    const svg = $('wheel'), g = teams.length, seg = 360 / g, NS = 'http://www.w3.org/2000/svg';
+    svg.innerHTML = '';
+    const rep = g <= 3 ? 2 : 1;                 // repeat segments on small wheels so it looks like a real wheel
+    const total = g * rep, step = 360 / total;
+    for(let k = 0; k < total; k++){
+      const t = teams[k % g], a0 = (k * step - 90) * Math.PI / 180, a1 = ((k + 1) * step - 90) * Math.PI / 180;
+      const p = document.createElementNS(NS, 'path');
+      p.setAttribute('d', `M0 0 L${100 * Math.cos(a0)} ${100 * Math.sin(a0)} A100 100 0 0 1 ${100 * Math.cos(a1)} ${100 * Math.sin(a1)} Z`);
+      p.setAttribute('fill', t.color); p.setAttribute('stroke', '#fffdf7'); p.setAttribute('stroke-width', '1.5');
+      svg.appendChild(p);
+      const mid = (k + .5) * step;
+      const grp = document.createElementNS(NS, 'g'); grp.setAttribute('transform', `rotate(${mid})`);
+      const emo = document.createElementNS(NS, 'text'); emo.setAttribute('class', 'emo'); emo.setAttribute('x', 0); emo.setAttribute('y', -70); emo.setAttribute('text-anchor', 'middle'); emo.textContent = t.mascot;
+      const lbl = document.createElementNS(NS, 'text'); lbl.setAttribute('x', 0); lbl.setAttribute('y', -48); lbl.setAttribute('text-anchor', 'middle'); lbl.textContent = t.name.replace('Team ', '');
+      if(total > 6) lbl.setAttribute('font-size', '9');
+      grp.append(emo, lbl); svg.appendChild(grp);
+    }
+    const rim = document.createElementNS(NS, 'circle'); rim.setAttribute('r', 101); rim.setAttribute('fill', 'none'); rim.setAttribute('stroke', '#fffdf7'); rim.setAttribute('stroke-width', '4');
+    svg.appendChild(rim);
+    svg.dataset.total = total; svg.dataset.step = step;
+    angle = 0; svg.style.transition = 'none'; svg.style.transform = 'rotate(0deg)';
+  }
+
+  function renderTeams(){
+    const wrap = $('teams'); wrap.innerHTML = '';
+    teams.forEach(t => {
+      const box = document.createElement('div'); box.className = 'tw-team' + (t.members.length >= t.size ? ' full' : ''); box.style.setProperty('--c', t.color);
+      const h = document.createElement('h3'); const nm = document.createElement('span'); nm.textContent = t.mascot + ' ' + t.name.replace('Team ', '');
+      const sm = document.createElement('small'); sm.textContent = t.members.length >= t.size ? 'FULL' : t.members.length + ' / ' + t.size;
+      h.append(nm, sm);
+      const ul = document.createElement('ul'); t.members.forEach(m => { const li = document.createElement('li'); li.textContent = m; ul.appendChild(li); });
+      box.append(h, ul); wrap.appendChild(box); t.box = box; t.ul = ul; t.sm = sm;
+    });
+  }
+  function showUpNext(){
+    const up = $('upNext');
+    up.textContent = idx < order.length ? order[idx] : '🎉';
+    up.classList.remove('pop'); void up.offsetWidth; up.classList.add('pop');
+  }
+  function setStatus(html){ $('status').innerHTML = html; }
+
+  function spin(){
+    if(busy || idx >= order.length) return;
+    busy = true; $('spinBtn').disabled = true; $('hubBtn').disabled = true;
+    const svg = $('wheel'), g = teams.length, total = +svg.dataset.total, step = +svg.dataset.step;
+    const target = plan[idx];
+    // pick one of the matching segments and land somewhere inside it (not on the line)
+    const copies = []; for(let k = 0; k < total; k++) if(k % g === target) copies.push(k);
+    const k = copies[Math.floor(Math.random() * copies.length)];
+    const within = step * (.2 + Math.random() * .6);
+    const segAngle = k * step + within;                       // angle of the landing spot, clockwise from the top
+    const current = ((angle % 360) + 360) % 360;
+    let delta = (360 - segAngle) - current; delta = ((delta % 360) + 360) % 360;
+    const spins = fast ? 1 : 4 + Math.floor(Math.random() * 2);
+    angle += spins * 360 + delta;
+    const dur = reduceMotion ? 1 : fast ? 700 : 3200;
+    svg.style.transition = `transform ${dur}ms cubic-bezier(.12,.7,.15,1)`;
+    requestAnimationFrame(() => { svg.style.transform = `rotate(${angle}deg)`; });
+    setStatus(fast ? 'Spinning everyone…' : 'Where will <b></b> go…?');
+    if(!fast) $('status').querySelector('b').textContent = order[idx];
+    // ticking pointer that slows down with the wheel
+    if(!reduceMotion){
+      let tcount = 0, maxTicks = fast ? 6 : 26;
+      (function t(){
+        if(tcount++ >= maxTicks) return;
+        const ptr = document.querySelector('.tw-pointer'); ptr.classList.remove('tick'); void ptr.offsetWidth; ptr.classList.add('tick');
+        tickSound();
+        setTimeout(t, (fast ? 60 : 40) * Math.pow(1.13, tcount));
+      })();
+    }
+    setTimeout(() => land(target), dur + 80);
+  }
+
+  function land(ti){
+    const t = teams[ti], name = order[idx];
+    t.members.push(name); idx++;
+    renderTeams();
+    const box = teams[ti].box; box.classList.add('hit'); setTimeout(() => box.classList.remove('hit'), 900);
+    landSound();
+    setStatus(t.mascot + ' <b></b> joins ' + t.name + '!'); $('status').querySelector('b').textContent = name;
+    showUpNext();
+    busy = false;
+    if(idx >= order.length){ return done(); }
+    if(fast){ setTimeout(spin, reduceMotion ? 30 : 250); return; }
+    $('spinBtn').disabled = false; $('hubBtn').disabled = false;
+  }
+  function done(){
+    fast = false;
+    $('spinBtn').disabled = true; $('fastBtn').disabled = true; $('hubBtn').disabled = true;
+    fanfare(); if(window.CCReveal) CCReveal.confetti();
+    setTimeout(() => setStatus('🎉 <b>All teams are ready!</b> Press Space to start over.'), 1200);
+  }
+  updateCount();
+})();
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>

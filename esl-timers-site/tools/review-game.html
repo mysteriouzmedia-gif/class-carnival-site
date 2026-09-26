@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Classroom Review Game — Auto Teams, Team Race &amp; Bomb Board | ClassCarnival</title>
-<meta name="description" content="Free classroom review game for teachers. Auto-made teams, fair student picks, and two modes: a team race to the finish or the classic ESL bomb game board. Add your own questions or ask out loud. No sign-up.">
+<title>Classroom Review Game — Auto Teams, Board Game, Team Race &amp; Bomb Board | ClassCarnival</title>
+<meta name="description" content="Free classroom review game for teachers. Auto-made teams, fair student picks, and three modes: a team race, a dice board game, or the classic ESL bomb game board. Add your own questions or ask out loud. No sign-up.">
 <link rel="canonical" href="https://classcarnival.com/tools/review-game">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -20,8 +20,8 @@
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Classroom Review Game — Auto Teams, Team Race &amp; Bomb Board | ClassCarnival">
-<meta property="og:description" content="Free classroom review game for teachers. Auto-made teams, fair student picks, and two modes: a team race to the finish or the classic ESL bomb game board. Add your own questions or ask out loud. No sign-up.">
+<meta property="og:title" content="Classroom Review Game — Auto Teams, Board Game, Team Race &amp; Bomb Board | ClassCarnival">
+<meta property="og:description" content="Free classroom review game for teachers. Auto-made teams, fair student picks, and three modes: a team race, a dice board game, or the classic ESL bomb game board. Add your own questions or ask out loud. No sign-up.">
 <meta property="og:url" content="https://classcarnival.com/tools/review-game">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -32,7 +32,7 @@
 <style>
   .rg-step{ font-family:'Archivo Black', sans-serif; font-size: 17px; margin: 24px 0 12px; }
   .rg-step:first-child{ margin-top: 0; }
-  .rg-modes{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .rg-modes{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
   .rg-mode{ position:relative; display:flex; flex-direction:column; gap:4px; padding: 16px 18px; border:2px solid var(--line); border-radius: 14px; cursor:pointer; background: rgba(255,255,255,.02); }
   .rg-mode input{ position:absolute; opacity:0; }
   .rg-mode:has(input:checked){ border-color: var(--gold); background: rgba(255,182,39,.08); }
@@ -132,6 +132,33 @@
   @keyframes flash{ from{ opacity:.85; } to{ opacity:0; } }
 
   .rg-scores[hidden], .rg-race[hidden], .rg-board[hidden], .rg-qpanel[hidden], .rg-settings > label[hidden]{ display:none !important; }
+
+  .rg-bgwrap[hidden]{ display:none !important; }
+  .rg-legend{ text-align:center; color: var(--cream-dim); font-size: 13px; font-weight:700; margin-top: 10px; }
+  .rg-die-row{ display:flex; align-items:center; justify-content:center; gap: 16px; margin-bottom: 12px; min-height: 76px; }
+  .rg-die{ width: 70px; height: 70px; border-radius: 16px; background:#fffdf7; color:#1a1305; display:flex; align-items:center; justify-content:center;
+    font-family:'Archivo Black', sans-serif; font-size: 40px; box-shadow: 0 6px 0 #c9c2b0, 0 10px 20px rgba(0,0,0,.4); }
+  .rg-die.rolling{ animation: dieRoll .12s linear infinite; }
+  @keyframes dieRoll{ 0%{ transform: rotate(0) translateY(0); } 50%{ transform: rotate(18deg) translateY(-8px); } 100%{ transform: rotate(-18deg) translateY(0); } }
+  .rg-die.landed{ animation: dieLand .5s cubic-bezier(.3,1.8,.5,1); }
+  @keyframes dieLand{ from{ transform: scale(1.5); } to{ transform: none; } }
+  .rg-die-note{ font-weight:800; font-size: clamp(16px, 2vw, 22px); color: var(--gold); min-width: 8ch; }
+  .rg-bg{ display:grid; grid-template-columns: repeat(var(--cols, 8), 1fr); gap: 6px; }
+  .rg-sq{ --c: #26314a; position:relative; aspect-ratio: 1.35; border-radius: 12px; background: var(--c); border: 2px solid rgba(255,255,255,.08);
+    display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding: 3px; overflow:hidden; }
+  .rg-sq .lbl{ font-family:'Archivo Black', sans-serif; font-size: clamp(10px, 1.3vw, 15px); color: rgba(255,255,255,.55); line-height:1.1; }
+  .rg-sq.sp .lbl{ font-size: clamp(16px, 2.2vw, 26px); color:#fff; }
+  .rg-sq.start, .rg-sq.finish{ --c: #3a2f12; border-color: var(--gold); }
+  .rg-sq.start .lbl, .rg-sq.finish .lbl{ color: var(--gold); font-size: clamp(10px, 1.2vw, 14px); }
+  .rg-sq.finish .lbl{ font-size: clamp(16px, 2.2vw, 26px); }
+  .rg-sq.boost{ --c: #1f4d3a; } .rg-sq.slide{ --c: #5a2230; } .rg-sq.star{ --c: #4a3d12; } .rg-sq.freeze{ --c: #1d4460; } .rg-sq.swap{ --c: #3e2a5e; }
+  .rg-sq.hl{ box-shadow: 0 0 0 3px var(--gold); }
+  .rg-tokens{ display:flex; flex-wrap:wrap; justify-content:center; gap: 0 2px; margin-top: auto; }
+  .rg-token{ font-size: clamp(16px, 2.3vw, 30px); line-height: 1; filter: drop-shadow(0 2px 2px rgba(0,0,0,.6)); }
+  .rg-token.me{ animation: tokHop .25s ease; }
+  @keyframes tokHop{ 50%{ transform: translateY(-10px) scale(1.2); } }
+  .rg-token.turn{ outline: 2px solid var(--gold); outline-offset: 1px; border-radius: 50%; }
+  @media (max-width: 640px){ .rg-bg{ --cols: 6 !important; } }
   body.fs-active .rg-lane{ height: clamp(56px, 9vh, 90px); }
   @media (max-width: 640px){ .rg-modes{ grid-template-columns: 1fr; } .rg-board{ --cols: 4 !important; } }
   @media (prefers-reduced-motion: reduce){ .rg-runner{ transition:none; } .rg-tile.shake, .shake-screen, .rg-runner.hop .m{ animation:none !important; } }
@@ -157,7 +184,7 @@
   <div class="page-header">
     <div class="eyebrow">🏆 Review Game</div>
     <h1>Classroom Review Game</h1>
-    <div class="sub">Auto-made teams, a fair pick of who answers, and two ways to play: race to the finish or risk the bomb board.</div>
+    <div class="sub">Auto-made teams, a fair pick of who answers, and three ways to play: a team race, a board game, or the bomb board.</div>
   </div>
 
   <!-- ============ SETUP ============ -->
@@ -182,6 +209,9 @@ Ava"></textarea>
       <label class="rg-mode"><input type="radio" name="game" value="board">
         <span class="rg-mode-icon">💣</span><b>Bomb Board</b>
         <small>Teams pick hidden tiles: points, bombs, swaps, steals, doubles and freezes. Highest score wins.</small></label>
+      <label class="rg-mode"><input type="radio" name="game" value="bg">
+        <span class="rg-mode-icon">🎲</span><b>Board Game</b>
+        <small>Answer correctly to roll the die and move along the board. Watch out for slides, boosts and freezes!</small></label>
     </div>
 
     <div class="rg-settings">
@@ -190,6 +220,9 @@ Ava"></textarea>
       </label>
       <label class="for-race">Race length
         <select id="goalInput"><option value="5">Short (5 steps)</option><option value="8" selected>Medium (8 steps)</option><option value="12">Long (12 steps)</option></select>
+      </label>
+      <label class="for-bg" hidden>Board length
+        <select id="bgInput"><option value="24">Short (24 squares)</option><option value="32" selected>Medium (32 squares)</option><option value="40">Long (40 squares)</option></select>
       </label>
       <label class="for-board" hidden>Board size
         <select id="tilesInput"><option>16</option><option selected>20</option><option>25</option><option>30</option></select>
@@ -229,6 +262,11 @@ How do you say 사과 in English? | apple
     <div class="rg-scores" id="scoreBar"></div>
     <div class="rg-race" id="raceArea"></div>
     <div class="rg-board" id="boardArea"></div>
+    <div class="rg-bgwrap" id="bgWrap" hidden>
+      <div class="rg-die-row"><div class="rg-die" id="die">🎲</div><div class="rg-die-note" id="dieNote"></div></div>
+      <div class="rg-bg" id="bgArea"></div>
+      <div class="rg-legend">🚀 zoom ahead 3 · 🛝 slide back 3 · ⭐ roll again · 🧊 next team misses a turn · 🔄 swap places with the leader</div>
+    </div>
     <div class="rg-qpanel" id="qPanel" hidden>
       <div class="rg-q" id="qText"></div>
       <div class="rg-a" id="aText" hidden></div>
@@ -260,7 +298,8 @@ How do you say 사과 in English? | apple
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A free classroom review game that does the setup for you. Paste in your class list, choose how many teams you want, and ClassCarnival deals everyone into balanced teams with names and mascots. Every turn, the game picks the team and a student from that team to answer — fairly, so nobody is picked twice until everyone on their team has had a go.</p>
-    <h3>Two ways to play</h3>
+    <h3>Three ways to play</h3>
+    <p><b>Board Game:</b> a classroom board game with a winding path of squares. Answer correctly to roll the die and move your team's mascot forward — but land on a slide and you'll slip back, while boosts, stars and freezes can swing the game. First team to the finish wins.</p>
     <p><b>Team Race:</b> each correct answer moves your team's mascot one step along the track, and a streak of three correct answers in a row gives a double step. The first team across the finish line wins. <b>Bomb Board:</b> the classic ESL bomb game — teams take turns choosing a numbered tile, which might hide 10, 20 or 30 points, a bomb, a swap, a steal, a double or a freeze. The highest score when the board is cleared wins.</p>
     <h3>With or without questions</h3>
     <p>Paste in your own questions (with optional hidden answers) and they'll appear on screen one at a time, or skip that step and ask your questions out loud — then just tap Correct or Incorrect. It works for vocabulary review, grammar practice, maths facts, test prep, or any quiz, with no sign-up and no student devices needed.</p>
@@ -332,9 +371,10 @@ How do you say 사과 in English? | apple
     namesInput.dispatchEvent(new Event('input', { bubbles: true }));
   });
   document.querySelectorAll('input[name="game"]').forEach(r => r.addEventListener('change', () => {
-    const board = gameType() === 'board';
-    document.querySelectorAll('.for-board').forEach(el => el.hidden = !board);
-    document.querySelectorAll('.for-race').forEach(el => el.hidden = board);
+    const g = gameType();
+    document.querySelectorAll('.for-board').forEach(el => el.hidden = g !== 'board');
+    document.querySelectorAll('.for-race').forEach(el => el.hidden = g !== 'race');
+    document.querySelectorAll('.for-bg').forEach(el => el.hidden = g !== 'bg');
   }));
   $('teamMinus').addEventListener('click', () => { $('teamsInput').value = Math.max(2, teamCount() - 1); });
   $('teamPlus').addEventListener('click', () => { $('teamsInput').value = Math.min(8, teamCount() + 1); });
@@ -395,10 +435,11 @@ How do you say 사과 in English? | apple
     questions = parseQuestions(); qIndex = 0; over = false; busy = false;
     teams.forEach(t => { t.score = 0; t.pos = 0; t.streak = 0; t.frozen = false; t.picker = createPicker(t.members); t.current = null; });
     turn = Math.floor(Math.random() * teams.length);
-    $('raceArea').innerHTML = ''; $('boardArea').innerHTML = '';
-    $('raceArea').hidden = game !== 'race'; $('boardArea').hidden = game !== 'board';
+    $('raceArea').innerHTML = ''; $('boardArea').innerHTML = ''; $('bgArea').innerHTML = '';
+    $('raceArea').hidden = game !== 'race'; $('boardArea').hidden = game !== 'board'; $('bgWrap').hidden = game !== 'bg';
     $('scoreBar').hidden = game !== 'board';
-    if(game === 'race') buildRace(); else buildBoard();
+    tiles = [];
+    if(game === 'race') buildRace(); else if(game === 'board') buildBoard(); else buildBG();
     renderScores();
     show('play');
     beginTurn(true);
@@ -421,14 +462,15 @@ How do you say 사과 in English? | apple
     const a = document.createElement('div'); a.className = 'team'; a.textContent = t.mascot + ' ' + t.name + '’s turn!';
     const b = document.createElement('div'); b.className = 'who';
     const nm = document.createElement('b'); nm.textContent = t.current;
-    b.append(nm, document.createTextNode(game === 'board' ? ' — pick a tile!' : ' answers'));
+    b.append(nm, document.createTextNode(game === 'board' ? ' — pick a tile!' : game === 'bg' ? ' answers — get it right to roll!' : ' answers'));
     bar.append(a, b);
     bar.classList.remove('bump'); void bar.offsetWidth; bar.classList.add('bump');
     renderScores(); highlightLane();
     skipped.forEach(n => flashNote('🧊 ' + n + ' was frozen — turn skipped!'));
     S.turn();
-    if(game === 'race') askQuestion(null);
+    if(game === 'race' || game === 'bg') askQuestion(null);
     else { $('qPanel').hidden = true; setTiles(true); }
+    if(game === 'bg') renderTokens();
   }
 
   function advanceTurn(){ turn = (turn + 1) % teams.length; setTimeout(() => beginTurn(false), reduceMotion ? 50 : 500); }
@@ -474,9 +516,102 @@ How do you say 사과 in English? | apple
         if(t.pos >= goal) return setTimeout(finish, reduceMotion ? 100 : 900);
       } else { t.streak = 0; S.wrong(); }
       advanceTurn();
+    } else if(game === 'bg'){
+      if(ok){ S.right(); rollAndMove(t); }
+      else { S.wrong(); $('dieNote').textContent = 'No roll this time!'; advanceTurn(); }
     } else {
       if(ok){ S.right(); addScore(turn, tileValue); } else S.wrong();
       advanceTurn();
+    }
+  }
+
+  /* ---------- board game ---------- */
+  let bgLen = 32, squares = [];
+  const SQ = { boost: ['🚀','+3'], slide: ['🛝','−3'], star: ['⭐','Roll again'], freeze: ['🧊','Freeze'], swap: ['🔄','Swap'] };
+  function buildBG(){
+    bgLen = parseInt($('bgInput').value, 10) || 32;
+    const cols = 8, total = bgLen + 1;                       // square 0 = START, square bgLen = FINISH
+    squares = Array.from({ length: total }, () => ({ type: 'plain' }));
+    const free = shuffle(Array.from({ length: bgLen - 4 }, (_, i) => i + 3));
+    const want = { boost: Math.round(bgLen / 8), slide: Math.round(bgLen / 7), star: Math.max(1, Math.round(bgLen / 12)), freeze: Math.max(1, Math.round(bgLen / 16)), swap: 1 };
+    const isSp = i => squares[i] && squares[i].type !== 'plain';
+    Object.entries(want).forEach(([k, c]) => {
+      for(let i = 0; i < c; i++){
+        const at = free.findIndex(x => !isSp(x - 1) && !isSp(x + 1) && !isSp(x));   // keep specials apart
+        if(at === -1) break;
+        squares[free.splice(at, 1)[0]].type = k;
+      }
+    });
+    const area = $('bgArea'); area.style.setProperty('--cols', cols);
+    const narrow = window.matchMedia('(max-width: 640px)').matches, C = narrow ? 6 : cols;
+    squares.forEach((sq, i) => {
+      const row = Math.floor(i / C), col = row % 2 ? C - 1 - (i % C) : i % C;   // serpentine path
+      const el = document.createElement('div');
+      el.className = 'rg-sq ' + (i === 0 ? 'start' : i === bgLen ? 'finish' : sq.type) + (sq.type !== 'plain' ? ' sp' : '');
+      el.style.gridRow = row + 1; el.style.gridColumn = col + 1;
+      const lbl = document.createElement('span'); lbl.className = 'lbl';
+      lbl.textContent = i === 0 ? 'START' : i === bgLen ? '🏁' : sq.type !== 'plain' ? SQ[sq.type][0] : i;
+      if(sq.type !== 'plain') el.title = SQ[sq.type][1];
+      const tk = document.createElement('div'); tk.className = 'rg-tokens';
+      el.append(lbl, tk); area.appendChild(el); sq.el = el; sq.tk = tk;
+    });
+    $('die').textContent = '🎲'; $('dieNote').textContent = '';
+    renderTokens();
+  }
+  function renderTokens(mover){
+    squares.forEach(sq => { sq.tk.innerHTML = ''; sq.el.classList.remove('hl'); });
+    teams.forEach((t, i) => {
+      const sq = squares[Math.min(t.pos, bgLen)];
+      const tok = document.createElement('span'); tok.className = 'rg-token' + (i === turn ? ' turn' : '') + (t === mover ? ' me' : '');
+      tok.textContent = t.mascot; tok.title = t.name; sq.tk.appendChild(tok);
+      if(i === turn) sq.el.classList.add('hl');
+    });
+  }
+  const FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+  function rollAndMove(t){
+    busy = true;
+    const die = $('die'), roll = 1 + Math.floor(Math.random() * 6);
+    die.classList.remove('landed'); die.classList.add('rolling'); $('dieNote').textContent = 'Rolling…';
+    let n = 0;
+    const spinFace = setInterval(() => { die.textContent = FACES[Math.floor(Math.random() * 6)]; tone(500 + Math.random() * 300, 0, .04, 'square', .03); if(++n > 12) clearInterval(spinFace); }, 60);
+    setTimeout(() => {
+      clearInterval(spinFace); die.classList.remove('rolling'); die.textContent = FACES[roll - 1];
+      void die.offsetWidth; die.classList.add('landed');
+      $('dieNote').textContent = t.mascot + ' rolled a ' + roll + '!';
+      stepMove(t, roll, 1, () => landOn(t));
+    }, reduceMotion ? 50 : 850);
+  }
+  function stepMove(t, steps, dir, done){
+    if(steps <= 0 || (dir > 0 && t.pos >= bgLen) || (dir < 0 && t.pos <= 0)) return done();
+    t.pos += dir; renderTokens(t); tone(dir > 0 ? 700 + t.pos * 8 : 400 - t.pos * 4, 0, .07, 'triangle', .06);
+    setTimeout(() => stepMove(t, steps - 1, dir, done), reduceMotion ? 20 : 230);
+  }
+  function landOn(t){
+    if(t.pos >= bgLen){ t.pos = bgLen; renderTokens(t); busy = false; return setTimeout(finish, reduceMotion ? 50 : 600); }
+    const type = squares[t.pos].type, next = () => { busy = false; advanceTurn(); };
+    switch(type){
+      case 'boost':
+        S.fire(); $('dieNote').textContent = '🚀 Boost! Zoom ahead 3!';
+        return setTimeout(() => stepMove(t, 3, 1, () => { if(t.pos >= bgLen) return landOn(t); next(); }), 500);
+      case 'slide':
+        S.wrong(); $('dieNote').textContent = '🛝 Whoops — slide back 3!';
+        return setTimeout(() => stepMove(t, 3, -1, next), 500);
+      case 'star':
+        S.double(); $('dieNote').textContent = '⭐ Star square — ' + t.name + ' goes again!';
+        busy = false; return setTimeout(() => beginTurn(false), reduceMotion ? 50 : 900);
+      case 'freeze': {
+        S.freeze(); const nx = (turn + 1) % teams.length; teams[nx].frozen = true;
+        $('dieNote').textContent = '🧊 Freeze! ' + teams[nx].name + ' misses a turn!';
+        return setTimeout(next, 700);
+      }
+      case 'swap': {
+        const leader = teams.reduce((a, b) => b.pos > a.pos ? b : a);
+        if(leader === t || leader.pos === t.pos){ $('dieNote').textContent = '🔄 Swap square — you’re already in front!'; return setTimeout(next, 700); }
+        S.swap(); const tmp = leader.pos; leader.pos = t.pos; t.pos = tmp; renderTokens(t);
+        $('dieNote').textContent = '🔄 Swap! ' + t.mascot + ' trades places with ' + leader.mascot + '!';
+        return setTimeout(next, 900);
+      }
+      default: return next();
     }
   }
 
@@ -662,19 +797,20 @@ How do you say 사과 in English? | apple
   /* ---------- finale ---------- */
   function finish(){
     over = true; awaiting = null; $('qPanel').hidden = true; setTiles(false);
-    const ranked = [...teams].sort((a, b) => game === 'race' ? (b.pos - a.pos) : (b.score - a.score));
+    const byPos = game === 'race' || game === 'bg';
+    const ranked = [...teams].sort((a, b) => byPos ? (b.pos - a.pos) : (b.score - a.score));
     const w = ranked[0];
     const inner = $('overlayInner'); inner.innerHTML = '';
     const a = document.createElement('div'); a.className = 'rg-big'; a.textContent = '🏆';
-    const h = document.createElement('div'); h.className = 'rg-headline'; h.style.color = w.color; const val = t => game === 'race' ? t.pos : t.score;
+    const h = document.createElement('div'); h.className = 'rg-headline'; h.style.color = w.color; const val = t => byPos ? t.pos : t.score;
     const tied = ranked.filter(t => val(t) === val(w));
     h.textContent = tied.length > 1 ? 'It’s a tie! ' + tied.map(t => t.mascot + ' ' + t.name.replace('Team ', '')).join(' & ') : w.mascot + ' ' + w.name + ' wins!';
     if(tied.length > 1) h.style.color = 'var(--gold)';
     const ol = document.createElement('ol'); ol.className = 'rg-rank';
     ranked.forEach((t, i) => {
       const li = document.createElement('li'); li.style.setProperty('--c', t.color); li.style.animationDelay = (300 + i * 120) + 'ms';
-      const l = document.createElement('span'); l.textContent = (['🥇','🥈','🥉'][ranked.findIndex(x => (game === 'race' ? x.pos : x.score) === (game === 'race' ? t.pos : t.score))] || (i + 1) + '.') + ' ' + t.mascot + ' ' + t.name;
-      const r = document.createElement('span'); r.textContent = game === 'race' ? t.pos + ' / ' + goal : t.score + ' pts';
+      const l = document.createElement('span'); l.textContent = (['🥇','🥈','🥉'][ranked.findIndex(x => val(x) === val(t))] || (i + 1) + '.') + ' ' + t.mascot + ' ' + t.name;
+      const r = document.createElement('span'); r.textContent = game === 'race' ? t.pos + ' / ' + goal : game === 'bg' ? (t.pos >= bgLen ? '🏁 Finished' : 'Square ' + t.pos) : t.score + ' pts';
       li.append(l, r); ol.appendChild(li);
     });
     const row = document.createElement('div'); row.className = 'btn-row';
