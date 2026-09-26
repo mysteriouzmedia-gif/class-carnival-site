@@ -43,13 +43,13 @@ Each runner is an illustrated character built from three stacked pieces (`js/rac
 2. A small `:root` CSS override for `--track-bg` and the body background gradient, to give the page its own palette
 3. A `window.RACE_SKIN = { avatarType: 'emoji', emoji: '🦆' }` script (or `avatarType: 'initials'` for the plain version) right before the `race-engine.js` script tag
 
-To add a new themed race, copy `tools/dinosaur-race.html`, change the title/meta/H1/subtitle, the `--track-bg` color, and the `RACE_SKIN` emoji. No JS logic to touch. Then add it to `index.html`'s tool grid, the nav on every page, the "Try another theme" links on the other race pages, and `sitemap.xml`.
+To add a new themed race, copy `tools/ninja-race.html` (with background art) or `tools/dinosaur-race.html` (without), change the title/meta/H1/subtitle, the `--track-bg` color, and the `RACE_SKIN` emoji. No JS logic to touch. Then add it to `index.html`'s tool grid, the nav on every page, the "Try another theme" links on the other race pages, and `sitemap.xml`.
 
 **Before naming a new theme, check it's not already on onlinestopwatch.com's race timer or name picker lists** (they cover most obvious animal/fantasy/holiday themes) — pick something original instead of an exact-name match.
 
 ## Scene layout (full-background race that always fits)
 
-`ninja-race.html` uses an optional "scene" layout from `css/race-shared.css` + `js/race-engine.js`: the background art fills the whole race area, lanes sit on top of it, every lane always fits on screen (no scrolling, including fullscreen), runners and name tags scale with class size, and there's one finish line across all lanes. To switch another race skin to it, replace its `<img class="race-banner" ...>` + `<div class="track" id="track"></div>` with:
+Every race-engine page (not team-race) uses the "scene" layout from `css/race-shared.css` + `js/race-engine.js`: the background art fills the whole race area, lanes sit on top of it, every lane always fits on screen (no scrolling, including fullscreen), runners and name tags scale with class size, and there's one finish line across all lanes. Pages without background art (race-timer, dinosaur, word) use `<div class="race-stage">` without `scene`. For a new race skin, replace its `<img class="race-banner" ...>` + `<div class="track" id="track"></div>` with:
 
 ```
 <div class="race-stage scene" style="--scene-bg:url('../img/bg-YOUR-RACE.jpg')">

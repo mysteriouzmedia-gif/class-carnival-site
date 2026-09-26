@@ -132,7 +132,8 @@ textarea:focus{ border-color: var(--gold); }
 
 /* =====================================================================
    Scene layout (opt-in): background art fills the whole race area and
-   every lane always fits on screen. Used by ninja-race.html.
+   every lane always fits on screen. Used by every race-engine page.
+   Pages without background art use <div class="race-stage"> (no "scene").
    Markup:
      <div class="race-stage scene" style="--scene-bg:url('../img/bg-ninja-race.jpg')">
        <div class="finish-label">Finish</div>
@@ -152,6 +153,8 @@ textarea:focus{ border-color: var(--gold); }
     var(--track-bg, #16121c);
 }
 body.fs-active .race-stage{ height: calc(100vh - 150px); }
+/* stages without background art just need room for the Finish label */
+.race-stage:not(.scene){ --sky: 44px; }
 
 .race-stage .finish-label{
   position: absolute; right: 4px; top: calc(var(--sky) - 30px); z-index: 3;
