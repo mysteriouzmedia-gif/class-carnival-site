@@ -11,18 +11,18 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pirate Race Timer — Random Order Picker | ClassCarnival</title>
-<meta name="description" content="Free pirate race timer! Enter student names and watch a random pirate crew race decide the order — fun for classroom turn-taking and presentations.">
-<link rel="canonical" href="https://classcarnival.com/tools/pirate-race">
+<title>Christmas Race Timer — Random Order Picker | ClassCarnival</title>
+<meta name="description" content="Free Christmas race timer for the classroom! Santa, an elf, a reindeer, a snowman, a gingerbread cookie, a candy cane and a penguin race through a snowy village to decide student order. No sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/christmas-race">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Pirate Race Timer — Random Order Picker | ClassCarnival">
-<meta property="og:description" content="Free pirate race timer! Enter student names and watch a random pirate crew race decide the order — fun for classroom turn-taking and presentations.">
-<meta property="og:url" content="https://classcarnival.com/tools/pirate-race">
+<meta property="og:title" content="Christmas Race Timer — Random Order Picker | ClassCarnival">
+<meta property="og:description" content="Free Christmas race timer for the classroom! Santa, an elf, a reindeer, a snowman, a gingerbread cookie, a candy cane and a penguin race through a snowy village to decide student order. No sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/christmas-race">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -31,8 +31,8 @@
 <link rel="stylesheet" href="../css/theme.css?v=2fcf6e27">
 <link rel="stylesheet" href="../css/race-shared.css?v=bb608356">
 <style>
-  :root{ --track-bg: #1a1610; }
-  body{ background: radial-gradient(ellipse at top, #2e2618 0%, var(--track-bg) 60%) fixed; }
+  :root{ --track-bg: #12132a; }
+  body{ background: radial-gradient(ellipse at top, #2b2447 0%, var(--track-bg) 60%) fixed; }
 </style>
 <script type="application/ld+json">
 {
@@ -40,9 +40,9 @@
  "@graph": [
   {
    "@type": "WebApplication",
-   "name": "Pirate Race Timer",
-   "url": "https://classcarnival.com/tools/pirate-race",
-   "description": "Free pirate race timer! Enter student names and watch a random pirate crew race decide the order — fun for classroom turn-taking and presentations.",
+   "name": "Christmas Race Timer",
+   "url": "https://classcarnival.com/tools/christmas-race",
+   "description": "Free Christmas race timer for the classroom! Santa, an elf, a reindeer, a snowman, a gingerbread cookie, a candy cane and a penguin race through a snowy village to decide student order. No sign-up.",
    "applicationCategory": "EducationalApplication",
    "operatingSystem": "Any (runs in a web browser)",
    "browserRequirements": "Requires JavaScript",
@@ -82,8 +82,8 @@
     {
      "@type": "ListItem",
      "position": 3,
-     "name": "Pirate Race Timer",
-     "item": "https://classcarnival.com/tools/pirate-race"
+     "name": "Christmas Race Timer",
+     "item": "https://classcarnival.com/tools/christmas-race"
     }
    ]
   },
@@ -92,10 +92,10 @@
    "mainEntity": [
     {
      "@type": "Question",
-     "name": "Is the Pirate Race Timer free?",
+     "name": "Is the Christmas Race Timer free?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Yes. The Pirate Race Timer is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector."
+      "text": "Yes. The Christmas Race Timer is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector."
      }
     },
     {
@@ -147,9 +147,9 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🏴‍☠️ Pirate Race</div>
-    <h1>Pirate Race Timer</h1>
-    <div class="sub">A crew of pirates race to the finish — totally random, every time.</div>
+    <div class="eyebrow">🎄 Christmas Race</div>
+    <h1>Christmas Race Timer</h1>
+    <div class="sub">Santa, reindeer, snowmen and a speedy candy cane race through a snowy village to decide who goes first.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -168,7 +168,7 @@ Ava"></textarea>
 
   <div id="raceScreen" class="panel" style="display:none;">
     <div class="race-controls"><button class="btn-gold" id="startRaceBtn" style="display:none;">▶ Start Race</button></div>
-    <div class="race-stage scene" style="--scene-bg:url('../img/bg-pirate-race.jpg');">
+    <div class="race-stage scene" style="--scene-bg:url('../img/bg-christmas-race.jpg')">
       <div class="finish-label">Finish</div>
       <div class="track fit-lanes" id="track"></div>
     </div>
@@ -193,28 +193,28 @@ Ava"></textarea>
     <h3>Try another theme</h3>
     <div class="skin-links">
       <a href="/tools/race-timer.html">🏁 Classic Race</a>
+      <a href="/tools/halloween-race.html">🎃 Halloween Race</a>
+      <a href="/tools/samurai-race.html">🏯 Samurai Race</a>
       <a href="/tools/ninja-race.html">🥷 Ninja Race</a>
       <a href="/tools/dinosaur-race.html">🦖 Dinosaur Race</a>
       <a href="/tools/word-race.html">🔤 Word Race</a>
       <a href="/tools/sushi-dumpling-race.html">🍣 Sushi &amp; Dumpling Race</a>
+      <a href="/tools/pirate-race.html">🏴‍☠️ Pirate Race</a>
       <a href="/tools/cowboy-race.html">🤠 Cowboy Race</a>
       <a href="/tools/pixel-race.html">👾 Pixel Race</a>
       <a href="/tools/cute-critters-race.html">🐰 Cute Critters Race</a>
-      <a href="/tools/samurai-race.html">🏯 Samurai Race</a>
-      <a href="/tools/christmas-race.html">🎄 Christmas Race</a>
-      <a href="/tools/halloween-race.html">🎃 Halloween Race</a>
     </div>
   </div>
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A pirate-crew twist on the random order race — same fair, fully randomized mechanic as the classic Race Timer, with a rowdy crew of distinct pirate characters racing toward the finish line instead of plain icons. Paste in your student list, hit start, and let the crew decide who goes first.</p>
-    <p>Works for anything you'd use the classic Race Timer for: presentation order, reading turns, deciding who answers first, or picking a line-up order at dismissal. The pirate theme tends to land well with classes in the middle of an adventure, ocean, or storytelling unit, and the variety of characters (a captain, a cook, a hook-handed first mate, a cabin boy) gives students something new to notice each time you run it.</p>
-    <p>As with every race on this site, there's no limit on class size, no account required, and results are different every single time — reset and race again as many times as you like during a lesson.</p>
+    <p>A Christmas race timer for the classroom: Santa with his sack of presents, a busy elf, a reindeer, a snowman, a gingerbread cookie, a candy cane and a penguin in a Santa hat race through a snowy village at night, and the order they finish becomes your turn order. It’s festive and friendly, so it works from kindergarten right up through middle school.</p>
+    <p>Use it through December for presentation order, reading turns, gift-exchange order, class party games, or deciding who answers first in a Christmas vocabulary review. ESL classes can use the runners as vocabulary too — Santa, elf, reindeer, snowman, gingerbread, candy cane, penguin.</p>
+    <p>Paste in your class list or load a saved class, press start, and switch to fullscreen for the projector. Every lane fits on screen however big the class, there’s no sign-up, and every race is different.</p>
   </div>
   <section class="info-section panel faq-section" id="faq">
     <h2>Frequently asked questions</h2>
-    <h3>Is the Pirate Race Timer free?</h3>
-    <p>Yes. The Pirate Race Timer is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
+    <h3>Is the Christmas Race Timer free?</h3>
+    <p>Yes. The Christmas Race Timer is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
     <h3>How does the race decide the order?</h3>
     <p>Every race is random. The runners speed up and slow down unpredictably, so nobody knows who will win until the end. The finishing order becomes your turn order — for presentations, reading turns, lining up, or who answers first.</p>
     <h3>How many students can race?</h3>
@@ -230,11 +230,13 @@ Ava"></textarea>
   window.RACE_SKIN = {
     avatarType: 'image',
     images: [
-      '../img/pirate-captain-classic.png',
-      '../img/pirate-hook-hand.png',
-      '../img/pirate-cook.png',
-      '../img/pirate-boy.png',
-      '../img/pirate-captain-parrot.png'
+      '../img/xmas-santa.png',
+      '../img/xmas-elf.png',
+      '../img/xmas-reindeer.png',
+      '../img/xmas-snowman.png',
+      '../img/xmas-gingerbread.png',
+      '../img/xmas-candycane.png',
+      '../img/xmas-penguin.png'
     ]
   };
 </script>
