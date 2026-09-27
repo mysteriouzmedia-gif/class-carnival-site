@@ -38,6 +38,10 @@
   .section-head p{ color: var(--cream-dim); font-size: 14px; margin: 0; flex: 1 1 260px; }
   .section-head a{ color: var(--gold); font-weight:700; font-size: 14px; text-decoration:none; white-space:nowrap; }
   .section-head a:hover{ text-decoration: underline; }
+  .tool-grid.recent{ grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .tool-grid.recent .tool-card{ display:flex; align-items:center; gap: 12px; padding: 14px 16px; }
+  .tool-grid.recent .tool-card .icon{ margin:0; font-size: 26px; }
+  .tool-grid.recent .tool-card h3{ margin:0; font-size: 15px; }
   .tool-grid.featured{ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .tool-grid.featured .tool-card{ border-color: rgba(255,182,39,.45); background: linear-gradient(160deg, rgba(255,182,39,.10), rgba(255,255,255,.02)); }
   .tool-grid.featured .tool-card .icon{ font-size: 38px; }
@@ -95,6 +99,8 @@
     <h1>Classroom timers, races &amp; name pickers</h1>
     <div class="sub">Free tools for the front of the room — pick who goes first, call on students fairly, and keep time. No sign-up, and big enough to read from the back of the class.</div>
   </div>
+
+  <div id="recentTools" hidden></div>
 
   <div class="section-head" id="start-here">
     <h2>⭐ Start here</h2>
@@ -319,5 +325,6 @@
 
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
 
+<script src="/js/recent.js?v=173a5f49"></script>
 </body>
 </html>

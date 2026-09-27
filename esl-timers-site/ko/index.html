@@ -52,6 +52,10 @@
   .section-head p{ color: var(--cream-dim); font-size: 14px; margin: 0; flex: 1 1 260px; }
   .section-head a{ color: var(--gold); font-weight:700; font-size: 14px; text-decoration:none; white-space:nowrap; }
   .section-head a:hover{ text-decoration: underline; }
+  .tool-grid.recent{ grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .tool-grid.recent .tool-card{ display:flex; align-items:center; gap: 12px; padding: 14px 16px; }
+  .tool-grid.recent .tool-card .icon{ margin:0; font-size: 26px; }
+  .tool-grid.recent .tool-card h3{ margin:0; font-size: 15px; }
   .tool-grid.featured{ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
   .tool-grid.featured .tool-card{ border-color: rgba(255,182,39,.45); background: linear-gradient(160deg, rgba(255,182,39,.10), rgba(255,255,255,.02)); }
   .tool-grid.featured .tool-card .icon{ font-size: 38px; }
@@ -111,7 +115,9 @@
     <div class="sub">발표자 뽑기, 모둠 편성, 자리 바꾸기, 수업 타이머까지 — 회원가입 없이, 교실 뒤에서도 잘 보이게.</div>
   </div>
 
-  <div class="tool-grid featured">
+  <div id="recentTools" hidden></div>
+
+  <div class="tool-grid featured" style="margin-top:24px">
     <a class="tool-card" href="/ko/tools/name-picker">
       <span class="icon">🎯</span>
       <h3>랜덤 이름 뽑기</h3>
@@ -165,5 +171,6 @@
 
 <footer class="site-footer"><div class="wrap">선생님을 위해 만든 무료 수업 도구. <a href="/ko/">한국어 홈</a> · <a href="/index.html" lang="en">English</a> · <a href="/privacy-policy.html">개인정보처리방침 (영문)</a> · <a href="/terms.html">이용약관 (영문)</a> · <a href="mailto:mysteriouz.media@gmail.com">문의</a></div></footer>
 
+<script src="/js/recent.js?v=173a5f49"></script>
 </body>
 </html>
