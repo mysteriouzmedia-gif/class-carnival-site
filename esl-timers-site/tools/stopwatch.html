@@ -143,7 +143,7 @@
   <div class="page-header">
     <div class="eyebrow">⏱️ Stopwatch</div>
     <h1>Classroom Stopwatch</h1>
-    <div class="sub">Pick a theme and watch the runner lap the track, the garden grow, or the rocket fly past the planets. A timer buddy cheers the class on, surprise visitors fly by for class stars, and challenge mode races the class record.</div>
+    <div class="sub">Pick a theme and watch the runner lap the track, the garden grow, or the rocket fly past the planets. A timer buddy cheers the class on, every theme has its own sounds, and challenge mode races the class record.</div>
   </div>
 
   <div class="panel">
@@ -156,6 +156,7 @@
       <div class="time" id="timeDisplay">00:00<span class="ms">.00</span></div>
     </div>
     <div class="sw-record" id="recordBox">
+      <label class="gm-check"><input type="checkbox" id="ambInput" checked> 🎵 Theme sounds</label>
       <label class="gm-check"><input type="checkbox" id="recordInput"> 🏆 Challenge mode — beat the class record (fastest time wins)</label>
       <span class="sw-best" id="best"></span>
     </div>
@@ -166,13 +167,13 @@
     </div>
     <div class="laps" id="laps"></div>
   </div>
-  <div class="hint">Tip: press Space to start/stop, L to lap, R to reset, S to catch a flying visitor.</div>
+  <div class="hint">Tip: press Space to start/stop, L to lap, R to reset.</div>
 
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A themed classroom stopwatch that's big enough to read from the back of the room — and fun enough that students want to watch it. Choose a theme: a runner who laps the track once every minute, a garden that sprouts a new flower every 30 seconds, a rocket that flies past the Moon, Mars and beyond as time goes on, or a classic big-digit stopwatch.</p>
     <p>Turn on challenge mode to make clean-up time, lining up, or getting ready into a game: the class tries to beat its fastest time, and a new record gets a celebration. The record is remembered in your browser, so you can bring the challenge back tomorrow. Use the lap button to record several times in a row — handy for reading fluency checks, relay drills, or timing students one after another.</p>
-    <p>A timer buddy cheers the class on and calls out each minute, and surprise visitors — a butterfly, a UFO, even a golden star — fly across the screen now and then: click one (or press S) to earn a class star. In challenge mode a progress bar shows how close the class is to its record time, so everyone can see if they're on pace.</p>
+    <p>A timer buddy cheers the class on and calls out each minute with a bell, and every theme has its own sounds — footsteps and a cheering crowd on the track, birdsong in the garden, zaps and whooshes in space. Switch theme sounds off any time. In challenge mode a progress bar shows how close the class is to its record time, so everyone can see if they're on pace.</p>
     <p>Press Space to start and stop, L to record a lap, and R to reset. Works in fullscreen on any projector, with no sign-up or download.</p>
   </div>
 </main>
@@ -191,7 +192,23 @@
   const FLOWERS = ['🌷','🌻','🌼','🌸','🌹','🌺','💐','🍄'];
   const F = window.CCTimerFun;
   const buddy = F.buddy($('buddyHost'));
-  const visitors = F.visitors(document.querySelector('.tm-stage'), buddy);
+  const S = F.sfx;
+  let nextAmb = 0, ambN = 0, lastBeat = 0;
+  const ambOn = () => $('ambInput').checked;
+  try{ $('ambInput').checked = localStorage.getItem('cc-timer-ambient') !== 'false'; }catch(e){}
+  $('ambInput').addEventListener('change', () => { try{ localStorage.setItem('cc-timer-ambient', $('ambInput').checked); }catch(e){} });
+  const AMBIENT = {
+    classic: () => { S.tickTock(ambN % 2); return 1000; },
+    track:   () => { S.footstep(); if(ambN % 24 === 0) S.noise(1.2, .08, 1800, 'bandpass'); return 330; },
+    garden:  () => { Math.random() < .8 ? S.bird() : S.buzz(); return 2500 + Math.random() * 3500; },
+    space:   () => { Math.random() < .5 ? S.pew() : S.whoosh(); return 4000 + Math.random() * 3000; }
+  };
+  function ambient(ms){
+    const now = performance.now();
+    if($('recordInput').checked && best){ const left = best - ms; if(left > 0 && left <= 5000 && now - lastBeat > 1000){ lastBeat = now; S.heartbeat(); } }
+    if(!ambOn() || now < nextAmb) return;
+    ambN++; nextAmb = now + AMBIENT[themeKey]();
+  }
   let lastMin = 0, nextChat = 0, recSaid = {};
   const CHAT = {
     all: ['Go, go, go! 💨', 'Looking speedy!', 'Nice teamwork! 🤝', 'Keep it up!', 'You’re doing great!', 'Focus mode: ON 🧠'],
@@ -202,7 +219,7 @@
   };
   function talk(ms){
     const now = performance.now(), min = Math.floor(ms / 60000), chal = $('recordInput').checked && best;
-    if(min > lastMin){ lastMin = min; buddy.say(min + (min === 1 ? ' minute' : ' minutes') + '! ⏱️', 'wow'); nextChat = now + 15000; return; }
+    if(min > lastMin){ lastMin = min; S.bell(); buddy.say(min + (min === 1 ? ' minute' : ' minutes') + '! ⏱️', 'wow'); nextChat = now + 15000; return; }
     if(chal){
       const left = best - ms;
       if(left <= Math.min(15000, best / 3) && left > 0 && !recSaid.near){ recSaid.near = true; buddy.say('Only ' + Math.ceil(left / 1000) + ' seconds until the record! HURRY! 😱', 'panic'); nextChat = now + 12000; return; }
@@ -270,7 +287,7 @@
         const el = $('runner'); el.style.left = x + 'px'; el.style.top = y + 'px'; el.classList.toggle('flip', !left);
         $('lapN').textContent = Math.floor(ms / 60000);
       },
-      milestone(k){ ding(); note('🏁 Lap ' + k + ' complete!'); } },
+      milestone(k){ ding(); S.cheer(); note('🏁 Lap ' + k + ' complete!'); } },
 
     garden: { label: '🌷 Growing Garden', every: 10,
       build(){ scene.innerHTML = `<div class="gdn"><div class="sun">☀️</div><div class="cloud">☁️</div><div class="cloud c2">☁️</div><div class="bug">🦋</div><div class="bug b2">🐝</div><div class="bed" id="bed"></div><div class="seed" id="seed">🌱</div></div>`; },
@@ -296,7 +313,7 @@
         PLANETS.forEach((p, i) => $('pl' + i).classList.toggle('reached', s >= p[2]));
         $('spc').classList.toggle('paused', !running);
         const reached = PLANETS.filter(p => s >= p[2]).length;
-        if(reached > marks){ marks = reached; ding(); note('🚀 We reached ' + PLANETS[reached - 1][1] + '!'); }
+        if(reached > marks){ marks = reached; ding(); S.chime(); note('🚀 We reached ' + PLANETS[reached - 1][1] + '!'); }
       } }
   };
 
@@ -329,25 +346,27 @@
     if(t.every){ const k = Math.floor(ms / (t.every * 1000)); if(k > marks){ marks = k; t.milestone(k); } }
     scene.classList.toggle('running', running);
     recBar(ms);
-    if(running){ talk(ms); raf = requestAnimationFrame(loop); }
+    if(running){ talk(ms); ambient(ms); raf = requestAnimationFrame(loop); }
   }
   function toggle(){
     if(running){
       running = false; elapsed += performance.now() - startTime; cancelAnimationFrame(raf);
-      btn.textContent = '▶ Resume'; lapBtn.disabled = true; loop(); visitors.stop(); buddy.say('Stopped at ' + fmt(elapsed).slice(0, 5) + '! ✋', 'cool', 0); checkRecord();
+      btn.textContent = '▶ Resume'; lapBtn.disabled = true; loop(); S.whistle(); buddy.say('Stopped at ' + fmt(elapsed).slice(0, 5) + '! ✋', 'cool', 0); checkRecord();
     } else {
       const fresh = elapsed === 0;
       running = true; startTime = performance.now(); btn.textContent = '⏸ Stop'; lapBtn.disabled = false; $('note').textContent = '';
+      if(fresh) S.ready(); else S.resume();
+      nextAmb = performance.now() + 800;
       if(fresh){ lastMin = 0; recSaid = {}; buddy.say($('recordInput').checked && best ? 'Record to beat: ' + fmt(best).slice(0, 5) + '! GO! 🏁' : 'Ready… set… GO! 🏁', 'happy'); }
       else buddy.say('And we’re off again! ▶', 'happy', 2500);
-      nextChat = performance.now() + 15000; visitors.start(); loop();
+      nextChat = performance.now() + 15000; loop();
     }
   }
   function reset(){
     running = false; cancelAnimationFrame(raf); elapsed = 0; lapCount = 0; lastLapAt = 0; marks = 0;
     btn.textContent = '▶ Start'; lapBtn.disabled = true; $('laps').innerHTML = ''; $('note').textContent = '';
     timeEl.innerHTML = fmt(0, true); THEMES[themeKey].build(); THEMES[themeKey].update(0);
-    scene.classList.remove('running'); visitors.stop(); buddy.quiet(); buddy.mood('calm'); lastMin = 0; recSaid = {}; recBar(0);
+    scene.classList.remove('running'); S.reset(); buddy.quiet(); buddy.mood('calm'); lastMin = 0; recSaid = {}; recBar(0);
   }
   function addLap(){
     const ms = now(), split = ms - lastLapAt; lastLapAt = ms; lapCount++;
@@ -356,7 +375,7 @@
     const b = document.createElement('span'); b.textContent = fmt(split) + '  (total ' + fmt(ms) + ')';
     row.append(a, b); $('laps').prepend(row);
     const items = [...$('laps').children]; items.forEach(x => x.classList.remove('fast'));
-    tone(1175, 0, .12, 'square', .05);
+    S.coin();
   }
 
   /* challenge mode: fastest stopped time is the class record */
@@ -372,10 +391,10 @@
     if(!$('recordInput').checked || elapsed < 1000) return;
     if(!best || elapsed < best){
       const old = best; best = elapsed; try{ localStorage.setItem('cc-stopwatch-record', String(best)); }catch(e){}
-      showBest(); fanfare(); buddy.say('NEW CLASS RECORD!!! 🏆', 'party', 0); recBar(elapsed);
+      showBest(); fanfare(); setTimeout(S.cheer, 400); buddy.say('NEW CLASS RECORD!!! 🏆', 'party', 0); recBar(elapsed);
       if(window.CCReveal) CCReveal.show(fmt(best), { label: old ? '🏆 NEW CLASS RECORD! (old: ' + fmt(old) + ')' : '🏆 First class record!', onClose: () => {} });
     } else {
-      note('So close! ' + fmt(elapsed - best) + ' slower than the record.'); buddy.say('So close! Try again? 💪', 'worried', 0);
+      note('So close! ' + fmt(elapsed - best) + ' slower than the record.'); buddy.say('So close! Try again? 💪', 'worried', 0); setTimeout(S.sadTrombone, 700);
     }
   }
   $('recordInput').addEventListener('change', () => { try{ localStorage.setItem('cc-stopwatch-challenge', $('recordInput').checked); }catch(e){} showBest(); recBar(now()); });
@@ -391,7 +410,6 @@
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
     else if(e.key.toLowerCase() === 'l' && running){ addLap(); }
     else if(e.key.toLowerCase() === 'r'){ reset(); }
-    else if(e.key.toLowerCase() === 's'){ visitors.catchNow(); }
   });
   renderThemes(); applyTheme(); showBest(); timeEl.innerHTML = fmt(0, true); recBar(0);
   buddy.say('Hi! Press Start and let’s see how fast we are! ⏱️', 'happy', 5000);

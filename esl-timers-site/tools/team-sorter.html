@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Magic Team Sorter — Random Team Picker with a Talking Hat | ClassCarnival</title>
+<meta name="description" content="Free magic hat team sorter for the classroom. A talking hat thinks it over with a drumroll, then shouts each student’s team. Balanced random teams, projector-ready, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/team-sorter">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Magic Team Sorter — Random Team Picker with a Talking Hat | ClassCarnival">
+<meta property="og:description" content="Free magic hat team sorter for the classroom. A talking hat thinks it over with a drumroll, then shouts each student’s team. Balanced random teams, projector-ready, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/team-sorter">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+
+  .ts-top{ display:grid; grid-template-columns: minmax(280px, 1fr) minmax(240px, 1fr); gap: 20px; align-items:center; }
+  .ts-hatzone{ position:relative; height: 360px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; }
+  .ts-bubble{ position:absolute; top: 0; left: 50%; transform: translateX(-50%) scale(.6); opacity:0; background:#fffdf7; color:#1d2433; font-weight:800;
+    font-size: clamp(16px, 2.2vw, 22px); padding: 12px 18px; border-radius: 20px; white-space:nowrap; max-width: 100%;
+    transition: opacity .2s ease, transform .3s cubic-bezier(.3,1.6,.5,1); z-index:3; }
+  .ts-bubble::after{ content:''; position:absolute; left:50%; bottom:-12px; margin-left:-10px; border: 10px solid transparent; border-top: 12px solid var(--bb, #fffdf7); border-bottom:0; }
+  .ts-bubble.show{ opacity:1; transform: translateX(-50%); }
+  .ts-bubble.shout{ --bb: var(--tc); background: var(--tc); color:#fff; font-family:'Archivo Black', sans-serif; font-size: clamp(20px, 3vw, 34px); padding: 12px 22px; white-space: normal; text-align:center; width: max-content; text-shadow: 0 2px 0 rgba(0,0,0,.25); }
+  .ts-hat{ width: 250px; transition: transform .5s cubic-bezier(.3,1.4,.5,1); transform-origin: 50% 90%; z-index:2; }
+  .ts-hat.down{ transform: translateY(12px); }
+  .ts-hat.think{ animation: hatThink .5s ease-in-out infinite; }
+  .ts-hat.shout{ animation: hatShout .6s cubic-bezier(.3,1.6,.5,1); }
+  .ts-hat.idle{ animation: hatIdle 3s ease-in-out infinite; }
+  @keyframes hatThink{ 0%,100%{ transform: translateY(12px) rotate(-5deg); } 50%{ transform: translateY(6px) rotate(5deg); } }
+  @keyframes hatShout{ 0%{ transform: translateY(12px); } 40%{ transform: translateY(-30px) scale(1.12); } 100%{ transform: translateY(0); } }
+  @keyframes hatIdle{ 50%{ transform: translateY(-6px) rotate(2deg); } }
+  .ts-hat .pupil{ transition: transform .25s ease; }
+  .ts-hat .mouth-open{ opacity:0; } .ts-hat.shout .mouth-open, .ts-hat.talk .mouth-open{ opacity:1; } .ts-hat.shout .mouth-shut{ opacity:0; }
+  .ts-hat .sparkle{ opacity:0; } .ts-hat.think .sparkle{ animation: sparkle .8s ease-in-out infinite; }
+  .ts-hat .sparkle:nth-of-type(2){ animation-delay: .3s !important; } .ts-hat .sparkle:nth-of-type(3){ animation-delay: .55s !important; }
+  @keyframes sparkle{ 0%,100%{ opacity:0; transform: scale(.4); } 50%{ opacity:1; transform: scale(1); } }
+  .ts-stool{ margin-top: 0; background: #1b2436; border:2px solid var(--line); border-radius: 14px; padding: 10px 22px; min-width: 200px; text-align:center;
+    font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 3.2vw, 34px); color: var(--cream); z-index:1; min-height: 1.6em; }
+  .ts-stool.pop{ animation: stoolPop .45s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes stoolPop{ from{ transform: scale(.5); opacity:0; } to{ transform:none; opacity:1; } }
+  .ts-side{ text-align:center; }
+  .ts-up-label{ font-size: 12px; letter-spacing: 3px; font-weight:800; text-transform: uppercase; color: var(--cream-dim); }
+  .ts-left{ font-size: 14px; color: var(--cream-dim); margin-top: 6px; }
+  @media (max-width: 760px){ .ts-top{ grid-template-columns: 1fr; } .ts-hatzone{ height: 320px; } .ts-hat{ width: 210px; } }
+  @media (prefers-reduced-motion: reduce){ .ts-hat, .ts-hat *{ animation:none !important; } }
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🎩 Magic Team Sorter</div>
+    <h1>The Magic Team Sorter</h1>
+    <div class="sub">Call each student up and the Magic Hat decides their team — with thinking, a drumroll, and the occasional change of mind.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="ct-options">
+      <label>Number of teams
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="teamMinus" aria-label="Fewer">−</button><input type="number" id="teamsInput" value="4" min="2" max="8" aria-label="Number of teams"><button type="button" class="btn-ghost" id="teamPlus" aria-label="More">+</button></span>
+      </label>
+      <span class="gm-preview" id="preview"></span>
+
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">🎩 Meet the Magic Hat</button></div>
+  </div>
+
+  <div id="playScreen" class="panel" style="display:none;">
+    <div class="ts-top">
+      <div class="ts-hatzone">
+        <div class="ts-bubble" id="bubble"></div>
+        <svg class="ts-hat idle" id="hat" viewBox="0 0 240 230" aria-hidden="true">
+          <text class="sparkle" x="14" y="60" font-size="26">✨</text><text class="sparkle" x="196" y="44" font-size="22">✨</text><text class="sparkle" x="204" y="150" font-size="20">⭐</text>
+          <ellipse cx="120" cy="200" rx="112" ry="22" fill="#2a1f4a"/>
+          <ellipse cx="120" cy="194" rx="112" ry="22" fill="#4a3a8c"/>
+          <path d="M52 192 L60 40 Q120 18 180 40 L188 192 Q120 210 52 192 Z" fill="#4a3a8c"/>
+          <path d="M60 40 Q120 18 180 40 Q120 62 60 40 Z" fill="#5d4aa8"/>
+          <path d="M56 150 Q120 168 184 150 L186 176 Q120 196 54 176 Z" fill="#ffb627"/>
+          <text x="112" y="176" font-size="18">⭐</text>
+          <g id="eyes">
+            <ellipse cx="96" cy="96" rx="18" ry="22" fill="#fffdf7"/><ellipse cx="144" cy="96" rx="18" ry="22" fill="#fffdf7"/>
+            <g class="pupil" id="pupils"><circle cx="98" cy="100" r="9" fill="#1d2433"/><circle cx="146" cy="100" r="9" fill="#1d2433"/>
+              <circle cx="101" cy="96" r="3" fill="#fff"/><circle cx="149" cy="96" r="3" fill="#fff"/></g>
+            <path d="M76 70 Q96 60 114 70" stroke="#1d2433" stroke-width="5" fill="none" stroke-linecap="round" id="browL"/>
+            <path d="M126 70 Q144 60 164 70" stroke="#1d2433" stroke-width="5" fill="none" stroke-linecap="round" id="browR"/>
+          </g>
+          <path class="mouth-shut" d="M100 132 Q120 144 140 132" stroke="#1d2433" stroke-width="5" fill="none" stroke-linecap="round"/>
+          <path class="mouth-open" d="M98 128 Q120 162 142 128 Z" fill="#1d2433"/>
+        </svg>
+        <div class="ts-stool" id="stool"></div>
+      </div>
+      <div class="ts-side">
+        <div class="ts-up-label">Up next</div>
+        <div class="tw-up" id="upNext" style="font-family:'Archivo Black',sans-serif;font-size:clamp(32px,5vw,60px);color:var(--gold);min-height:1.2em;line-height:1.1;overflow-wrap:anywhere"></div>
+        <div class="ts-left" id="left"></div>
+        <div class="gm-status" id="status" aria-live="polite"></div>
+        <div class="btn-row">
+          <button class="btn-gold" id="sortBtn">🎩 Sort!</button>
+          <button class="btn-ghost" id="fastBtn">⏩ Sort Everyone</button>
+        </div>
+      </div>
+    </div>
+    <div class="ct-teams" id="teams"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="againBtn">🔀 Start Over</button>
+      <button class="btn-ghost" id="copyBtn">Copy Teams</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+  </div>
+  <div class="hint">Press Space to sort the next student.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/balloon-pop-teams.html">🎈 Balloon Pop Teams</a>
+      <a href="/tools/captains-draft.html">👑 Captain’s Draft</a>
+      <a href="/tools/seating-chart.html">🪑 Seating Chart Shuffle</a>
+      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>The Magic Team Sorter turns making teams into a show. One by one, each student is called up and the Magic Hat thinks it over out loud — “Hmm, a tricky one… I sense great ideas!” — with a drumroll, before shouting out their team: “TEAM DRAGONS!” Every so often it changes its mind at the last second, which students love.</p>
+    <p>Behind the scenes the teams are always balanced, so they end up within one student of each other in size no matter what the hat says. Choose 2 to 8 teams, each with its own colour and mascot, and use “Sort Everyone” when you’re short on time.</p>
+    <p>Great for the start of a unit, sports day, class competitions, or splitting the room for a review game. Copy the finished teams with one click, and save your class list so it’s ready on every ClassCarnival tool. Free, no sign-up, and made for the projector.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script src="../js/team-kit.js"></script>
+<script>
+
+(function(){
+  const $ = id => document.getElementById(id), K = window.CCTeam, RM = K.reduceMotion;
+  const setupUI = K.wireSetup({ min: 2, max: 8, unit: 'team' });
+  const hat = $('hat'), bubble = $('bubble');
+  const THINK = ['Hmm… let me see…', 'Ooh, a tricky one…', 'I sense… great ideas!', 'So much energy!', 'Very clever… very clever…',
+    'Hmm, where to put you…', 'I can see a big heart!', 'Oh! Interesting…', 'A brave one, I think…', 'Hmm… hmm… HMM…', 'Such a good listener…', 'I see… a future champion!'];
+  let names = [], teams = [], order = [], plan = [], idx = 0, busy = false, fast = false, timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+
+  function say(text, shoutColor){
+    bubble.textContent = text;
+    bubble.classList.toggle('shout', !!shoutColor);
+    if(shoutColor) bubble.style.setProperty('--tc', shoutColor);
+    bubble.classList.remove('show'); void bubble.offsetWidth; bubble.classList.add('show');
+  }
+  function look(){ $('pupils').style.transform = `translate(${(Math.random() * 12 - 6).toFixed(1)}px, ${(Math.random() * 8 - 4).toFixed(1)}px)`; }
+  function hatState(cls){ hat.setAttribute('class', 'ts-hat ' + cls); }
+
+  $('startBtn').addEventListener('click', () => {
+    names = setupUI.names();
+    if(names.length < 2){ alert('Add at least 2 names.'); return; }
+    $('setupScreen').style.display = 'none'; $('playScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    setup();
+  });
+  $('editBtn').addEventListener('click', () => { stop(); $('playScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('againBtn').addEventListener('click', () => { stop(); setup(); });
+  $('sortBtn').addEventListener('click', () => sort());
+  $('fastBtn').addEventListener('click', () => { if(busy || idx >= order.length) return; fast = true; sort(); });
+  $('copyBtn').addEventListener('click', () => K.copy(teams.map(t => 'Team ' + t.name + ': ' + t.members.join(', ')).join('\n'), $('copied')));
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('playScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault(); if(idx < order.length) sort(); else if(!busy) setup();
+  });
+
+  function stop(){ timers.forEach(clearTimeout); timers = []; busy = false; fast = false; }
+  function setup(){
+    teams = K.makeTeams(Math.min(setupUI.count(), names.length));
+    ({ order, plan } = K.balance(names, teams));
+    idx = 0; busy = false; fast = false; $('copied').textContent = '';
+    K.renderTeams($('teams'), teams); showUp(); hatState('idle'); $('stool').textContent = '';
+    say('Welcome! Who shall I sort first? 🎩');
+    $('sortBtn').disabled = false; $('fastBtn').disabled = false;
+    $('status').innerHTML = 'Press <b>Space</b> or <b>Sort!</b> to call the first student up.';
+  }
+  function showUp(){
+    const up = $('upNext'); up.textContent = idx < order.length ? order[idx] : '🎉';
+    $('left').textContent = idx < order.length ? (order.length - idx) + ' still to sort' : 'Everyone is sorted!';
+  }
+
+  function sort(){
+    if(busy || idx >= order.length) return;
+    busy = true; $('sortBtn').disabled = true;
+    const name = order[idx], t = teams[plan[idx]];
+    const st = $('stool'); st.textContent = name; st.classList.remove('pop'); void st.offsetWidth; st.classList.add('pop');
+    $('status').innerHTML = ''; hatState('down think'); K.sfx.whoosh();
+    if(fast){ say('Hmm…'); later(() => shout(name, t), RM ? 150 : 650); return; }
+    // think: 3 thought bubbles with a drumroll
+    const thoughts = K.shuffle(THINK).slice(0, 3);
+    if(window.CCReveal) CCReveal.drumroll(2600);
+    thoughts.forEach((txt, i) => later(() => { say(txt); look(); }, 150 + i * 850));
+    const fake = teams.length > 1 && Math.random() < .22;
+    if(fake){
+      const other = K.pick(teams.filter(x => x !== t));
+      later(() => { hatState('down talk'); say('Team ' + other.name + '…?'); }, 2700);
+      later(() => { hatState('down think'); say('…NO WAIT! 😲'); K.tone(220, 0, .3, 'sawtooth', .06); }, 3500);
+      later(() => shout(name, t), 4300);
+    } else later(() => shout(name, t), 2750);
+  }
+  function shout(name, t){
+    hatState('shout'); say('TEAM ' + t.name.toUpperCase() + '! ' + t.mascot, t.color);
+    K.sfx.fanfare();
+    t.members.push(name); idx++;
+    K.renderTeams($('teams'), teams); K.flash(t);
+    $('status').innerHTML = t.mascot + ' <b></b> joins Team ' + t.name + '!'; $('status').querySelector('b').textContent = name;
+    showUp();
+    later(() => { busy = false;
+      if(idx >= order.length) return done();
+      hatState('idle'); $('stool').textContent = '';
+      if(fast) return later(sort, RM ? 50 : 350);
+      $('sortBtn').disabled = false;
+    }, fast ? 500 : 1500);
+  }
+  function done(){
+    fast = false; $('sortBtn').disabled = true; $('fastBtn').disabled = true;
+    hatState('idle'); $('stool').textContent = '🎉';
+    say('All sorted! Good luck, everyone! 🎉');
+    if(window.CCReveal) CCReveal.confetti();
+    $('status').innerHTML = '🎉 <b>All teams are ready!</b> Press Space to start over.';
+  }
+})();
+
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>

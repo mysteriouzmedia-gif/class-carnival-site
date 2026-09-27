@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seating Chart Shuffle — Random Classroom Seating Plan Maker | ClassCarnival</title>
+<meta name="description" content="Free random seating chart generator for teachers. Set your desk layout, keep chosen students apart, deal names to seats with a fun animation, swap seats, and print. No sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/seating-chart">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Seating Chart Shuffle — Random Classroom Seating Plan Maker | ClassCarnival">
+<meta property="og:description" content="Free random seating chart generator for teachers. Set your desk layout, keep chosen students apart, deal names to seats with a fun animation, swap seats, and print. No sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/seating-chart">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+
+  .sc-opts2{ display:flex; flex-wrap:wrap; gap: 10px 24px; justify-content:center; align-items:center; margin-top: 14px; }
+  .sc-opts2 label{ display:flex; align-items:center; gap: 8px; font-size: 14px; font-weight:700; color: var(--cream-dim); }
+  .sc-opts2 input[type=checkbox]{ width:16px; height:16px; accent-color: var(--gold); }
+  .sc-apart{ width: 100%; margin-top: 12px; }
+  .sc-apart summary{ cursor:pointer; font-weight:800; color: var(--cream-dim); font-size: 14px; text-align:center; }
+  .sc-apart textarea{ min-height: 80px; margin-top: 8px; }
+  .sc-room{ position:relative; padding: 16px; border-radius: 18px; background: repeating-linear-gradient(90deg, #3a2c22 0 46px, #33271e 46px 92px); border: 4px solid #241a13; }
+  .sc-front{ display:flex; justify-content:center; margin-bottom: 18px; }
+  .sc-board{ width: 70%; text-align:center; background:#1f4d3a; color:#e9f5ee; font-family:'Archivo Black', sans-serif; letter-spacing:2px; border: 6px solid #8b5e3c; border-radius: 8px; padding: 8px; font-size: 14px; }
+  .sc-tdesk{ text-align:center; font-size: 30px; margin: -10px 0 0; line-height:1; }
+  .sc-grid{ display:grid; gap: 14px 10px; margin-top: 12px; }
+  .sc-desk{ position:relative; min-height: 64px; border-radius: 8px; background: #c8894a; box-shadow: inset 0 -5px 0 #9c6630, 0 5px 8px rgba(0,0,0,.35);
+    display:flex; align-items:center; justify-content:center; padding: 6px; cursor:pointer; transition: transform .15s ease, box-shadow .15s ease; }
+  .sc-desk::after{ content:''; position:absolute; left: 30%; right: 30%; bottom: -12px; height: 10px; border-radius: 0 0 8px 8px; background: #5b6474; }
+  .sc-desk.empty{ opacity: .45; }
+  .sc-desk.sel{ box-shadow: inset 0 -5px 0 #9c6630, 0 0 0 4px var(--gold), 0 5px 14px rgba(0,0,0,.4); transform: translateY(-3px); }
+  .sc-desk .num{ position:absolute; left: 6px; top: 3px; font-size: 10px; font-weight:800; color: rgba(40,20,5,.5); }
+  .sc-card{ background:#fffdf7; color:#1d2433; border-radius: 6px; padding: 6px 8px; font-family:'Archivo Black', sans-serif; font-size: clamp(12px, 1.5vw, 17px);
+    text-align:center; line-height:1.1; box-shadow: 0 2px 4px rgba(0,0,0,.3); overflow-wrap:anywhere; max-width: 100%; }
+  .sc-card.warn{ outline: 3px solid #ff6b5b; }
+  .sc-fly{ position:fixed; z-index: 250; pointer-events:none; }
+  .sc-legend{ text-align:center; color: var(--cream-dim); font-size: 13px; margin-top: 10px; min-height: 1.3em; }
+  .sc-legend b{ color: var(--gold); }
+  body.fs-active .sc-desk{ min-height: 80px; }
+  @media print{
+    .site-header, .site-footer, .page-header .sub, .btn-row, .hint, .related-skins, .info-section, .sc-legend, #setupScreen, .gm-copied, .cc-sound-btn, .fs-btn{ display:none !important; }
+    body{ background:#fff !important; } .panel{ border:none !important; background:#fff !important; box-shadow:none !important; }
+    .sc-room{ background:#fff !important; border: 2px solid #999; } .sc-desk{ background:#fff !important; box-shadow:none !important; border: 2px solid #555; } .sc-desk::after{ display:none; }
+    .sc-card{ box-shadow:none; }
+  }
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🪑 Seating Chart Shuffle</div>
+    <h1>Seating Chart Shuffle</h1>
+    <div class="sub">Set up your desks, then deal your class into a brand-new random seating plan — with “keep apart” pairs, easy swaps, and printing.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="ct-options">
+
+      <label>Desks across
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="colMinus" aria-label="Fewer columns">−</button><input type="number" id="colsInput" value="6" min="2" max="10" aria-label="Desks across"><button type="button" class="btn-ghost" id="colPlus" aria-label="More columns">+</button></span>
+      </label>
+      <label>Rows
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="rowMinus" aria-label="Fewer rows">−</button><input type="number" id="rowsInput" value="4" min="1" max="10" aria-label="Rows"><button type="button" class="btn-ghost" id="rowPlus" aria-label="More rows">+</button></span>
+      </label>
+      <span class="gm-preview" id="deskPreview"></span>
+    </div>
+    <div class="sc-opts2">
+      <label><input type="checkbox" id="pairsInput"> Desks in pairs</label>
+      <label><input type="checkbox" id="fillFrontInput" checked> Fill front rows first</label>
+    </div>
+    <details class="sc-apart">
+      <summary>🚫 Keep students apart (optional)</summary>
+      <textarea id="apartInput" placeholder="One pair per line, e.g.
+Minji, Daniel
+Leo, Noah"></textarea>
+    </details>
+    <div>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">🪑 Make the Seating Chart</button></div>
+  </div>
+
+  <div id="playScreen" class="panel" style="display:none;">
+    <div class="sc-room" id="room">
+      <div class="sc-front"><div class="sc-board">FRONT OF THE ROOM</div></div>
+      <div class="sc-tdesk" id="deck" title="Teacher">🧑‍🏫</div>
+      <div class="sc-grid" id="grid"></div>
+    </div>
+    <div class="sc-legend" id="legend">Tip: click two desks to swap them.</div>
+    <div class="btn-row">
+      <button class="btn-gold" id="shuffleBtn">🔀 Shuffle Seats</button>
+      <button class="btn-ghost" id="printBtn">🖨️ Print</button>
+      <button class="btn-ghost" id="copyBtn">Copy Chart</button>
+      <button class="btn-ghost" id="editBtn">Edit Class</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+  </div>
+  <div class="hint">Press Space to shuffle again. Click one desk, then another, to swap two students.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/team-sorter.html">🎩 Magic Team Sorter</a>
+      <a href="/tools/balloon-pop-teams.html">🎈 Balloon Pop Teams</a>
+      <a href="/tools/captains-draft.html">👑 Captain’s Draft</a>
+      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>The Seating Chart Shuffle builds a random seating plan for your classroom in seconds. Set how many desks go across and how many rows you have, and the name cards are dealt out from the teacher’s desk to each seat — a fun reveal on the projector when students come in on seat-change day.</p>
+    <p>Add “keep apart” pairs and the shuffle makes sure those students never sit next to each other (left, right, in front, or behind). Choose desks in pairs, fill the front rows first, then fine-tune by clicking any two desks to swap them. Your layout is remembered for next time.</p>
+    <p>When you’re happy, print the chart for your desk or substitute folder, or copy it as text. Save your class list once and it’s ready on every ClassCarnival tool. Free, no sign-up, and nothing is uploaded — everything stays in your browser.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script src="../js/team-kit.js"></script>
+<script>
+
+(function(){
+  const $ = id => document.getElementById(id), K = window.CCTeam, RM = K.reduceMotion;
+  const setupUI = K.wireSetup({ sample: 16 });
+  let names = [], cols = 6, rows = 4, seats = [], sel = -1, busy = false, timers = [];
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const cfg = () => ({ cols: clamp(parseInt($('colsInput').value, 10) || 6, 2, 10), rows: clamp(parseInt($('rowsInput').value, 10) || 4, 1, 10) });
+  function deskPreview(){
+    const n = setupUI.names().length, c = cfg(), d = c.cols * c.rows;
+    $('deskPreview').textContent = d + ' desks' + (n > d ? ' — ' + Math.ceil((n - d) / c.cols) + ' more row(s) will be added' : n ? ', ' + (d - n) + ' empty' : '');
+  }
+  [['colMinus','colsInput',-1],['colPlus','colsInput',1],['rowMinus','rowsInput',-1],['rowPlus','rowsInput',1]].forEach(([b, i, d]) =>
+    $(b).addEventListener('click', () => { $(i).value = +$(i).value + d; $(i).value = i === 'colsInput' ? cfg().cols : cfg().rows; deskPreview(); }));
+  ['colsInput','rowsInput','namesInput'].forEach(i => $(i).addEventListener('input', deskPreview));
+  $('sampleBtn').addEventListener('click', () => setTimeout(deskPreview, 0));
+  try{ const s = JSON.parse(localStorage.getItem('cc-seating') || '{}');
+    if(s.cols) $('colsInput').value = s.cols; if(s.rows) $('rowsInput').value = s.rows; if(s.pairs) $('pairsInput').checked = true; if(s.apart) $('apartInput').value = s.apart; }catch(e){}
+  setTimeout(deskPreview, 0);
+
+  $('startBtn').addEventListener('click', () => {
+    names = setupUI.names();
+    if(names.length < 2){ alert('Add at least 2 names.'); return; }
+    const c = cfg(); cols = c.cols; rows = Math.max(c.rows, Math.ceil(names.length / cols));
+    try{ localStorage.setItem('cc-seating', JSON.stringify({ cols: c.cols, rows: c.rows, pairs: $('pairsInput').checked, apart: $('apartInput').value })); }catch(e){}
+    $('setupScreen').style.display = 'none'; $('playScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    buildGrid(); shuffleSeats();
+  });
+  $('editBtn').addEventListener('click', () => { stop(); $('playScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('shuffleBtn').addEventListener('click', shuffleSeats);
+  $('printBtn').addEventListener('click', () => window.print());
+  $('copyBtn').addEventListener('click', () => {
+    const out = []; for(let r = 0; r < rows; r++) out.push('Row ' + (r + 1) + ': ' + seats.slice(r * cols, r * cols + cols).map(s => s || '(empty)').join(' | '));
+    K.copy('FRONT\n' + out.join('\n'), $('copied'));
+  });
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('playScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault(); shuffleSeats();
+  });
+  function stop(){ timers.forEach(clearTimeout); timers = []; busy = false; document.querySelectorAll('.sc-fly').forEach(f => f.remove()); }
+
+  function apartPairs(){
+    return K.lines($('apartInput').value).map(l => l.split(/[,&+/]| and /i).map(s => s.trim().toLowerCase()).filter(Boolean)).filter(p => p.length >= 2);
+  }
+  function neighbours(i){
+    const r = Math.floor(i / cols), c = i % cols, out = [];
+    if(c > 0) out.push(i - 1); if(c < cols - 1) out.push(i + 1); if(r > 0) out.push(i - cols); if(r < rows - 1) out.push(i + cols);
+    return out;
+  }
+  function conflicts(arr){
+    const pairs = apartPairs(); if(!pairs.length) return [];
+    const bad = new Set();
+    arr.forEach((n, i) => { if(!n) return; const a = n.toLowerCase();
+      neighbours(i).forEach(j => { const b = arr[j] && arr[j].toLowerCase(); if(!b) return;
+        if(pairs.some(p => p.includes(a) && p.includes(b) && a !== b)) { bad.add(i); bad.add(j); } }); });
+    return [...bad];
+  }
+  function arrange(){
+    const total = cols * rows, front = $('fillFrontInput').checked;
+    let best = null, bestBad = Infinity;
+    for(let t = 0; t < 400; t++){
+      const people = K.shuffle(names), arr = new Array(total).fill(null);
+      if(front){ people.forEach((n, i) => arr[i] = n); }
+      else { const spots = K.shuffle([...Array(total).keys()]).slice(0, people.length); people.forEach((n, i) => arr[spots[i]] = n); }
+      const bad = conflicts(arr).length;
+      if(bad < bestBad){ best = arr; bestBad = bad; }
+      if(!bad) break;
+    }
+    return best;
+  }
+  function buildGrid(){
+    const g = $('grid'), pairs = $('pairsInput').checked; g.innerHTML = '';
+    const tcols = pairs ? cols + Math.floor((cols - 1) / 2) : cols;
+    g.style.gridTemplateColumns = Array.from({ length: tcols }, (_, k) => pairs && (k + 1) % 3 === 0 ? '18px' : '1fr').join(' ');
+    for(let i = 0; i < cols * rows; i++){
+      const d = document.createElement('div'); d.className = 'sc-desk empty'; d.dataset.i = i;
+      const c = i % cols; d.style.gridColumn = String(pairs ? c + Math.floor(c / 2) + 1 : c + 1); d.style.gridRow = String(Math.floor(i / cols) + 1);
+      d.innerHTML = '<span class="num">' + (i + 1) + '</span>';
+      d.addEventListener('click', () => clickDesk(i));
+      g.appendChild(d);
+    }
+  }
+  function desk(i){ return $('grid').children[i]; }
+  function paint(i, name, warn){
+    const d = desk(i); d.innerHTML = '<span class="num">' + (i + 1) + '</span>';
+    d.classList.toggle('empty', !name);
+    if(name){ const c = document.createElement('div'); c.className = 'sc-card' + (warn ? ' warn' : ''); c.textContent = name; d.appendChild(c); }
+  }
+  function shuffleSeats(){
+    if(busy) return; stop(); busy = true; sel = -1; $('copied').textContent = '';
+    seats = arrange();
+    for(let i = 0; i < seats.length; i++) paint(i, null);
+    const deck = $('deck').getBoundingClientRect(), order = [...seats.keys()].filter(i => seats[i]);
+    const gap = RM ? 0 : Math.max(35, Math.min(110, 2400 / order.length));
+    order.forEach((i, k) => timers.push(setTimeout(() => {
+      const target = desk(i).getBoundingClientRect();
+      if(RM){ paint(i, seats[i]); return; }
+      const f = document.createElement('div'); f.className = 'sc-fly sc-card'; f.textContent = seats[i];
+      f.style.left = (deck.left + deck.width / 2 - 30) + 'px'; f.style.top = (deck.top + 10) + 'px';
+      f.style.transform = 'rotate(' + (Math.random() * 40 - 20) + 'deg) scale(.7)';
+      f.style.transition = 'left .45s cubic-bezier(.3,.8,.4,1), top .45s cubic-bezier(.3,.8,.4,1), transform .45s ease';
+      document.body.appendChild(f); K.sfx.card();
+      requestAnimationFrame(() => requestAnimationFrame(() => { f.style.left = (target.left + target.width / 2 - f.offsetWidth / 2) + 'px'; f.style.top = (target.top + target.height / 2 - f.offsetHeight / 2) + 'px'; f.style.transform = 'none'; }));
+      timers.push(setTimeout(() => { f.remove(); paint(i, seats[i]); }, 470));
+    }, k * gap)));
+    timers.push(setTimeout(() => { busy = false; finish(); }, order.length * gap + 520));
+  }
+  function finish(){
+    const bad = conflicts(seats);
+    seats.forEach((n, i) => paint(i, n, bad.includes(i)));
+    K.sfx.land();
+    $('legend').innerHTML = bad.length ? '⚠️ Couldn’t keep every pair apart with this layout — the red names are still neighbours. Try swapping or adding desks.'
+      : (apartPairs().length ? '✅ All “keep apart” pairs are separated. ' : '') + 'Tip: click two desks to <b>swap</b> them.';
+  }
+  function clickDesk(i){
+    if(busy) return;
+    if(sel === -1){ sel = i; desk(i).classList.add('sel'); K.sfx.tick(); return; }
+    if(sel === i){ desk(i).classList.remove('sel'); sel = -1; return; }
+    [seats[sel], seats[i]] = [seats[i], seats[sel]];
+    desk(sel).classList.remove('sel'); sel = -1; K.sfx.card(); finish();
+  }
+})();
+
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>

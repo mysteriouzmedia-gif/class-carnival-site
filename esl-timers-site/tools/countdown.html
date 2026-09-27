@@ -162,7 +162,7 @@
   <div class="page-header">
     <div class="eyebrow">⏳ Countdown Timer</div>
     <h1>Classroom Countdown</h1>
-    <div class="sub">Pick a theme and a time. A timer buddy cheers the class on, surprise visitors fly past to catch for class stars, and beat-the-timer mode turns any task into a race for a mystery reward.</div>
+    <div class="sub">Pick a theme and a time. A timer buddy cheers the class on, every theme has its own sounds, and beat-the-timer mode turns any task into a race for a mystery reward.</div>
   </div>
 
   <div class="panel">
@@ -189,6 +189,7 @@
       <input type="number" id="customSec" min="0" max="59" placeholder="sec" aria-label="Seconds">
       <button class="btn-ghost" id="setCustomBtn">Set</button>
       <label class="gm-check"><input type="checkbox" id="tickInput" checked> Tick sound in the last 10 seconds</label>
+      <label class="gm-check"><input type="checkbox" id="ambInput" checked> 🎵 Theme sounds</label>
       <label class="gm-check"><input type="checkbox" id="beatInput"> 🏁 Beat-the-timer mode</label>
     </div>
     <div class="beat-row" id="beatRow" hidden>
@@ -202,13 +203,13 @@
       <button class="btn-ghost" id="resetBtn">Reset</button>
     </div>
   </div>
-  <div class="hint">Tip: press Space to start/pause, R to reset, S to catch a flying visitor, D for “We’re done!” in beat-the-timer mode.</div>
+  <div class="hint">Tip: press Space to start/pause, R to reset, D for “We’re done!” in beat-the-timer mode.</div>
 
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A themed classroom countdown timer that students actually watch. Choose a theme to match the moment: a rocket whose fuel drains until it blasts off, a balloon that swells until it pops, an ice cream that slowly melts, a classic sand timer, or a simple big-digit timer with a colour-changing progress bar. Every theme is readable from the back of the room and works in fullscreen on a projector.</p>
     <p>In the final 10 seconds, giant numbers count down on screen (with an optional tick sound), so students get a clear cue to wrap up even when the room is noisy. When time's up, each theme has its own finale — liftoff, a pop, a puddle — followed by a big "Time's up!" message.</p>
-    <p>To keep the class engaged, a timer buddy cheers everyone on, calls out halfway and the last minute, and starts to panic when time is nearly gone. Every so often a surprise visitor — a butterfly, a UFO, even a golden star — flies across the screen: click it (or press S) to earn a class star. Turn on beat-the-timer mode and press “We’re done!” when the class finishes early to unlock a mystery reward you choose.</p>
+    <p>To keep the class engaged, a timer buddy cheers everyone on, calls out halfway and the last minute, and starts to panic when time is nearly gone. Each theme has its own sound effects — the rocket rumbles, the ice cream drips, the balloon gets pumped — with alerts at halfway, one minute and thirty seconds left, and a heartbeat in the final countdown. Turn theme sounds off any time and keep just the alerts. Turn on beat-the-timer mode and press “We’re done!” when the class finishes early to unlock a mystery reward you choose.</p>
     <p>Use it for independent work, timed writing, group discussions, test sections, clean-up time, or transitions. Pick a preset (30 seconds to 15 minutes) or set any custom time, add an extra minute on the fly, and press Space to start and pause. No sign-up and no download needed.</p>
   </div>
 </main>
@@ -227,10 +228,29 @@
   let themeKey = 'rocket';
   try{ themeKey = localStorage.getItem('cc-countdown-theme') || 'rocket'; }catch(e){}
 
-  /* ---------- buddy, visitors, beat-the-timer ---------- */
+  /* ---------- buddy, sounds, beat-the-timer ---------- */
   const F = window.CCTimerFun;
   const buddy = F.buddy($('buddyHost'));
-  const visitors = F.visitors(document.querySelector('.tm-stage'), buddy);
+  const S = F.sfx;
+  let nextAmb = 0, ambN = 0;
+  const ambOn = () => $('ambInput').checked;
+  try{ $('ambInput').checked = localStorage.getItem('cc-timer-ambient') !== 'false'; }catch(e){}
+  $('ambInput').addEventListener('change', () => { try{ localStorage.setItem('cc-timer-ambient', $('ambInput').checked); }catch(e){} });
+  /* theme sounds while the timer runs: [every ms, sound] */
+  const AMBIENT = {
+    classic:   [1000, () => S.tickTock(ambN % 2)],
+    hourglass: [2500, () => S.sand()],
+    rocket:    [2000, () => { S.beacon(); if(ambN % 3 === 0) S.noise(.8, .08, 160); }],
+    icecream:  [2200, () => S.drip()],
+    balloon:   [1600, () => S.pump()]
+  };
+  const START_SOUND = { classic: S.start, hourglass: S.flip, rocket: () => { S.start(); S.rumble(); }, icecream: S.jingle, balloon: () => { S.pump(); setTimeout(S.pump, 250); } };
+  function ambient(sec){
+    if(!running || !ambOn() || sec <= 10) return;
+    const now = performance.now();
+    if(now < nextAmb) return;
+    const a = AMBIENT[themeKey]; ambN++; a[1](); nextAmb = now + a[0];
+  }
   let said = {}, nextChat = 0;
   const CHAT = {
     all: ['You’ve got this! 💪', 'Nice focus, everyone!', 'Quiet brains at work… 🧠', 'Looking good!', 'I believe in you!', 'Keep going, keep going!'],
@@ -256,10 +276,10 @@
     if(!running) return;
     const ms = performance.now();
     let msg = null, mood = null, hold;
-    if(sec <= 10 && !said.s10){ said.s10 = said.s30 = said.m1 = said.half = true; msg = 'HURRY!!! 😱'; mood = 'panic'; hold = 0; }
-    else if(sec <= 30 && total >= 60 && !said.s30){ said.s30 = said.m1 = said.half = true; msg = '30 seconds! Start wrapping up!'; mood = 'worried'; }
-    else if(sec <= 60 && total >= 120 && !said.m1){ said.m1 = said.half = true; msg = '1 minute left! ⏰'; mood = 'worried'; }
-    else if(sec <= total / 2 && total >= 60 && !said.half){ said.half = true; msg = 'Halfway there! 🎉'; mood = 'wow'; }
+    if(sec <= 10 && !said.s10){ said.s10 = said.s30 = said.m1 = said.half = true; msg = 'HURRY!!! 😱'; mood = 'panic'; hold = 0; S.alarm3(); }
+    else if(sec <= 30 && total >= 60 && !said.s30){ said.s30 = said.m1 = said.half = true; msg = '30 seconds! Start wrapping up!'; mood = 'worried'; S.alarm3(); }
+    else if(sec <= 60 && total >= 120 && !said.m1){ said.m1 = said.half = true; msg = '1 minute left! ⏰'; mood = 'worried'; S.alert(); }
+    else if(sec <= total / 2 && total >= 60 && !said.half){ said.half = true; msg = 'Halfway there! 🎉'; mood = 'wow'; S.chime(); }
     if(msg){ buddy.say(msg, mood, hold); nextChat = ms + 20000; return; }
     if(sec > 30 && ms > nextChat){
       nextChat = ms + 20000 + Math.random() * 12000;
@@ -291,7 +311,7 @@
       s.connect(f); f.connect(g); g.connect(c.destination); s.start();
     }catch(e){}
   }
-  const tick = n => tone(n <= 3 ? 1046 : 784, 0, .09, 'square', .06);
+  const tick = n => { tone(600 + (10 - n) * 70, 0, .09, 'square', .06); if(n <= 5) F.sfx.heartbeat(); };
   const FINALE_SOUND = {
     classic:   () => [0, .4, .8].forEach(t => tone(880, t, .3, 'sine', .25)),
     hourglass: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, i * .12, .6, 'sine', .12)),
@@ -425,7 +445,7 @@
     }
     THEMES[themeKey].update(p, sec);
     scene.classList.toggle('urgent', running && sec > 0 && sec <= (total >= 120 ? 30 : 10));
-    talk(sec);
+    talk(sec); ambient(sec);
   }
   function finalBeat(n){
     if($('tickInput').checked) tick(n);
@@ -444,17 +464,18 @@
     if(fresh){ said = {}; buddy.say('Let’s go! ' + words(total) + ' on the clock!' + ($('beatInput').checked ? ' Beat it! 🏁' : ''), 'happy'); }
     else buddy.say('And we’re back! ▶', 'happy', 2500);
     nextChat = performance.now() + 15000;
-    visitors.start(); syncBeat();
+    fresh ? START_SOUND[themeKey]() : S.resume(); nextAmb = performance.now() + 1500; syncBeat();
     cancelAnimationFrame(raf); loop();
   }
-  function pause(){ running = false; cancelAnimationFrame(raf); btn.textContent = '▶ Resume'; visitors.stop(); buddy.say('Paused… zzz', 'sleep', 0); render(true); }
+  function pause(){ running = false; cancelAnimationFrame(raf); btn.textContent = '▶ Resume'; S.pause(); buddy.say('Paused… zzz', 'sleep', 0); render(true); }
   function toggle(){ if(finished) return reset(); running ? pause() : start(); }
   function finish(){
     running = false; finished = true; cancelAnimationFrame(raf); btn.textContent = '↺ Again';
-    visitors.stop(); render(true); syncBeat();
+    render(true); syncBeat();
     const t = THEMES[themeKey]; t.finish(); FINALE_SOUND[themeKey]();
     const beat = $('beatInput').checked;
     buddy.say(beat ? 'The timer won this time… rematch? 😅' : 'Time’s up! Pencils down! 🥳', beat ? 'worried' : 'party', 0);
+    if(beat) setTimeout(S.sadTrombone, 900);
     setTimeout(() => {
       if(window.CCReveal) CCReveal.show('Time’s up!', { label: beat ? '⏰ The timer won this round — try again!' : t.done, onClose: () => {} });
     }, themeKey === 'rocket' ? 1400 : themeKey === 'balloon' ? 500 : 300);
@@ -463,7 +484,7 @@
     if(finished || remainMs >= total * 1000) return;
     const spare = Math.ceil(remainMs / 1000);
     running = false; finished = true; cancelAnimationFrame(raf); btn.textContent = '↺ Again';
-    visitors.stop(); scene.classList.remove('urgent'); syncBeat();
+    scene.classList.remove('urgent'); syncBeat(); S.whistle(); setTimeout(S.cheer, 300);
     const t = THEMES[themeKey]; t.finish(); FINALE_SOUND[themeKey]();
     buddy.say('WE BEAT THE TIMER! ' + fmt(spare) + ' to spare! 🏆', 'party', 0);
     const list = $('rewardsInput').value.split(',').map(x => x.trim()).filter(Boolean);
@@ -473,7 +494,7 @@
   }
   function reset(){
     running = false; finished = false; cancelAnimationFrame(raf); remainMs = total * 1000; lastShown = null; btn.textContent = '▶ Start';
-    said = {}; visitors.stop(); buddy.quiet(); buddy.mood('calm');
+    said = {}; buddy.quiet(); buddy.mood('calm'); S.reset();
     THEMES[themeKey].reset(); render(true); syncBeat();
   }
   function setTime(sec){
@@ -491,7 +512,7 @@
     total += 60; remainMs += 60000; if(running) endAt += 60000;
     if(remainMs > 60000) said.s10 = said.s30 = false;
     if(remainMs > 120000) said.m1 = false;
-    buddy.say('Bonus minute! Phew! ⏱️', 'happy', 3000); render(true);
+    S.coin(); buddy.say('Bonus minute! Phew! ⏱️', 'happy', 3000); render(true);
   });
   btn.addEventListener('click', toggle);
   $('resetBtn').addEventListener('click', reset);
@@ -501,7 +522,6 @@
     if(window.CCReveal && CCReveal.isOpen()) return;
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
     else if(e.key.toLowerCase() === 'r'){ reset(); }
-    else if(e.key.toLowerCase() === 's'){ visitors.catchNow(); }
     else if(e.key.toLowerCase() === 'd' && $('beatInput').checked){ weDone(); }
   });
 

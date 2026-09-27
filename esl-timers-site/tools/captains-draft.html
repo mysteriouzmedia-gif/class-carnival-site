@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Captain’s Draft — Pick Team Captains & Draft Teams | ClassCarnival</title>
+<meta name="description" content="Free captain’s draft team picker for the classroom and PE. Randomly pick captains, then captains take turns drafting players in snake order — with surprise random picks for shy captains.">
+<link rel="canonical" href="https://classcarnival.com/tools/captains-draft">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Captain’s Draft — Pick Team Captains &amp; Draft Teams | ClassCarnival">
+<meta property="og:description" content="Free captain’s draft team picker for the classroom and PE. Randomly pick captains, then captains take turns drafting players in snake order — with surprise random picks for shy captains.">
+<meta property="og:url" content="https://classcarnival.com/tools/captains-draft">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+
+  .cd-status{ text-align:center; margin: 4px 0 14px; }
+  .cd-turn{ font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 3.4vw, 38px); line-height:1.15; color: var(--cream); min-height: 1.3em; }
+  .cd-turn span{ color: var(--c, var(--gold)); }
+  .cd-turn.pop{ animation: cdPop .45s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes cdPop{ from{ transform: scale(.7); opacity:0; } to{ transform:none; opacity:1; } }
+  .cd-round{ font-size: 12px; letter-spacing: 3px; font-weight:800; text-transform: uppercase; color: var(--cream-dim); margin-bottom: 4px; }
+  .cd-order{ display:flex; justify-content:center; gap: 6px; flex-wrap:wrap; margin-top: 8px; }
+  .cd-order span{ width: 30px; height: 30px; border-radius: 50%; display:grid; place-items:center; font-size: 16px; background: rgba(255,255,255,.05); border: 2px solid transparent; opacity:.55; }
+  .cd-order span.now{ border-color: var(--c); background: color-mix(in srgb, var(--c) 25%, transparent); opacity:1; transform: scale(1.2); }
+  .cd-pool{ display:flex; flex-wrap:wrap; justify-content:center; gap: 10px; padding: 16px; border-radius: 16px; background: rgba(255,255,255,.03); border: 1px dashed var(--line); min-height: 70px; }
+  .cd-card{ background: #fffdf7; color: #1d2433; border: none; border-radius: 12px; padding: 10px 16px; font-family:'Archivo Black', sans-serif; font-size: clamp(15px, 1.8vw, 20px);
+    box-shadow: 0 4px 0 #c9c2b0, 0 6px 14px rgba(0,0,0,.3); cursor:pointer; transition: transform .15s ease, box-shadow .15s ease, background .15s ease; }
+  .cd-card:hover:not(:disabled), .cd-card:focus-visible{ transform: translateY(-4px) rotate(-2deg); box-shadow: 0 8px 0 #c9c2b0, 0 12px 20px rgba(0,0,0,.35); }
+  .cd-card.flicker{ background: var(--gold); transform: scale(1.12); }
+  .cd-card.chosen{ background: var(--c); color:#fff; transform: scale(1.25); box-shadow: 0 0 0 4px #fff, 0 0 30px var(--c); }
+  .cd-card:disabled{ cursor: default; }
+  .cd-pool-label{ text-align:center; font-size: 12px; letter-spacing: 3px; font-weight:800; text-transform: uppercase; color: var(--cream-dim); margin: 18px 0 8px; }
+  .cd-fly{ position:fixed; z-index:250; pointer-events:none; font-family:'Archivo Black', sans-serif; background: var(--c); color:#fff; padding: 8px 14px; border-radius: 12px;
+    transform: translate(-50%,-50%); transition: left .6s cubic-bezier(.5,0,.3,1), top .6s cubic-bezier(.5,-0.4,.3,1), opacity .2s ease .5s; }
+  .cd-mode{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+  .cd-mode label{ display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color: var(--cream-dim); }
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">👑 Captain’s Draft</div>
+    <h1>Captain’s Draft</h1>
+    <div class="sub">Pick captains, then let them draft their teams one player at a time — with a surprise random pick whenever a captain gets stuck.</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="ct-options">
+      <label>Number of captains
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="teamMinus" aria-label="Fewer">−</button><input type="number" id="teamsInput" value="2" min="2" max="6" aria-label="Number of captains"><button type="button" class="btn-ghost" id="teamPlus" aria-label="More">+</button></span>
+      </label>
+      <span class="gm-preview" id="preview"></span>
+      <label class="cd-snake"><input type="checkbox" id="snakeInput" checked style="width:16px;height:16px;accent-color:var(--gold)"> 🐍 Snake order (last pick goes first next round)</label>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">👑 Start the Draft</button></div>
+  </div>
+
+  <div id="playScreen" class="panel" style="display:none;">
+    <div class="cd-status">
+      <div class="cd-round" id="round"></div>
+      <div class="cd-turn" id="turn" aria-live="polite"></div>
+      <div class="cd-order" id="orderRow"></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gold" id="randCapBtn">🎲 Pick Captains Randomly</button>
+      <button class="btn-gold" id="surpriseBtn" style="display:none">🎲 Surprise Pick</button>
+      <button class="btn-ghost" id="autoBtn" style="display:none">⏩ Auto-Draft the Rest</button>
+    </div>
+    <div class="cd-pool-label" id="poolLabel">Players</div>
+    <div class="cd-pool" id="pool"></div>
+    <div class="ct-teams" id="teams"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="againBtn">🔀 Start Over</button>
+      <button class="btn-ghost" id="copyBtn">Copy Teams</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+  </div>
+  <div class="hint">Click a name to choose it. Shy captain? Press 🎲 Surprise Pick (or R) and let fate decide.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/team-sorter.html">🎩 Magic Team Sorter</a>
+      <a href="/tools/balloon-pop-teams.html">🎈 Balloon Pop Teams</a>
+      <a href="/tools/seating-chart.html">🪑 Seating Chart Shuffle</a>
+      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>Captain’s Draft picks teams the way students do on the playground — but fairly. First, choose the captains: click a name, or let the random picker flicker across the class and land on someone. Then the draft begins: each captain takes a turn choosing a teammate by clicking a name card, and the card flies into their team.</p>
+    <p>Snake order (on by default) means the captain who picked last in one round picks first in the next, so no team gets all the early picks. Shy captain, or want to avoid hurt feelings? Press “Surprise Pick” and the tool picks a random player for them — or “Auto-Draft the Rest” to finish instantly. Teams always come out within one player of each other.</p>
+    <p>Great for PE, sports-style games, debates, and team competitions. Copy the finished teams with the captains marked, and save your class list so it’s ready on every ClassCarnival tool. Free and no sign-up.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script src="../js/team-kit.js"></script>
+<script>
+
+(function(){
+  const $ = id => document.getElementById(id), K = window.CCTeam, RM = K.reduceMotion;
+  const setupUI = K.wireSetup({ min: 2, max: 6, unit: 'team' });
+  let names = [], teams = [], pool = [], phase = 'captains', pickNo = 0, busy = false, auto = false;
+
+  $('startBtn').addEventListener('click', () => {
+    names = setupUI.names();
+    if(names.length < 3){ alert('Add at least 3 names.'); return; }
+    $('setupScreen').style.display = 'none'; $('playScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    setup();
+  });
+  $('editBtn').addEventListener('click', () => { auto = false; $('playScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('againBtn').addEventListener('click', () => { if(!busy) setup(); });
+  $('randCapBtn').addEventListener('click', randomCaptain);
+  $('surpriseBtn').addEventListener('click', surprise);
+  $('autoBtn').addEventListener('click', () => { if(busy || phase !== 'draft') return; auto = true; surprise(); });
+  $('copyBtn').addEventListener('click', () => K.copy(teams.map(t => 'Team ' + t.name + ' (captain ' + (t.members[0] || '—') + '): ' + t.members.join(', ')).join('\n'), $('copied')));
+  document.addEventListener('keydown', e => {
+    if($('playScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT') return;
+    if(e.key.toLowerCase() === 'r' || e.key === ' '){ e.preventDefault(); if(phase === 'captains') randomCaptain(); else if(phase === 'draft') surprise(); else if(!busy) setup(); }
+  });
+
+  function setup(){
+    teams = K.makeTeams(Math.min(setupUI.count(), Math.floor(names.length / 1)));
+    pool = K.shuffle(names); phase = 'captains'; pickNo = 0; busy = false; auto = false; $('copied').textContent = '';
+    $('randCapBtn').style.display = ''; $('surpriseBtn').style.display = 'none'; $('autoBtn').style.display = 'none';
+    $('poolLabel').textContent = 'Click a name to make them captain — or pick randomly';
+    render(); status();
+  }
+  function capTeam(){ return teams.find(t => !t.members.length); }
+  function turnTeam(){
+    const g = teams.length, round = Math.floor(pickNo / g), pos = pickNo % g;
+    const snake = $('snakeInput').checked && round % 2 === 1;
+    return teams[snake ? g - 1 - pos : pos];
+  }
+  function render(){
+    const cur = phase === 'captains' ? capTeam() : phase === 'draft' ? turnTeam() : null;
+    K.renderTeams($('teams'), teams, { captains: true, showSize: false, turn: cur ? teams.indexOf(cur) : -1 });
+    const p = $('pool'); p.innerHTML = '';
+    pool.forEach(n => {
+      const c = document.createElement('button'); c.className = 'cd-card'; c.textContent = n;
+      c.addEventListener('click', () => choose(n, c)); p.appendChild(c);
+    });
+    if(!pool.length){ const d = document.createElement('div'); d.style.cssText = 'color:var(--cream-dim);font-weight:700;align-self:center'; d.textContent = 'Everyone has been picked! 🎉'; p.appendChild(d); }
+    const row = $('orderRow'); row.innerHTML = '';
+    if(phase === 'draft'){
+      const g = teams.length;
+      for(let k = 0; k < g; k++){ const save = pickNo; pickNo = Math.floor(save / g) * g + k; const t = turnTeam(); pickNo = save;
+        const s = document.createElement('span'); s.textContent = t.mascot; s.style.setProperty('--c', t.color); if(t === cur) s.className = 'now'; row.appendChild(s); }
+    }
+  }
+  function status(){
+    const turn = $('turn'), round = $('round');
+    turn.classList.remove('pop'); void turn.offsetWidth; turn.classList.add('pop');
+    if(phase === 'captains'){
+      const t = capTeam(); round.textContent = 'Step 1 · Choose the captains';
+      turn.innerHTML = 'Who will lead <span></span>?'; turn.querySelector('span').textContent = t.mascot + ' Team ' + t.name; turn.style.setProperty('--c', t.color);
+    } else if(phase === 'draft'){
+      const t = turnTeam(), g = teams.length;
+      round.textContent = 'Step 2 · The Draft · Round ' + (Math.floor(pickNo / g) + 1);
+      turn.innerHTML = '👑 <span></span>, it’s your pick!'; turn.querySelector('span').textContent = t.members[0] + ' (' + t.mascot + ' ' + t.name + ')'; turn.style.setProperty('--c', t.color);
+    } else {
+      round.textContent = 'Draft complete'; turn.textContent = '🎉 The teams are ready!'; turn.style.removeProperty('--c');
+    }
+  }
+  function flicker(done){
+    const cards = [...document.querySelectorAll('.cd-card')];
+    if(!cards.length) return;
+    if(RM || auto){ return done(K.pick(cards)); }
+    busy = true; let n = 0, last = null;
+    const steps = 14 + Math.floor(Math.random() * 6);
+    (function step(){
+      if(last) last.classList.remove('flicker');
+      last = K.pick(cards.filter(c => c !== last) .length ? cards.filter(c => c !== last) : cards); last.classList.add('flicker'); K.sfx.tick();
+      if(++n >= steps){ last.classList.remove('flicker'); busy = false; return done(last); }
+      setTimeout(step, 45 * Math.pow(1.12, n));
+    })();
+  }
+  function randomCaptain(){ if(busy || phase !== 'captains') return; flicker(c => choose(c.textContent, c)); }
+  function surprise(){ if(busy || phase !== 'draft') return; flicker(c => choose(c.textContent, c)); }
+
+  function choose(name, card){
+    if(busy || phase === 'done') return;
+    const t = phase === 'captains' ? capTeam() : turnTeam();
+    busy = true;
+    card.style.setProperty('--c', t.color); card.classList.add('chosen');
+    document.querySelectorAll('.cd-card').forEach(c => c.disabled = true);
+    phase === 'captains' ? K.sfx.fanfare() : K.sfx.land();
+    const r = card.getBoundingClientRect();
+    setTimeout(() => {
+      const box = t.box.getBoundingClientRect();
+      const fly = document.createElement('div'); fly.className = 'cd-fly'; fly.textContent = name; fly.style.setProperty('--c', t.color);
+      fly.style.left = (r.left + r.width / 2) + 'px'; fly.style.top = (r.top + r.height / 2) + 'px'; document.body.appendChild(fly);
+      card.style.visibility = 'hidden'; K.sfx.whoosh();
+      requestAnimationFrame(() => requestAnimationFrame(() => { fly.style.left = (box.left + box.width / 2) + 'px'; fly.style.top = (box.top + 34) + 'px'; fly.style.opacity = 0; }));
+      setTimeout(() => {
+        fly.remove();
+        pool = pool.filter(n => n !== name); t.members.push(name);
+        if(phase === 'captains'){
+          if(!capTeam()){ phase = 'draft'; pickNo = 0; K.sfx.fanfare();
+            $('randCapBtn').style.display = 'none'; $('surpriseBtn').style.display = ''; $('autoBtn').style.display = '';
+            $('poolLabel').textContent = 'Players still to pick'; }
+        } else pickNo++;
+        if(!pool.length){ phase = 'done'; $('surpriseBtn').style.display = 'none'; $('autoBtn').style.display = 'none'; }
+        busy = false; render(); status(); K.flash(t);
+        if(phase === 'done'){ auto = false; K.sfx.fanfare(); if(window.CCReveal) CCReveal.confetti(); return; }
+        if(auto && phase === 'draft') setTimeout(surprise, RM ? 30 : 200);
+      }, RM ? 60 : 650);
+    }, RM || auto ? 80 : 700);
+  }
+})();
+
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balloon Pop Teams — Pop a Balloon to Make Random Teams | ClassCarnival</title>
+<meta name="description" content="Free balloon pop team maker for kids. Each balloon hides a student’s name — pop it and the name drops into a team basket. Balanced random teams for the classroom whiteboard, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/balloon-pop-teams">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Balloon Pop Teams — Pop a Balloon to Make Random Teams | ClassCarnival">
+<meta property="og:description" content="Free balloon pop team maker for kids. Each balloon hides a student’s name — pop it and the name drops into a team basket. Balanced random teams for the classroom whiteboard, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/balloon-pop-teams">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+
+  .bp-sky{ position:relative; border-radius: 20px; overflow:hidden; min-height: 330px; padding: 22px 14px 40px;
+    background: linear-gradient(180deg, #6ec3f4 0%, #a9dcfb 70%, #cdeeff 100%); }
+  .bp-sky::before{ content:'☁️'; position:absolute; top: 12px; left: -80px; font-size: 60px; opacity:.9; animation: bpCloud 40s linear infinite; }
+  .bp-sky::after{ content:'☁️'; position:absolute; top: 70px; left: -80px; font-size: 42px; opacity:.8; animation: bpCloud 55s linear -20s infinite; }
+  @keyframes bpCloud{ to{ left: 105%; } }
+  .bp-field{ position:relative; z-index:1; display:flex; flex-wrap:wrap; justify-content:center; gap: 6px 10px; }
+  .bp-balloon{ position:relative; width: 74px; height: 112px; padding:0; background:none; border:none; cursor:pointer; animation: bpBob var(--d, 3s) ease-in-out var(--dl, 0s) infinite; }
+  .bp-balloon svg{ width:100%; height:100%; overflow:visible; filter: drop-shadow(0 6px 8px rgba(0,0,0,.18)); transition: transform .15s ease; }
+  .bp-balloon:hover svg, .bp-balloon:focus-visible svg{ transform: scale(1.1); }
+  .bp-balloon .q{ font-family:'Archivo Black', sans-serif; font-size: 26px; fill: rgba(255,255,255,.9); }
+  .bp-balloon.popped{ pointer-events:none; animation:none; }
+  .bp-balloon.popped svg .body{ display:none; }
+  .bp-balloon .burst{ opacity:0; }
+  .bp-balloon.popped .burst{ animation: bpBurst .5s ease-out forwards; }
+  .bp-balloon.popped .string{ animation: bpFall .6s ease-in forwards; }
+  @keyframes bpBob{ 0%,100%{ transform: translateY(0) rotate(-3deg); } 50%{ transform: translateY(-12px) rotate(3deg); } }
+  @keyframes bpBurst{ 0%{ opacity:1; transform: scale(.4); } 100%{ opacity:0; transform: scale(1.6); } }
+  @keyframes bpFall{ to{ transform: translateY(80px); opacity:0; } }
+  .bp-name{ position:fixed; z-index: 250; pointer-events:none; font-family:'Archivo Black', sans-serif; color:#fff; background: var(--c); padding: 8px 16px; border-radius: 14px;
+    font-size: clamp(20px, 3vw, 34px); box-shadow: 0 8px 20px rgba(0,0,0,.35); transform: translate(-50%, -50%);
+    transition: left .7s cubic-bezier(.5,0,.3,1), top .7s cubic-bezier(.5,-0.3,.3,1), transform .7s ease, opacity .3s ease .6s; }
+  .bp-name.big{ transform: translate(-50%, -50%) scale(1.5); }
+  .bp-name.fly{ transform: translate(-50%, -50%) scale(.5); opacity: 0; }
+  .bp-banner{ text-align:center; font-family:'Archivo Black', sans-serif; font-size: clamp(20px, 3vw, 30px); min-height: 1.4em; color: var(--gold); margin-top: 12px; }
+  .bp-banner span{ color: var(--c); }
+  .ct-team{ position:relative; }
+  .ct-team::after{ content:'🧺'; position:absolute; right: 10px; bottom: 6px; font-size: 26px; opacity:.35; }
+  @media (prefers-reduced-motion: reduce){ .bp-balloon, .bp-sky::before, .bp-sky::after{ animation:none !important; } }
+
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html" class="active">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🎈 Balloon Pop Teams</div>
+    <h1>Balloon Pop Teams</h1>
+    <div class="sub">Every balloon hides a name. Pop one and watch the student drop into their team’s basket!</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="ct-options">
+      <label>Number of teams
+        <span class="gm-stepper"><button type="button" class="btn-ghost" id="teamMinus" aria-label="Fewer">−</button><input type="number" id="teamsInput" value="4" min="2" max="8" aria-label="Number of teams"><button type="button" class="btn-ghost" id="teamPlus" aria-label="More">+</button></span>
+      </label>
+      <span class="gm-preview" id="preview"></span>
+
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">🎈 Blow Up the Balloons</button></div>
+  </div>
+
+  <div id="playScreen" class="panel" style="display:none;">
+    <div class="bp-sky"><div class="bp-field" id="field"></div></div>
+    <div class="bp-banner" id="banner" aria-live="polite"></div>
+    <div class="btn-row">
+      <button class="btn-gold" id="popBtn">🎈 Pop a Random Balloon</button>
+      <button class="btn-ghost" id="popAllBtn">💥 Pop Them All</button>
+    </div>
+    <div class="ct-teams" id="teams"></div>
+    <div class="btn-row">
+      <button class="btn-ghost" id="againBtn">🔀 New Balloons</button>
+      <button class="btn-ghost" id="copyBtn">Copy Teams</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="gm-copied" id="copied" aria-live="polite"></div>
+  </div>
+  <div class="hint">Let a student click any balloon — or press Space to pop one at random.</div>
+
+  <div class="related-skins">
+    <h3>More team tools</h3>
+    <div class="skin-links">
+      <a href="/tools/team-sorter.html">🎩 Magic Team Sorter</a>
+      <a href="/tools/captains-draft.html">👑 Captain’s Draft</a>
+      <a href="/tools/seating-chart.html">🪑 Seating Chart Shuffle</a>
+      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>Balloon Pop Teams is a random team maker for younger learners. The sky fills with one balloon per student, each hiding a name. A student taps any balloon, it pops, and the name inside drops straight into its team’s basket — so every pop is a double surprise: who was inside, and which team they’re on.</p>
+    <p>Teams are balanced automatically, so they always end up within one student of each other in size. Choose 2 to 8 teams, each with its own colour and mascot. Pass the mouse around and let students pop balloons themselves, press Space to pop one at random, or use “Pop Them All” when you’re in a hurry.</p>
+    <p>Perfect for kindergarten and elementary classes, ESL lessons, PE, and party days. Copy the finished teams in one click and save your class list so it’s ready on every ClassCarnival tool. Free, no sign-up, and made for the projector or interactive whiteboard.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-reveal.js"></script>
+<script src="../js/team-kit.js"></script>
+<script>
+
+(function(){
+  const $ = id => document.getElementById(id), K = window.CCTeam, RM = K.reduceMotion;
+  const setupUI = K.wireSetup({ min: 2, max: 8, unit: 'team' });
+  const BCOL = ['#ff5c7a','#ffb627','#2ec4b6','#9b72cf','#4fa8e0','#a8d46b','#ff9f43','#e85d8a'];
+  let names = [], teams = [], order = [], plan = [], idx = 0, busy = false, popAll = false;
+
+  $('startBtn').addEventListener('click', () => {
+    names = setupUI.names();
+    if(names.length < 2){ alert('Add at least 2 names.'); return; }
+    $('setupScreen').style.display = 'none'; $('playScreen').style.display = 'block'; if(document.activeElement) document.activeElement.blur();
+    setup();
+  });
+  $('editBtn').addEventListener('click', () => { popAll = false; $('playScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('againBtn').addEventListener('click', () => { if(!busy){ popAll = false; setup(); } });
+  $('popBtn').addEventListener('click', popRandom);
+  $('popAllBtn').addEventListener('click', () => { if(idx >= order.length) return; popAll = true; popRandom(); });
+  $('copyBtn').addEventListener('click', () => K.copy(teams.map(t => 'Team ' + t.name + ': ' + t.members.join(', ')).join('\n'), $('copied')));
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('playScreen').style.display === 'none') return;
+    const t = e.target.tagName; if(t === 'TEXTAREA' || t === 'INPUT') return;
+    e.preventDefault(); if(idx < order.length) popRandom(); else if(!busy) setup();
+  });
+
+  function setup(){
+    teams = K.makeTeams(Math.min(setupUI.count(), names.length));
+    ({ order, plan } = K.balance(names, teams));
+    idx = 0; busy = false; $('copied').textContent = ''; $('banner').textContent = 'Pick a balloon — who’s hiding inside? 🎈';
+    const field = $('field'); field.innerHTML = '';
+    order.forEach((_, i) => {
+      const b = document.createElement('button'); b.className = 'bp-balloon'; b.setAttribute('aria-label', 'Pop balloon ' + (i + 1));
+      const c = BCOL[i % BCOL.length];
+      b.style.setProperty('--d', (2.6 + Math.random() * 1.6).toFixed(2) + 's'); b.style.setProperty('--dl', (-Math.random() * 3).toFixed(2) + 's');
+      b.innerHTML = `<svg viewBox="0 0 74 112" aria-hidden="true">
+        <path class="string" d="M37 78 C31 90 43 98 36 112" stroke="#6b7380" stroke-width="1.5" fill="none"/>
+        <g class="body"><ellipse cx="37" cy="40" rx="32" ry="38" fill="${c}"/><ellipse cx="25" cy="24" rx="7" ry="11" fill="#fff" opacity=".45"/>
+        <path d="M32 77 L42 77 L37 84 Z" fill="${c}"/><text class="q" x="37" y="50" text-anchor="middle">?</text></g>
+        <g class="burst" style="transform-origin:37px 40px">${Array.from({ length: 10 }, (_, k) => { const a = k * 36 * Math.PI / 180;
+          return `<line x1="${37 + 12 * Math.cos(a)}" y1="${40 + 12 * Math.sin(a)}" x2="${37 + 36 * Math.cos(a)}" y2="${40 + 36 * Math.sin(a)}" stroke="${c}" stroke-width="5" stroke-linecap="round"/>`; }).join('')}</g>
+      </svg>`;
+      b.addEventListener('click', () => pop(b));
+      field.appendChild(b);
+    });
+    K.renderTeams($('teams'), teams);
+    $('popBtn').disabled = false; $('popAllBtn').disabled = false;
+  }
+  function popRandom(){
+    if(busy) return;
+    const left = [...document.querySelectorAll('.bp-balloon:not(.popped)')];
+    if(left.length) pop(K.pick(left));
+  }
+  function pop(b){
+    if(busy || b.classList.contains('popped') || idx >= order.length) return;
+    busy = true;
+    const name = order[idx], t = teams[plan[idx]];
+    b.classList.add('popped'); K.sfx.pop();
+    const r = b.getBoundingClientRect();
+    const chip = document.createElement('div'); chip.className = 'bp-name'; chip.textContent = name; chip.style.setProperty('--c', t.color);
+    chip.style.left = (r.left + r.width / 2) + 'px'; chip.style.top = (r.top + r.height * .36) + 'px';
+    document.body.appendChild(chip);
+    requestAnimationFrame(() => chip.classList.add('big'));
+    const bn = $('banner'); bn.innerHTML = ''; bn.style.setProperty('--c', t.color);
+    const who = document.createElement('span'); who.textContent = name; bn.append(who, ' → ' + t.mascot + ' Team ' + t.name + '!');
+    const hold = popAll ? 350 : 1100;
+    setTimeout(() => {
+      const box = t.box.getBoundingClientRect();
+      chip.style.left = (box.left + box.width / 2) + 'px'; chip.style.top = (box.top + 30) + 'px'; chip.classList.remove('big'); chip.classList.add('fly');
+      K.sfx.whoosh();
+    }, RM ? 50 : hold);
+    setTimeout(() => {
+      chip.remove(); t.members.push(name); idx++;
+      K.renderTeams($('teams'), teams); K.flash(t); K.sfx.land();
+      busy = false;
+      if(idx >= order.length) return done();
+      if(popAll) setTimeout(popRandom, RM ? 20 : 120);
+    }, (RM ? 50 : hold) + 750);
+  }
+  function done(){
+    popAll = false; $('popBtn').disabled = true; $('popAllBtn').disabled = true;
+    K.sfx.fanfare(); if(window.CCReveal) CCReveal.confetti();
+    $('banner').textContent = '🎉 Every balloon popped — the teams are ready!';
+  }
+})();
+
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>
