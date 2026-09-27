@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Countdown Timer | ClassCarnival</title>
-<meta name="description" content="Free online countdown timer for classrooms. Big display, alarm sound, quick presets for timed activities and tests.">
+<title>Classroom Countdown Timer — Rocket, Balloon, Sand Timer &amp; More | ClassCarnival</title>
+<meta name="description" content="Free themed countdown timer for the classroom: a rocket launch, balloon pop, melting ice cream, sand timer or classic big digits. Big 10-second countdown, alarm, presets. No sign-up.">
 <link rel="canonical" href="https://classcarnival.com/tools/countdown">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -20,25 +20,87 @@
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Countdown Timer | ClassCarnival">
-<meta property="og:description" content="Free online countdown timer for classrooms. Big display, alarm sound, quick presets for timed activities and tests.">
+<meta property="og:title" content="Classroom Countdown Timer — Rocket, Balloon, Sand Timer &amp; More | ClassCarnival">
+<meta property="og:description" content="Free themed countdown timer for the classroom: a rocket launch, balloon pop, melting ice cream, sand timer or classic big digits. Big 10-second countdown, alarm, presets. No sign-up.">
 <meta property="og:url" content="https://classcarnival.com/tools/countdown">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .display{ text-align:center; padding: 50px 20px 20px; }
-  .time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 15vw, 140px); letter-spacing: 2px; line-height:1; }
-  .time.warning{ color: var(--gold); }
-  .time.done{ color: var(--c1); animation: pulse 0.6s infinite; }
+  .tm-themes{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; margin-bottom: 14px; }
+  .tm-theme{ background: rgba(255,255,255,.03); border: 2px solid var(--line); color: var(--cream); border-radius: 22px; padding: 8px 14px; font-size: 14px; }
+  .tm-theme.on{ border-color: var(--gold); background: rgba(255,182,39,.12); color: var(--gold); }
+  .tm-stage{ position:relative; display:flex; flex-direction:column; align-items:center; gap: 6px; }
+  .tm-scene{ position:relative; width: min(100%, 420px); height: 300px; }
+  .tm-scene:empty{ display:none; }
+  .tm-time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 12vw, 120px); line-height:1; letter-spacing: 2px; transition: color .3s ease; }
+  .tm-time.warning{ color: var(--gold); }
+  .tm-time.done{ color: var(--c1); animation: pulse .6s infinite; }
   @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
-  .presets{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin: 18px 0; }
+  .classic .tm-time{ font-size: clamp(80px, 20vw, 200px); margin: 20px 0 6px; }
+  .tm-bar{ width: min(100%, 560px); height: 14px; border-radius: 8px; background: rgba(255,255,255,.08); overflow:hidden; display:none; }
+  .classic .tm-bar{ display:block; }
+  .tm-bar span{ display:block; height:100%; width:100%; background: #a8d46b; border-radius: 8px; transition: width .25s linear, background .4s ease; }
+  .tm-final{ position:fixed; inset:0; z-index: 280; display:flex; align-items:center; justify-content:center; pointer-events:none;
+    font-family:'Archivo Black', sans-serif; font-size: clamp(160px, 40vw, 420px); color: var(--gold); text-shadow: 0 10px 40px rgba(0,0,0,.6); opacity:0; }
+  .tm-final.beat{ animation: finalBeat .9s ease-out; }
+  @keyframes finalBeat{ 0%{ opacity:0; transform: scale(1.6); } 20%{ opacity:.95; transform: scale(1); } 100%{ opacity:0; transform: scale(.7); } }
+  .presets{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin: 18px 0 8px; }
   .preset{ background: var(--panel-bg); border: 1px solid var(--line); color: var(--cream); }
-  .preset:hover{ border-color: var(--gold); }
+  .preset:hover, .preset.on{ border-color: var(--gold); }
   .custom-row{ display:flex; gap:8px; justify-content:center; align-items:center; margin-top: 10px; flex-wrap:wrap; }
-  .custom-row input{ width: 70px; background:#0f1522; color:var(--cream); border:1px solid var(--line); border-radius:8px; padding:8px; text-align:center; font-size:14px; }
+  .custom-row input[type=number]{ width: 70px; background:#0f1522; color:var(--cream); border:1px solid var(--line); border-radius:8px; padding:8px; text-align:center; font-size:14px; }
+  .gm-check{ display:inline-flex; align-items:center; gap:8px; font-size:13px; color: var(--cream-dim); cursor:pointer; margin-left: 10px; }
+  .gm-check input{ width:16px; height:16px; accent-color: var(--gold); }
+  .shake{ animation: sceneShake .12s linear infinite alternate; }
+  @keyframes sceneShake{ from{ transform: translate(-2px, 1px) rotate(-.6deg); } to{ transform: translate(2px, -1px) rotate(.6deg); } }
+
+  /* hourglass */
+  .hg svg{ width: 100%; height: 100%; }
+  .hg .stream{ stroke-dasharray: 4 5; animation: stream .35s linear infinite; }
+  @keyframes stream{ to{ stroke-dashoffset: -9; } }
+  .hg.flip svg{ animation: hgFlip .8s ease; }
+  @keyframes hgFlip{ from{ transform: rotate(180deg); } to{ transform: none; } }
+
+  /* rocket */
+  .rk{ position:absolute; inset:0; border-radius: 20px; overflow:hidden; background: linear-gradient(180deg, #0b1230 0%, #1d2d5c 60%, #3b4f86 100%); }
+  .rk .stars{ position:absolute; inset:0; background-image: radial-gradient(2px 2px at 20% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 70% 12%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 45% 35%, #fff, transparent), radial-gradient(2px 2px at 85% 45%, #fff, transparent), radial-gradient(1.5px 1.5px at 10% 55%, #fff, transparent); opacity:.8; }
+  .rk .pad{ position:absolute; left: 0; right: 0; bottom: 0; height: 36px; background: linear-gradient(180deg, #56607a, #2a3040); }
+  .rk .tower{ position:absolute; left: calc(50% + 46px); bottom: 36px; width: 14px; height: 150px; background: repeating-linear-gradient(0deg, #c9463d 0 10px, #9c2f28 10px 20px); border-radius: 3px; }
+  .rk .ship{ position:absolute; left: 50%; bottom: 40px; font-size: 110px; line-height:1; transform: translateX(-50%) rotate(-45deg); transition: bottom 2.2s cubic-bezier(.6,0,.9,.6); }
+  .rk .flame{ position:absolute; left: 50%; bottom: 8px; font-size: 40px; transform: translateX(-50%) rotate(180deg) scale(var(--f, .3)); opacity: var(--fo, 0); transition: transform .3s ease; }
+  .rk.running .flame{ animation: flicker .12s infinite alternate; }
+  @keyframes flicker{ from{ filter: brightness(1); } to{ filter: brightness(1.5); } }
+  .rk .fuel{ position:absolute; left: 22px; top: 30px; bottom: 60px; width: 34px; border-radius: 12px; border: 3px solid #fffdf7; overflow:hidden; background: rgba(0,0,0,.35); }
+  .rk .fuel span{ position:absolute; left:0; right:0; bottom:0; height:100%; background: linear-gradient(0deg, #ff6b5b, #ffb627); transition: height .25s linear; }
+  .rk .fuel-lbl{ position:absolute; left: 14px; bottom: 36px; font-size: 11px; font-weight:800; letter-spacing: 1px; color:#fffdf7; }
+  .rk .smoke{ position:absolute; bottom: 20px; font-size: 60px; opacity:0; }
+  .rk.launch .ship{ bottom: 420px; }
+  .rk.launch .flame{ bottom: -380px; opacity: 0; }
+  .rk.launch .smoke{ animation: smoke 1.8s ease-out forwards; }
+  @keyframes smoke{ 0%{ opacity:0; transform: scale(.4); } 25%{ opacity:1; } 100%{ opacity:0; transform: translate(var(--dx), -40px) scale(2.2); } }
+
+  /* ice cream */
+  .ic svg{ width:100%; height:100%; }
+  .ic .scoop{ transition: transform .5s ease; transform-box: fill-box; transform-origin: 50% 100%; }
+  .ic .puddle{ transition: rx .5s ease, ry .5s ease; }
+
+  /* balloon */
+  .bl svg{ width:100%; height:100%; overflow: visible; }
+  .bl .ball{ transform-box: fill-box; transform-origin: 50% 100%; transition: transform .4s ease; }
+  .bl.running .ball-wrap{ animation: bob 2.4s ease-in-out infinite; }
+  @keyframes bob{ 50%{ transform: translateY(-8px); } }
+  .bl .burst{ opacity:0; }
+  .bl.popped .ball-wrap{ opacity:0; }
+  .bl.popped .burst{ animation: burst .6s ease-out forwards; }
+  @keyframes burst{ 0%{ opacity:1; transform: scale(.3); } 100%{ opacity:0; transform: scale(1.8); } }
+
+  body.fs-active .tm-scene{ height: 42vh; width: min(100%, 620px); }
+  @media (prefers-reduced-motion: reduce){ .shake, .tm-final.beat, .rk.running .flame, .bl.running .ball-wrap, .hg .stream{ animation:none !important; } }
 </style>
 </head>
 <body>
@@ -59,132 +121,271 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">Countdown Timer</div>
+    <div class="eyebrow">⏳ Countdown Timer</div>
     <h1>Classroom Countdown</h1>
-    <div class="sub">Pick a preset or set a custom time. Turns gold in the last 10 seconds and sounds an alarm at zero.</div>
+    <div class="sub">Pick a theme and a time. Watch the rocket fuel drain, the balloon swell, or the ice cream melt — with a big 10-second countdown at the end.</div>
   </div>
 
   <div class="panel">
-    <div class="display"><div class="time" id="timeDisplay">05:00</div></div>
-
+    <div class="tm-themes" id="themes" role="radiogroup" aria-label="Timer theme"></div>
+    <div class="tm-stage">
+      <div class="tm-scene" id="scene"></div>
+      <div class="tm-time" id="timeDisplay">05:00</div>
+      <div class="tm-bar" id="bar"><span></span></div>
+    </div>
+    <div class="tm-final" id="final" aria-hidden="true"></div>
     <div class="presets">
+      <button class="preset" data-sec="30">30 sec</button>
       <button class="preset" data-sec="60">1 min</button>
+      <button class="preset" data-sec="120">2 min</button>
       <button class="preset" data-sec="180">3 min</button>
       <button class="preset" data-sec="300">5 min</button>
       <button class="preset" data-sec="600">10 min</button>
       <button class="preset" data-sec="900">15 min</button>
     </div>
     <div class="custom-row">
-      <input type="number" id="customMin" min="0" max="120" placeholder="min">
+      <input type="number" id="customMin" min="0" max="120" placeholder="min" aria-label="Minutes">
       <span>:</span>
-      <input type="number" id="customSec" min="0" max="59" placeholder="sec">
+      <input type="number" id="customSec" min="0" max="59" placeholder="sec" aria-label="Seconds">
       <button class="btn-ghost" id="setCustomBtn">Set</button>
+      <label class="gm-check"><input type="checkbox" id="tickInput" checked> Tick sound in the last 10 seconds</label>
     </div>
-
     <div class="btn-row">
-      <button class="btn-gold" id="startStopBtn">Start</button>
+      <button class="btn-gold" id="startStopBtn">▶ Start</button>
+      <button class="btn-ghost" id="addBtn">+1 min</button>
       <button class="btn-ghost" id="resetBtn">Reset</button>
     </div>
   </div>
-  <div class="hint">Tip: press Space to start/stop.</div>
+  <div class="hint">Tip: press Space to start/pause, R to reset.</div>
+
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A countdown timer designed to be readable from anywhere in the room — big digits, a clear color change in the final 10 seconds, and an audible alarm when time's up, so you're not the only one watching the clock. Pick a common preset (1, 3, 5, 10, or 15 minutes) or set a custom time down to the second for anything in between.</p>
-    <p>Built for timed classroom activities: independent work time, timed writing tasks, group discussion windows, test sections, or transition warnings between activities. Because the display turns gold in the last 10 seconds before the alarm, students get a visual cue to wrap up even if the room's too noisy to hear a verbal warning.</p>
-    <p>Press Space to start, pause, or resume without touching the mouse. No sign-up, no download, and safe to leave running on a projector or classroom display for the length of a lesson.</p>
+    <p>A themed classroom countdown timer that students actually watch. Choose a theme to match the moment: a rocket whose fuel drains until it blasts off, a balloon that swells until it pops, an ice cream that slowly melts, a classic sand timer, or a simple big-digit timer with a colour-changing progress bar. Every theme is readable from the back of the room and works in fullscreen on a projector.</p>
+    <p>In the final 10 seconds, giant numbers count down on screen (with an optional tick sound), so students get a clear cue to wrap up even when the room is noisy. When time's up, each theme has its own finale — liftoff, a pop, a puddle — followed by a big "Time's up!" message.</p>
+    <p>Use it for independent work, timed writing, group discussions, test sections, clean-up time, or transitions. Pick a preset (30 seconds to 15 minutes) or set any custom time, add an extra minute on the fly, and press Space to start and pause. No sign-up and no download needed.</p>
   </div>
 </main>
 
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
 
+<script src="../js/picker-reveal.js"></script>
 <script>
-  let totalSeconds = 300, remaining = 300, running = false, intervalId = null;
-  const timeDisplay = document.getElementById('timeDisplay');
-  const startStopBtn = document.getElementById('startStopBtn');
+(function(){
+  const $ = id => document.getElementById(id);
+  const scene = $('scene'), timeEl = $('timeDisplay'), btn = $('startStopBtn'), panel = document.querySelector('main .panel');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function format(s){
-    const m = Math.floor(s/60), sec = s%60;
-    return `${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  let total = 300, remainMs = 300000, running = false, endAt = 0, raf = null, lastShown = null, finished = false;
+  let themeKey = 'rocket';
+  try{ themeKey = localStorage.getItem('cc-countdown-theme') || 'rocket'; }catch(e){}
+
+  /* ---------- sound ---------- */
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function ctx(){ if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if(actx.state === 'suspended') actx.resume(); return actx; }
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      const c = ctx(), t = c.currentTime + (when || 0), o = c.createOscillator(), g = c.createGain();
+      o.type = type || 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + dur + .02);
+      return o;
+    }catch(e){}
+  }
+  function noise(dur, vol, freq){
+    if(muted()) return;
+    try{
+      const c = ctx(), buf = c.createBuffer(1, c.sampleRate * dur, c.sampleRate), d = buf.getChannelData(0);
+      for(let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * (1 - i / d.length);
+      const s = c.createBufferSource(), g = c.createGain(), f = c.createBiquadFilter();
+      f.type = 'lowpass'; f.frequency.value = freq || 800; s.buffer = buf; g.gain.value = vol;
+      s.connect(f); f.connect(g); g.connect(c.destination); s.start();
+    }catch(e){}
+  }
+  const tick = n => tone(n <= 3 ? 1046 : 784, 0, .09, 'square', .06);
+  const FINALE_SOUND = {
+    classic:   () => [0, .4, .8].forEach(t => tone(880, t, .3, 'sine', .25)),
+    hourglass: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, i * .12, .6, 'sine', .12)),
+    rocket:    () => { noise(2.2, .5, 500); tone(80, 0, 2, 'sawtooth', .08); },
+    icecream:  () => [392, 370, 349, 330].forEach((f, i) => tone(f, i * .35, i === 3 ? .9 : .32, 'sawtooth', .07)),
+    balloon:   () => { noise(.25, .9, 3000); tone(180, 0, .15, 'square', .1); }
+  };
+
+  /* ---------- themes ---------- */
+  const THEMES = {
+    classic: { label: '🔢 Classic', done: '⏰ Time’s up!',
+      build(){ scene.innerHTML = ''; },
+      update(p){ const bar = $('bar').firstElementChild; bar.style.width = (p * 100) + '%';
+        bar.style.background = p > .5 ? '#a8d46b' : p > .2 ? '#ffb627' : '#ff6b5b'; },
+      finish(){}, reset(){} },
+
+    hourglass: { label: '⏳ Sand Timer', done: '⏳ The sand has run out!',
+      build(){
+        scene.className = 'tm-scene hg';
+        scene.innerHTML = `<svg viewBox="0 0 160 240" aria-hidden="true">
+          <defs><clipPath id="hgTop"><path d="M32 22 H128 C128 70 92 96 82 118 H78 C68 96 32 70 32 22 Z"/></clipPath>
+                <clipPath id="hgBot"><path d="M78 122 H82 C92 144 128 170 128 218 H32 C32 170 68 144 78 122 Z"/></clipPath></defs>
+          <rect x="18" y="8" width="124" height="14" rx="5" fill="#c8894a"/><rect x="18" y="218" width="124" height="14" rx="5" fill="#c8894a"/>
+          <rect x="24" y="22" width="6" height="196" fill="#9c6630"/><rect x="130" y="22" width="6" height="196" fill="#9c6630"/>
+          <g clip-path="url(#hgTop)"><rect id="sandTop" x="30" y="22" width="100" height="98" fill="#f2c46b"/></g>
+          <g clip-path="url(#hgBot)"><rect id="sandBot" x="30" y="218" width="100" height="0" fill="#f2c46b"/></g>
+          <line id="stream" class="stream" x1="80" y1="118" x2="80" y2="216" stroke="#f2c46b" stroke-width="3" opacity="0"/>
+          <path d="M32 22 H128 C128 70 92 96 82 118 H78 C68 96 32 70 32 22 Z M78 122 H82 C92 144 128 170 128 218 H32 C32 170 68 144 78 122 Z"
+            fill="rgba(200,230,255,.12)" stroke="rgba(220,240,255,.6)" stroke-width="3"/>
+        </svg>`;
+      },
+      update(p){
+        const top = $('sandTop'), bot = $('sandBot'), st = $('stream');
+        const h = 96 * p; top.setAttribute('y', 118 - h); top.setAttribute('height', h + 2);
+        const hb = 96 * (1 - p); bot.setAttribute('y', 218 - hb); bot.setAttribute('height', hb);
+        st.setAttribute('opacity', running && p > 0 ? 1 : 0);
+        st.setAttribute('y2', 216 - hb);
+      },
+      finish(){}, reset(){ scene.classList.remove('flip'); void scene.offsetWidth; if(!reduceMotion) scene.classList.add('flip'); } },
+
+    rocket: { label: '🚀 Rocket Launch', done: '🚀 Liftoff!',
+      build(){
+        scene.className = 'tm-scene';
+        scene.innerHTML = `<div class="rk" id="rk"><div class="stars"></div><div class="tower"></div><div class="pad"></div>
+          <div class="fuel"><span id="fuel"></span></div><div class="fuel-lbl">FUEL</div>
+          <div class="flame" id="flame">🔥</div><div class="ship" id="ship">🚀</div>
+          <div class="smoke" style="left:30%;--dx:-60px">💨</div><div class="smoke" style="left:50%;--dx:0px">💨</div><div class="smoke" style="left:62%;--dx:60px">💨</div></div>`;
+      },
+      update(p, sec){
+        const rk = $('rk'); $('fuel').style.height = (p * 100) + '%';
+        rk.classList.toggle('running', running);
+        const f = $('flame'); f.style.setProperty('--fo', running ? 1 : 0); f.style.setProperty('--f', sec <= 10 ? 1.1 : .45);
+        $('ship').parentElement.classList.toggle('shake', running && sec <= 10 && !reduceMotion);
+      },
+      finish(){ const rk = $('rk'); rk.classList.remove('shake'); rk.classList.add('launch'); },
+      reset(){ const rk = $('rk'); if(rk) rk.classList.remove('launch', 'shake'); } },
+
+    icecream: { label: '🍦 Melting Ice Cream', done: '🍦 All melted!',
+      build(){
+        scene.className = 'tm-scene ic';
+        scene.innerHTML = `<svg viewBox="0 0 200 260" aria-hidden="true">
+          <ellipse id="puddle" class="puddle" cx="100" cy="244" rx="0" ry="0" fill="#ff9ecb" opacity=".85"/>
+          <path d="M62 150 L100 240 L138 150 Z" fill="#e0a45e" stroke="#9c6630" stroke-width="3"/>
+          <path d="M70 160 L130 200 M76 176 L122 150 M84 196 L118 176 M130 160 L78 196" stroke="#b77b3c" stroke-width="2"/>
+          <g id="s0" class="scoop"><circle cx="100" cy="138" r="40" fill="#ff9ecb"/><circle cx="86" cy="126" r="8" fill="#fff" opacity=".5"/></g>
+          <g id="s1" class="scoop"><circle cx="100" cy="92" r="35" fill="#a8e6cf"/><circle cx="88" cy="80" r="7" fill="#fff" opacity=".5"/></g>
+          <g id="s2" class="scoop"><circle cx="100" cy="52" r="30" fill="#8b5a3c"/><circle cx="90" cy="42" r="6" fill="#fff" opacity=".4"/>
+            <circle cx="100" cy="22" r="8" fill="#e84a5f"/></g>
+        </svg>`;
+      },
+      update(p){
+        [0, 1, 2].forEach(k => { const v = Math.max(0, Math.min(1, p * 3 - k)); $('s' + k).style.transform = `scale(${.15 + .85 * v}, ${v})`; $('s' + k).style.opacity = v > 0 ? 1 : 0; });
+        const m = 1 - p; $('puddle').setAttribute('rx', 20 + 70 * m); $('puddle').setAttribute('ry', 4 + 10 * m);
+        $('puddle').setAttribute('opacity', m > 0.02 ? .85 : 0);
+      },
+      finish(){}, reset(){} },
+
+    balloon: { label: '🎈 Balloon Pop', done: '🎈 POP!',
+      build(){
+        scene.className = 'tm-scene bl';
+        scene.innerHTML = `<svg viewBox="0 0 220 280" aria-hidden="true">
+          <g class="ball-wrap"><path d="M110 196 C104 230 118 250 108 278" stroke="#fffdf7" stroke-width="2" fill="none"/>
+            <g id="ball" class="ball"><ellipse cx="110" cy="110" rx="70" ry="84" fill="#ff5c7a"/><ellipse cx="86" cy="76" rx="14" ry="22" fill="#fff" opacity=".45"/>
+              <path d="M104 192 L116 192 L110 202 Z" fill="#d9365a"/></g></g>
+          <g class="burst" style="transform-origin:110px 110px">
+            ${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180; return `<path d="M${110 + 30 * Math.cos(a)} ${110 + 30 * Math.sin(a)} L${110 + 90 * Math.cos(a)} ${110 + 90 * Math.sin(a)}" stroke="${['#ff5c7a','#ffb627','#2ec4b6'][i % 3]}" stroke-width="8" stroke-linecap="round"/>`; }).join('')}
+          </g></svg>`;
+      },
+      update(p, sec){
+        $('ball').style.transform = `scale(${.35 + .7 * (1 - p)})`;
+        scene.classList.toggle('running', running);
+        scene.classList.toggle('shake', running && sec <= 10 && !reduceMotion);
+      },
+      finish(){ scene.classList.remove('shake', 'running'); scene.classList.add('popped'); },
+      reset(){ scene.classList.remove('popped'); } }
+  };
+
+  function renderThemes(){
+    const wrap = $('themes'); wrap.innerHTML = '';
+    Object.entries(THEMES).forEach(([k, t]) => {
+      const b = document.createElement('button'); b.className = 'tm-theme' + (k === themeKey ? ' on' : '');
+      b.textContent = t.label; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', k === themeKey);
+      b.addEventListener('click', () => { themeKey = k; try{ localStorage.setItem('cc-countdown-theme', k); }catch(e){} renderThemes(); applyTheme(); });
+      wrap.appendChild(b);
+    });
+  }
+  function applyTheme(){
+    scene.className = 'tm-scene';
+    panel.classList.toggle('classic', themeKey === 'classic');
+    THEMES[themeKey].build();
+    if(finished){ finished = false; remainMs = total * 1000; }
+    render(true);
   }
 
-  function render(){
-    timeDisplay.textContent = format(Math.max(remaining,0));
-    timeDisplay.classList.toggle('warning', remaining <= 10 && remaining > 0);
-    timeDisplay.classList.toggle('done', remaining <= 0);
-  }
-
-  function playAlarm(){
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    for(let i=0;i<3;i++){
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.frequency.value = 880;
-      osc.type = 'sine';
-      const t = ctx.currentTime + i*0.4;
-      gain.gain.setValueAtTime(0.3, t);
-      gain.gain.exponentialRampToValueAtTime(0.001, t+0.3);
-      osc.start(t); osc.stop(t+0.3);
+  /* ---------- timing ---------- */
+  const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+  function render(force){
+    const sec = Math.ceil(remainMs / 1000), p = total ? Math.max(0, remainMs / (total * 1000)) : 0;
+    if(force || sec !== lastShown){
+      if(running && lastShown !== null && sec < lastShown && sec <= 10 && sec > 0) finalBeat(sec);
+      lastShown = sec;
+      timeEl.textContent = fmt(Math.max(sec, 0));
+      timeEl.classList.toggle('warning', sec <= 10 && sec > 0);
+      timeEl.classList.toggle('done', sec <= 0);
     }
+    THEMES[themeKey].update(p, sec);
   }
-
-  function tick(){
-    remaining--;
+  function finalBeat(n){
+    if($('tickInput').checked) tick(n);
+    const f = $('final'); f.textContent = n; f.classList.remove('beat'); void f.offsetWidth; if(!reduceMotion) f.classList.add('beat');
+  }
+  function loop(){
+    remainMs = Math.max(0, endAt - performance.now());
     render();
-    if(remaining <= 0){
-      clearInterval(intervalId);
-      running = false;
-      startStopBtn.textContent = 'Start';
-      playAlarm();
-    }
+    if(remainMs <= 0) return finish();
+    raf = requestAnimationFrame(loop);
   }
-
-  function toggle(){
-    if(remaining <= 0) return;
-    if(running){
-      running = false;
-      clearInterval(intervalId);
-      startStopBtn.textContent = 'Resume';
-    } else {
-      running = true;
-      startStopBtn.textContent = 'Pause';
-      intervalId = setInterval(tick, 1000);
-    }
+  function start(){
+    if(remainMs <= 0) return;
+    running = true; endAt = performance.now() + remainMs; btn.textContent = '⏸ Pause';
+    cancelAnimationFrame(raf); loop();
   }
-
+  function pause(){ running = false; cancelAnimationFrame(raf); btn.textContent = '▶ Resume'; render(true); }
+  function toggle(){ if(finished) return reset(); running ? pause() : start(); }
+  function finish(){
+    running = false; finished = true; cancelAnimationFrame(raf); btn.textContent = '↺ Again';
+    render(true);
+    const t = THEMES[themeKey]; t.finish(); FINALE_SOUND[themeKey]();
+    setTimeout(() => {
+      if(window.CCReveal) CCReveal.show('Time’s up!', { label: t.done, onClose: () => {} });
+    }, themeKey === 'rocket' ? 1400 : themeKey === 'balloon' ? 500 : 300);
+  }
   function reset(){
-    running = false;
-    clearInterval(intervalId);
-    remaining = totalSeconds;
-    startStopBtn.textContent = 'Start';
-    render();
+    running = false; finished = false; cancelAnimationFrame(raf); remainMs = total * 1000; lastShown = null; btn.textContent = '▶ Start';
+    THEMES[themeKey].reset(); render(true);
   }
-
   function setTime(sec){
-    totalSeconds = sec; remaining = sec;
-    running = false; clearInterval(intervalId);
-    startStopBtn.textContent = 'Start';
-    render();
+    total = sec; document.querySelectorAll('.preset').forEach(b => b.classList.toggle('on', +b.dataset.sec === sec));
+    reset();
   }
 
-  document.querySelectorAll('.preset').forEach(btn=>{
-    btn.addEventListener('click', ()=> setTime(parseInt(btn.dataset.sec)));
+  document.querySelectorAll('.preset').forEach(b => b.addEventListener('click', () => setTime(parseInt(b.dataset.sec, 10))));
+  $('setCustomBtn').addEventListener('click', () => {
+    const m = parseInt($('customMin').value, 10) || 0, s = parseInt($('customSec').value, 10) || 0;
+    if(m * 60 + s > 0) setTime(Math.min(m * 60 + s, 7200));
   });
-
-  document.getElementById('setCustomBtn').addEventListener('click', ()=>{
-    const min = parseInt(document.getElementById('customMin').value) || 0;
-    const sec = parseInt(document.getElementById('customSec').value) || 0;
-    if(min*60+sec > 0) setTime(min*60+sec);
+  $('addBtn').addEventListener('click', () => {
+    if(finished){ total = 60; remainMs = 60000; finished = false; THEMES[themeKey].reset(); btn.textContent = '▶ Start'; render(true); return; }
+    total += 60; remainMs += 60000; if(running) endAt += 60000; render(true);
   });
-
-  startStopBtn.addEventListener('click', toggle);
-  document.getElementById('resetBtn').addEventListener('click', reset);
-
-  document.addEventListener('keydown', (e)=>{
+  btn.addEventListener('click', toggle);
+  $('resetBtn').addEventListener('click', reset);
+  document.addEventListener('keydown', e => {
+    const tag = e.target.tagName; if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if(window.CCReveal && CCReveal.isOpen()) return;
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
+    else if(e.key.toLowerCase() === 'r'){ reset(); }
   });
 
-  render();
+  document.querySelector('.preset[data-sec="300"]').classList.add('on');
+  renderThemes(); applyTheme();
+})();
 </script>
 <script src="../js/fullscreen.js"></script>
 </body>

@@ -11,8 +11,8 @@
 </script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stopwatch | ClassCarnival</title>
-<meta name="description" content="Simple, fullscreen-friendly online stopwatch with lap tracking. Free classroom timer tool.">
+<title>Classroom Stopwatch — Themed Timer &amp; Clean-Up Challenge | ClassCarnival</title>
+<meta name="description" content="Free themed classroom stopwatch: a runner lapping the track, a growing garden, or a rocket trip past the planets. Laps, fullscreen, and a beat-the-class-record challenge mode.">
 <link rel="canonical" href="https://classcarnival.com/tools/stopwatch">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -20,23 +20,71 @@
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Stopwatch | ClassCarnival">
-<meta property="og:description" content="Simple, fullscreen-friendly online stopwatch with lap tracking. Free classroom timer tool.">
+<meta property="og:title" content="Classroom Stopwatch — Themed Timer &amp; Clean-Up Challenge | ClassCarnival">
+<meta property="og:description" content="Free themed classroom stopwatch: a runner lapping the track, a growing garden, or a rocket trip past the planets. Laps, fullscreen, and a beat-the-class-record challenge mode.">
 <meta property="og:url" content="https://classcarnival.com/tools/stopwatch">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
 <style>
-  .display{ text-align:center; padding: 60px 20px; }
-  .time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 14vw, 130px); letter-spacing: 2px; line-height:1; }
-  .ms{ font-size: 0.4em; color: var(--cream-dim); }
-  .laps{ max-width: 420px; margin: 0 auto; }
-  .lap-item{ display:flex; justify-content:space-between; padding: 10px 14px; border-radius: 10px;
-    background: rgba(255,255,255,0.02); margin-bottom: 6px; font-size: 14px; }
-  .lap-num{ color: var(--gold); font-weight:700; }
-  #fullscreenBtn{ position:fixed; top:16px; right:16px; z-index:10; }
+  .tm-themes{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; margin-bottom: 14px; }
+  .tm-theme{ background: rgba(255,255,255,.03); border: 2px solid var(--line); color: var(--cream); border-radius: 22px; padding: 8px 14px; font-size: 14px; }
+  .tm-theme.on{ border-color: var(--gold); background: rgba(255,182,39,.12); color: var(--gold); }
+  .tm-stage{ display:flex; flex-direction:column; align-items:center; gap: 4px; }
+  .tm-scene{ position:relative; width: min(100%, 640px); height: 250px; border-radius: 20px; overflow:hidden; }
+  .tm-scene:empty{ display:none; }
+  .tm-note{ min-height: 1.5em; font-weight:800; font-size: clamp(15px, 2vw, 20px); color: var(--gold); text-align:center; }
+  .tm-note.pop{ animation: notePop .5s cubic-bezier(.3,1.6,.5,1); }
+  @keyframes notePop{ from{ transform: scale(.5); opacity:0; } to{ transform:none; opacity:1; } }
+  .time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 13vw, 130px); line-height:1; letter-spacing: 2px; }
+  .classic .time{ font-size: clamp(70px, 18vw, 180px); margin: 30px 0 10px; }
+  .time .ms{ font-size: .45em; color: var(--cream-dim); }
+  .laps{ margin-top: 18px; max-height: 240px; overflow-y:auto; }
+  .lap-item{ display:flex; justify-content:space-between; gap: 10px; padding: 8px 14px; border-bottom: 1px solid var(--line); font-weight:700; }
+  .lap-item .lap-num{ color: var(--cream-dim); }
+  .lap-item.fast{ color: #a8d46b; }
+  .sw-record{ display:flex; flex-wrap:wrap; gap: 8px 16px; justify-content:center; align-items:center; margin-top: 14px; }
+  .gm-check{ display:inline-flex; align-items:center; gap:8px; font-size:14px; color: var(--cream-dim); cursor:pointer; }
+  .gm-check input{ width:16px; height:16px; accent-color: var(--gold); }
+  .sw-best{ font-weight:800; color: var(--gold); font-size: 14px; }
+  .sw-best button{ background:none; border:none; padding:0 0 0 8px; color: var(--cream-dim); font-size: 12px; text-decoration: underline; cursor:pointer; }
+
+  /* track */
+  .trk{ position:absolute; inset:0; background: radial-gradient(ellipse at center, #2e7d4f 0 38%, transparent 38.5%), #1f5a39; }
+  .trk svg{ position:absolute; inset:0; width:100%; height:100%; }
+  .trk .runner{ position:absolute; font-size: 44px; line-height:1; transform: translate(-50%, -60%); transition: none; }
+  .trk .runner.flip span{ display:inline-block; transform: scaleX(-1); }
+  .trk .lapct{ position:absolute; left:50%; top:50%; transform: translate(-50%,-50%); text-align:center; color:#fffdf7; font-family:'Archivo Black', sans-serif; font-size: 34px; }
+  .trk .lapct small{ display:block; font-family:'Work Sans', sans-serif; font-size: 12px; letter-spacing: 2px; font-weight:800; opacity:.8; }
+
+  /* garden */
+  .gdn{ position:absolute; inset:0; background: linear-gradient(180deg, #7ec8f0 0%, #bfe6ff 62%, #6cc070 62%, #4f9e52 100%); }
+  .gdn .sun{ position:absolute; right: 28px; top: 18px; font-size: 48px; animation: spinSun 20s linear infinite; }
+  @keyframes spinSun{ to{ transform: rotate(360deg); } }
+  .gdn .bed{ position:absolute; left: 12px; right: 12px; bottom: 10px; top: 110px; display:flex; flex-wrap:wrap-reverse; align-content:flex-start; justify-content:center; gap: 0 4px; }
+  .gdn .fl{ font-size: 34px; line-height: 1.05; transform-origin: 50% 100%; animation: sprout .7s cubic-bezier(.3,1.6,.5,1) both; }
+  @keyframes sprout{ from{ transform: scale(0); } to{ transform: scale(1); } }
+  .gdn .seed{ position:absolute; left:50%; bottom: 14px; font-size: 54px; transform: translateX(-50%) scale(var(--g, .2)); transform-origin: 50% 100%; transition: transform .3s linear; opacity:.9; }
+
+  /* space */
+  .spc{ position:absolute; inset:0; background: #0b1024; }
+  .spc .stars{ position:absolute; inset:0; background-image: radial-gradient(2px 2px at 10% 20%, #fff, transparent), radial-gradient(1.5px 1.5px at 30% 70%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 55% 30%, #fff, transparent), radial-gradient(2px 2px at 80% 80%, #fff, transparent), radial-gradient(1.5px 1.5px at 90% 15%, #fff, transparent),
+    radial-gradient(1.5px 1.5px at 65% 55%, #fff, transparent); animation: drift 6s linear infinite; background-size: 50% 100%; }
+  .spc.paused .stars{ animation-play-state: paused; }
+  @keyframes drift{ to{ background-position: -50% 0; } }
+  .spc .path{ position:absolute; left: 6%; right: 6%; top: 60%; height: 3px; background: repeating-linear-gradient(90deg, rgba(255,255,255,.35) 0 8px, transparent 8px 16px); }
+  .spc .pl{ position:absolute; top: 60%; transform: translate(-50%, -50%); text-align:center; color:#fffdf7; font-weight:800; font-size: 11px; }
+  .spc .pl b{ display:block; font-size: 34px; line-height:1.2; filter: grayscale(.6) brightness(.8); transition: filter .4s ease, transform .4s ease; }
+  .spc .pl.reached b{ filter: none; transform: scale(1.2); }
+  .spc .pl span{ display:block; opacity:.8; }
+  .spc .ship{ position:absolute; top: 60%; font-size: 40px; transform: translate(-50%, -115%) rotate(45deg); transition: left .3s linear; }
+
+  body.fs-active .tm-scene{ height: 40vh; width: min(100%, 900px); }
+  @media (prefers-reduced-motion: reduce){ .gdn .sun, .spc .stars, .gdn .fl, .tm-note.pop{ animation:none !important; } }
 </style>
 </head>
 <body>
@@ -57,98 +105,219 @@
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">Stopwatch</div>
+    <div class="eyebrow">⏱️ Stopwatch</div>
     <h1>Classroom Stopwatch</h1>
-    <div class="sub">Big enough to read from the back of the room. Track laps for timed activities.</div>
+    <div class="sub">Pick a theme and watch the runner lap the track, the garden grow, or the rocket fly past the planets. Try a clean-up challenge and beat the class record!</div>
   </div>
 
   <div class="panel">
-    <div class="display">
+    <div class="tm-themes" id="themes" role="radiogroup" aria-label="Stopwatch theme"></div>
+    <div class="tm-stage">
+      <div class="tm-scene" id="scene"></div>
+      <div class="tm-note" id="note" aria-live="polite"></div>
       <div class="time" id="timeDisplay">00:00<span class="ms">.00</span></div>
     </div>
+    <div class="sw-record" id="recordBox">
+      <label class="gm-check"><input type="checkbox" id="recordInput"> 🏆 Challenge mode — beat the class record (fastest time wins)</label>
+      <span class="sw-best" id="best"></span>
+    </div>
     <div class="btn-row">
-      <button class="btn-gold" id="startStopBtn">Start</button>
-      <button class="btn-ghost" id="lapBtn" disabled>Lap</button>
+      <button class="btn-gold" id="startStopBtn">▶ Start</button>
+      <button class="btn-ghost" id="lapBtn" disabled>🚩 Lap</button>
       <button class="btn-ghost" id="resetBtn">Reset</button>
     </div>
     <div class="laps" id="laps"></div>
   </div>
-  <div class="hint">Tip: press Space to start/stop, L to lap.</div>
+  <div class="hint">Tip: press Space to start/stop, L to lap, R to reset.</div>
+
   <div class="info-section panel">
     <h2>About this tool</h2>
-    <p>A straightforward, no-frills stopwatch built to be read from the back of a classroom — large digits, a simple start/stop/reset flow, and lap tracking for activities where you need to record multiple times in a row, like timed reading fluency checks, relay-style speaking drills, or any activity broken into repeated short bursts.</p>
-    <p>Press Space to start and stop without reaching for the mouse, and L to record a lap while it's running — handy if you're timing several students back-to-back and don't want to lose track while writing scores down. Laps stack up in a simple list so you can review them after the activity is done, without needing to write anything down mid-activity.</p>
-    <p>Works in any modern browser, needs no sign-up or download, and is safe to leave open on a classroom projector or interactive board for the whole lesson.</p>
+    <p>A themed classroom stopwatch that's big enough to read from the back of the room — and fun enough that students want to watch it. Choose a theme: a runner who laps the track once every minute, a garden that sprouts a new flower every 30 seconds, a rocket that flies past the Moon, Mars and beyond as time goes on, or a classic big-digit stopwatch.</p>
+    <p>Turn on challenge mode to make clean-up time, lining up, or getting ready into a game: the class tries to beat its fastest time, and a new record gets a celebration. The record is remembered in your browser, so you can bring the challenge back tomorrow. Use the lap button to record several times in a row — handy for reading fluency checks, relay drills, or timing students one after another.</p>
+    <p>Press Space to start and stop, L to record a lap, and R to reset. Works in fullscreen on any projector, with no sign-up or download.</p>
   </div>
 </main>
 
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
 
+<script src="../js/picker-reveal.js"></script>
 <script>
-  let running = false, startTime = 0, elapsed = 0, rafId = null, lapCount = 0;
-  const timeDisplay = document.getElementById('timeDisplay');
-  const startStopBtn = document.getElementById('startStopBtn');
-  const lapBtn = document.getElementById('lapBtn');
-  const resetBtn = document.getElementById('resetBtn');
-  const lapsEl = document.getElementById('laps');
+(function(){
+  const $ = id => document.getElementById(id);
+  const scene = $('scene'), timeEl = $('timeDisplay'), btn = $('startStopBtn'), lapBtn = $('lapBtn'), panel = document.querySelector('main .panel');
+  let running = false, startTime = 0, elapsed = 0, raf = null, lapCount = 0, lastLapAt = 0, marks = 0;
+  let themeKey = 'track';
+  try{ themeKey = localStorage.getItem('cc-stopwatch-theme') || 'track'; }catch(e){}
+  const FLOWERS = ['🌷','🌻','🌼','🌸','🌹','🌺','💐','🍄'];
+  const PLANETS = [['🌙','Moon',60],['🔴','Mars',180],['🪐','Saturn',360],['🔵','Neptune',600],['⭐','Star',900]];
 
-  function format(ms){
-    const totalMs = Math.floor(ms);
-    const m = Math.floor(totalMs/60000);
-    const s = Math.floor((totalMs%60000)/1000);
-    const cs = Math.floor((totalMs%1000)/10);
-    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}<span class="ms">.${String(cs).padStart(2,'0')}</span>`;
+  /* sound */
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02);
+    }catch(e){}
+  }
+  const ding = () => [880, 1319].forEach((f, i) => tone(f, i * .08, .25, 'triangle', .08));
+  const fanfare = () => [523, 659, 784, 1047, 1319].forEach((f, i) => tone(f, i * .1, i === 4 ? .7 : .2, 'square', .07));
+
+  function note(text){
+    const n = $('note'); n.textContent = text; n.classList.remove('pop'); void n.offsetWidth; n.classList.add('pop');
   }
 
-  function tick(){
-    if(!running) return;
-    timeDisplay.innerHTML = format(elapsed + (performance.now() - startTime));
-    rafId = requestAnimationFrame(tick);
+  /* themes: build(), update(ms), milestone(k) fires once per new mark */
+  const THEMES = {
+    classic: { label: '🔢 Classic', every: 0, build(){ scene.innerHTML = ''; }, update(){} },
+
+    track: { label: '🏃 Running Track', every: 60,
+      build(){
+        scene.innerHTML = `<div class="trk"><svg viewBox="0 0 640 250" preserveAspectRatio="none" aria-hidden="true">
+          <rect x="30" y="25" width="580" height="200" rx="100" fill="none" stroke="#c9463d" stroke-width="34"/>
+          <rect x="30" y="25" width="580" height="200" rx="100" fill="none" stroke="#fffdf7" stroke-width="2" stroke-dasharray="10 12"/>
+          <line x1="320" y1="4" x2="320" y2="46" stroke="#fffdf7" stroke-width="5"/></svg>
+          <div class="lapct"><span id="lapN">0</span><small>LAPS</small></div>
+          <div class="runner" id="runner"><span>🏃</span></div></div>`;
+      },
+      update(ms){
+        // position around a stadium shape: one lap per 60s, starting at the top-centre finish line
+        const W = scene.clientWidth, H = scene.clientHeight;
+        const x0 = 30 / 640 * W, x1 = 610 / 640 * W, y0 = 25 / 250 * H, y1 = 225 / 250 * H, r = (y1 - y0) / 2;
+        const straight = (x1 - x0) - 2 * r, per = 2 * straight + 2 * Math.PI * r;
+        let d = ((ms / 60000) % 1) * per, x, y, left = false;
+        const cx0 = x0 + r, cx1 = x1 - r, cy = y0 + r;
+        const half = straight / 2;
+        if(d < half){ x = x0 + r + straight / 2 + d; y = y0; }
+        else if((d -= half) < Math.PI * r){ const a = -Math.PI / 2 + d / r; x = cx1 + r * Math.cos(a); y = cy + r * Math.sin(a); }
+        else if((d -= Math.PI * r) < straight){ x = cx1 - d; y = y1; left = true; }
+        else if((d -= straight) < Math.PI * r){ const a = Math.PI / 2 + d / r; x = cx0 + r * Math.cos(a); y = cy + r * Math.sin(a); left = y > cy; }
+        else { d -= Math.PI * r; x = cx0 + d; y = y0; }
+        const el = $('runner'); el.style.left = x + 'px'; el.style.top = y + 'px'; el.classList.toggle('flip', !left);
+        $('lapN').textContent = Math.floor(ms / 60000);
+      },
+      milestone(k){ ding(); note('🏁 Lap ' + k + ' complete!'); } },
+
+    garden: { label: '🌷 Growing Garden', every: 30,
+      build(){ scene.innerHTML = `<div class="gdn"><div class="sun">☀️</div><div class="bed" id="bed"></div><div class="seed" id="seed">🌱</div></div>`; },
+      update(ms){
+        const n = Math.floor(ms / 30000), bed = $('bed');
+        while(bed.children.length < Math.min(n, 60)){ const f = document.createElement('span'); f.className = 'fl'; f.textContent = FLOWERS[bed.children.length % FLOWERS.length]; bed.appendChild(f); }
+        while(bed.children.length > n) bed.lastChild.remove();
+        $('seed').style.setProperty('--g', .35 + ((ms % 30000) / 30000) * .9);
+      },
+      milestone(k){ ding(); note('🌷 ' + k + (k === 1 ? ' flower' : ' flowers') + ' — ' + (k * 30 >= 60 ? Math.floor(k / 2) + ' min' + (k % 2 ? ' 30 sec' : '') : '30 sec') + '!'); } },
+
+    space: { label: '🚀 Space Trip', every: 0,
+      build(){
+        const max = PLANETS[PLANETS.length - 1][2];
+        scene.innerHTML = `<div class="spc" id="spc"><div class="stars"></div><div class="path"></div>` +
+          `<div class="pl reached" style="left:6%"><b>🌍</b><span>Earth</span></div>` +
+          PLANETS.map(([e, n, s], i) => `<div class="pl" id="pl${i}" style="left:${6 + 88 * Math.sqrt(s / max)}%"><b>${e}</b><span>${n} · ${s / 60}m</span></div>`).join('') +
+          `<div class="ship" id="ship">🚀</div></div>`;
+      },
+      update(ms){
+        const max = PLANETS[PLANETS.length - 1][2], s = ms / 1000;
+        $('ship').style.left = (6 + 88 * Math.sqrt(Math.min(s, max) / max)) + '%';
+        PLANETS.forEach((p, i) => $('pl' + i).classList.toggle('reached', s >= p[2]));
+        $('spc').classList.toggle('paused', !running);
+        const reached = PLANETS.filter(p => s >= p[2]).length;
+        if(reached > marks){ marks = reached; ding(); note('🚀 We reached ' + PLANETS[reached - 1][1] + '!'); }
+      } }
+  };
+
+  function renderThemes(){
+    const wrap = $('themes'); wrap.innerHTML = '';
+    Object.entries(THEMES).forEach(([k, t]) => {
+      const b = document.createElement('button'); b.className = 'tm-theme' + (k === themeKey ? ' on' : '');
+      b.textContent = t.label; b.setAttribute('role', 'radio'); b.setAttribute('aria-checked', k === themeKey);
+      b.addEventListener('click', () => { themeKey = k; try{ localStorage.setItem('cc-stopwatch-theme', k); }catch(e){} renderThemes(); applyTheme(); });
+      wrap.appendChild(b);
+    });
+  }
+  function applyTheme(){
+    panel.classList.toggle('classic', themeKey === 'classic');
+    THEMES[themeKey].build(); $('note').textContent = '';
+    const t = THEMES[themeKey], ms = now();
+    marks = t.every ? Math.floor(ms / (t.every * 1000)) : PLANETS.filter(p => ms / 1000 >= p[2]).length;
+    t.update(ms);
   }
 
+  const now = () => elapsed + (running ? performance.now() - startTime : 0);
+  function fmt(ms, html){
+    const m = Math.floor(ms / 60000), s = Math.floor((ms % 60000) / 1000), cs = Math.floor((ms % 1000) / 10);
+    const main = String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0'), frac = '.' + String(cs).padStart(2, '0');
+    return html ? main + '<span class="ms">' + frac + '</span>' : main + frac;
+  }
+  function loop(){
+    const ms = now(); timeEl.innerHTML = fmt(ms, true);
+    const t = THEMES[themeKey]; t.update(ms);
+    if(t.every){ const k = Math.floor(ms / (t.every * 1000)); if(k > marks){ marks = k; t.milestone(k); } }
+    if(running) raf = requestAnimationFrame(loop);
+  }
   function toggle(){
     if(running){
-      running = false;
-      elapsed += performance.now() - startTime;
-      startStopBtn.textContent = 'Resume';
-      lapBtn.disabled = true;
-      cancelAnimationFrame(rafId);
+      running = false; elapsed += performance.now() - startTime; cancelAnimationFrame(raf);
+      btn.textContent = '▶ Resume'; lapBtn.disabled = true; loop(); checkRecord();
     } else {
-      running = true;
-      startTime = performance.now();
-      startStopBtn.textContent = 'Stop';
-      lapBtn.disabled = false;
-      tick();
+      running = true; startTime = performance.now(); btn.textContent = '⏸ Stop'; lapBtn.disabled = false; $('note').textContent = ''; loop();
     }
   }
-
   function reset(){
-    running = false;
-    elapsed = 0; lapCount = 0;
-    cancelAnimationFrame(rafId);
-    timeDisplay.innerHTML = format(0);
-    startStopBtn.textContent = 'Start';
-    lapBtn.disabled = true;
-    lapsEl.innerHTML = '';
+    running = false; cancelAnimationFrame(raf); elapsed = 0; lapCount = 0; lastLapAt = 0; marks = 0;
+    btn.textContent = '▶ Start'; lapBtn.disabled = true; $('laps').innerHTML = ''; $('note').textContent = '';
+    timeEl.innerHTML = fmt(0, true); THEMES[themeKey].build(); THEMES[themeKey].update(0);
   }
-
   function addLap(){
-    lapCount++;
-    const current = elapsed + (running ? performance.now() - startTime : 0);
-    const item = document.createElement('div');
-    item.className = 'lap-item';
-    item.innerHTML = `<span class="lap-num">Lap ${lapCount}</span><span>${format(current).replace(/<[^>]+>/g,'').replace('.', '.')}</span>`;
-    lapsEl.prepend(item);
+    const ms = now(), split = ms - lastLapAt; lastLapAt = ms; lapCount++;
+    const row = document.createElement('div'); row.className = 'lap-item';
+    const a = document.createElement('span'); a.className = 'lap-num'; a.textContent = '🚩 Lap ' + lapCount;
+    const b = document.createElement('span'); b.textContent = fmt(split) + '  (total ' + fmt(ms) + ')';
+    row.append(a, b); $('laps').prepend(row);
+    const items = [...$('laps').children]; items.forEach(x => x.classList.remove('fast'));
+    tone(1175, 0, .12, 'square', .05);
   }
 
-  startStopBtn.addEventListener('click', toggle);
-  resetBtn.addEventListener('click', reset);
-  lapBtn.addEventListener('click', addLap);
+  /* challenge mode: fastest stopped time is the class record */
+  let best = null;
+  try{ best = parseFloat(localStorage.getItem('cc-stopwatch-record')) || null; }catch(e){}
+  function showBest(){
+    const el = $('best'); el.innerHTML = '';
+    if(!$('recordInput').checked) return;
+    el.textContent = best ? 'Class record: ' + fmt(best) : 'No record yet — set one!';
+    if(best){ const c = document.createElement('button'); c.textContent = 'clear'; c.addEventListener('click', () => { best = null; try{ localStorage.removeItem('cc-stopwatch-record'); }catch(e){} showBest(); }); el.appendChild(c); }
+  }
+  function checkRecord(){
+    if(!$('recordInput').checked || elapsed < 1000) return;
+    if(!best || elapsed < best){
+      const old = best; best = elapsed; try{ localStorage.setItem('cc-stopwatch-record', String(best)); }catch(e){}
+      showBest(); fanfare();
+      if(window.CCReveal) CCReveal.show(fmt(best), { label: old ? '🏆 NEW CLASS RECORD! (old: ' + fmt(old) + ')' : '🏆 First class record!', onClose: () => {} });
+    } else {
+      note('So close! ' + fmt(elapsed - best) + ' slower than the record.');
+    }
+  }
+  $('recordInput').addEventListener('change', () => { try{ localStorage.setItem('cc-stopwatch-challenge', $('recordInput').checked); }catch(e){} showBest(); });
+  try{ $('recordInput').checked = localStorage.getItem('cc-stopwatch-challenge') === 'true'; }catch(e){}
 
-  document.addEventListener('keydown', (e)=>{
+  btn.addEventListener('click', toggle);
+  $('resetBtn').addEventListener('click', reset);
+  lapBtn.addEventListener('click', addLap);
+  window.addEventListener('resize', () => THEMES[themeKey].update(now()));
+  document.addEventListener('keydown', e => {
+    const tag = e.target.tagName; if(tag === 'INPUT' || tag === 'TEXTAREA') return;
+    if(window.CCReveal && CCReveal.isOpen()) return;
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
-    if(e.key.toLowerCase() === 'l' && !lapBtn.disabled){ addLap(); }
+    else if(e.key.toLowerCase() === 'l' && running){ addLap(); }
+    else if(e.key.toLowerCase() === 'r'){ reset(); }
   });
+  renderThemes(); applyTheme(); showBest(); timeEl.innerHTML = fmt(0, true);
+})();
 </script>
 <script src="../js/fullscreen.js"></script>
 </body>
