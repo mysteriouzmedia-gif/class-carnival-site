@@ -35,10 +35,39 @@
   .section-head p{ color: var(--cream-dim); font-size: 14px; margin: 0; flex: 1 1 260px; }
   .section-head a{ color: var(--gold); font-weight:700; font-size: 14px; text-decoration:none; white-space:nowrap; }
   .section-head a:hover{ text-decoration: underline; }
+  .tool-grid.featured{ grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .tool-grid.featured .tool-card{ border-color: rgba(255,182,39,.45); background: linear-gradient(160deg, rgba(255,182,39,.10), rgba(255,255,255,.02)); }
+  .tool-grid.featured .tool-card .icon{ font-size: 38px; }
   .badge{ display:inline-block; vertical-align: 3px; background: var(--gold); color:#1a1305; font-family:'Work Sans', sans-serif;
     font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 2px 7px; border-radius: 6px; margin-right: 4px; }
   .info-section h3{ font-family:'Archivo Black', sans-serif; font-size: 16px; margin: 22px 0 8px; }
 </style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "Organization",
+   "@id": "https://classcarnival.com/#org",
+   "name": "ClassCarnival",
+   "url": "https://classcarnival.com/",
+   "logo": "https://classcarnival.com/apple-touch-icon.png",
+   "email": "mysteriouz.media@gmail.com"
+  },
+  {
+   "@type": "WebSite",
+   "@id": "https://classcarnival.com/#site",
+   "name": "ClassCarnival",
+   "url": "https://classcarnival.com/",
+   "description": "Free classroom tools for teachers: race timers that decide student order, fair random name pickers (gumball machine, popsicle sticks, lucky envelopes and more), plus a stopwatch and countdown. No sign-up.",
+   "publisher": {
+    "@id": "https://classcarnival.com/#org"
+   },
+   "inLanguage": "en"
+  }
+ ]
+}
+</script>
 </head>
 <body>
 
@@ -63,6 +92,33 @@
     <div class="sub">Free tools for the front of the room — pick who goes first, call on students fairly, and keep time. No sign-up, and big enough to read from the back of the class.</div>
   </div>
 
+  <div class="section-head" id="start-here">
+    <h2>⭐ Start here</h2>
+    <p>New to ClassCarnival? These are the tools teachers reach for most.</p>
+  </div>
+  <div class="tool-grid featured">
+    <a class="tool-card" href="/tools/review-game.html">
+      <span class="icon">🏆</span>
+      <h3>Review Game</h3>
+      <p>Paste your class, get fair teams, and play a team race, dice board game, or ESL bomb board on one screen.</p>
+    </a>
+    <a class="tool-card" href="/tools/race-timer.html">
+      <span class="icon">🏁</span>
+      <h3>Race Timer</h3>
+      <p>Your students race across the screen — the finish order is your turn order. Ninja, pirate, dinosaur and more themes.</p>
+    </a>
+    <a class="tool-card" href="/tools/gacha-machine-picker.html">
+      <span class="icon">🎁</span>
+      <h3>Gacha Machine Picker</h3>
+      <p>Insert a coin, turn the dial, and a capsule pops out with a name. No repeats until everyone’s had a turn.</p>
+    </a>
+    <a class="tool-card" href="/tools/countdown.html">
+      <span class="icon">⏳</span>
+      <h3>Countdown Timer</h3>
+      <p>Rocket, balloon, ice cream or sand timer — with a cheering buddy and beat-the-timer mode.</p>
+    </a>
+  </div>
+
   <div class="section-head">
     <h2>Pick a student</h2>
     <p>Fair cold-calling — nobody gets picked twice until everyone has had a turn.</p>
@@ -71,12 +127,12 @@
   <div class="tool-grid">
     <a class="tool-card" href="/tools/gacha-machine-picker.html">
       <span class="icon">🎁</span>
-      <h3><span class="badge">New</span> Gacha Machine</h3>
+      <h3>Gacha Machine</h3>
       <p>Insert a coin, turn the dial, and pop open a capsule — with rare and legendary surprise prizes.</p>
     </a>
     <a class="tool-card" href="/tools/gumball-machine-picker.html">
       <span class="icon">🍬</span>
-      <h3><span class="badge">New</span> Gumball Machine</h3>
+      <h3>Gumball Machine</h3>
       <p>Turn the crank and a gumball rolls out with a student's name — a game-show twist on the name picker.</p>
     </a>
     <a class="tool-card" href="/tools/popsicle-stick-picker.html">
@@ -114,22 +170,22 @@
   <div class="tool-grid">
     <a class="tool-card" href="/tools/review-game.html">
       <span class="icon">🏆</span>
-      <h3><span class="badge">New</span> Review Game</h3>
+      <h3>Review Game</h3>
       <p>Auto-made teams, a fair pick of who answers, and three modes: team race, dice board game, or the classic ESL bomb board.</p>
     </a>
     <a class="tool-card" href="/tools/group-maker.html">
       <span class="icon">👥</span>
-      <h3><span class="badge">New</span> Group Maker</h3>
+      <h3>Group Maker</h3>
       <p>Split the class into random, balanced groups or teams — dealt out live on the projector.</p>
     </a>
     <a class="tool-card" href="/tools/team-wheel.html">
       <span class="icon">🎡</span>
-      <h3><span class="badge">New</span> Team Wheel</h3>
+      <h3>Team Wheel</h3>
       <p>Each student spins the wheel to find their team — dramatic, but always balanced.</p>
     </a>
     <a class="tool-card" href="/tools/partner-picker.html">
       <span class="icon">🤝</span>
-      <h3><span class="badge">New</span> Mystery Partners</h3>
+      <h3>Mystery Partners</h3>
       <p>Flip two cards to reveal each pair. Handles odd numbers and avoids repeat partners.</p>
     </a>
     <a class="tool-card" href="/tools/team-sorter.html">
@@ -152,11 +208,6 @@
       <h3><span class="badge">New</span> Seating Chart Shuffle</h3>
       <p>Deal the class into a random seating plan. Keep chosen students apart, swap seats, print.</p>
     </a>
-    <a class="tool-card" href="/tools/team-race.html">
-      <span class="icon">🚩</span>
-      <h3>Team Race</h3>
-      <p>Click-to-advance race for team competitions and classroom quiz games.</p>
-    </a>
   </div>
 
   <div class="section-head">
@@ -167,7 +218,7 @@
   <div class="tool-grid">
     <a class="tool-card" href="/tools/halloween-race.html">
       <span class="icon">🎃</span>
-      <h3><span class="badge">Halloween</span> Halloween Race</h3>
+      <h3><span class="badge">🎃 Seasonal</span> Halloween Race</h3>
       <p>A pumpkin, a friendly ghost, a witch, a black cat and a mummy race through a moonlit pumpkin patch. Cute, not scary.</p>
     </a>
     <a class="tool-card" href="/tools/race-timer.html">
@@ -192,7 +243,7 @@
     </a>
     <a class="tool-card" href="/tools/samurai-race.html">
       <span class="icon">🏯</span>
-      <h3><span class="badge">New</span> Samurai Race</h3>
+      <h3>Samurai Race</h3>
       <p>Armored samurai, an apprentice and an old master race through a cherry blossom dojo to decide who goes first.</p>
     </a>
     <a class="tool-card" href="/tools/dinosaur-race.html">

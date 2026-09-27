@@ -174,3 +174,8 @@ body.fs-active .card{ font-size: clamp(28px, 6vw, 64px) !important; padding: 20p
 @media (max-width: 640px){
   nav.site-nav{ justify-content:center; width:100%; }
 }
+
+/* FAQ sections on tool pages */
+.faq-section h3{ font-size: 17px; margin: 18px 0 4px; }
+.faq-section h3:first-of-type{ margin-top: 6px; }
+.faq-section p{ margin: 0 0 6px; }
