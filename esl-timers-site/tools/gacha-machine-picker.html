@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gacha Machine Name Picker — Capsule Toy Random Picker | ClassCarnival</title>
+<meta name="description" content="Free gacha machine name picker for the classroom. Insert a coin, turn the dial, and a capsule pops open with a student’s name — plus rare and legendary surprise prizes. No repeats, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/gacha-machine-picker">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Gacha Machine Name Picker — Capsule Toy Random Picker | ClassCarnival">
+<meta property="og:description" content="Free gacha machine name picker for the classroom. Insert a coin, turn the dial, and a capsule pops open with a student’s name — plus rare and legendary surprise prizes. No repeats, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/gacha-machine-picker">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .gc-options{ display:flex; justify-content:center; margin-top: 16px; }
+  .gm-check{ display:inline-flex; align-items:center; gap:8px; font-size:14px; color: var(--cream-dim); cursor:pointer; }
+  .gm-check input{ width:16px; height:16px; accent-color: var(--gold); }
+
+  .gc-stage{ --s: 1; position:relative; height: calc(500px * var(--s)); display:flex; justify-content:center; align-items:flex-start; }
+  .gc-machine{ position:relative; width: 300px; height: 470px; transform: scale(var(--s)); transform-origin: top center; cursor:pointer; user-select:none;
+    border-radius: 34px 34px 22px 22px; background: linear-gradient(90deg, #d9365a 0%, #ff5c7a 22%, #ff7a92 40%, #ef4868 70%, #b8264a 100%);
+    box-shadow: 0 16px 34px rgba(0,0,0,.5), inset 0 -10px 0 rgba(0,0,0,.15), inset 0 6px 0 rgba(255,255,255,.2); -webkit-tap-highlight-color: transparent; }
+  .gc-machine:focus-visible{ outline: 3px solid var(--gold); outline-offset: 8px; }
+  .gc-sign{ position:absolute; left: 50%; top: 12px; transform: translateX(-50%); background:#fffdf7; color:#d9365a; font-family:'Archivo Black', sans-serif;
+    font-size: 20px; letter-spacing: 4px; padding: 3px 18px; border-radius: 12px; box-shadow: 0 3px 0 rgba(0,0,0,.18); }
+  .gc-window{ position:absolute; left: 24px; right: 24px; top: 52px; height: 220px; border-radius: 20px; overflow:hidden;
+    background: radial-gradient(circle at 50% 40%, #233150, #141b2b); box-shadow: inset 0 0 0 5px #fffdf7, inset 0 8px 18px rgba(0,0,0,.6); }
+  .gc-caps{ position:absolute; inset: 8px; }
+  .gc-glare{ position:absolute; inset: 0; pointer-events:none; border-radius: 20px;
+    background: linear-gradient(115deg, rgba(255,255,255,.28) 0 12%, transparent 12% 18%, rgba(255,255,255,.12) 18% 21%, transparent 21%); }
+  .gc-cap{ --sz: 46px; --a:#ff6b5b; --b:#fffdf7; position:absolute; width: var(--sz); height: var(--sz); margin: calc(var(--sz)/-2) 0 0 calc(var(--sz)/-2);
+    border-radius:50%; overflow:hidden; box-shadow: 0 2px 3px rgba(0,0,0,.4); transform: rotate(var(--r, 0deg));
+    background: linear-gradient(180deg, var(--a) 0 48%, #1a1305 48% 52%, var(--b) 52% 100%); transition: transform .5s cubic-bezier(.5,0,.5,1), opacity .3s ease; }
+  .gc-cap::after{ content:''; position:absolute; left: 18%; top: 12%; width: 30%; height: 20%; border-radius:50%; background: rgba(255,255,255,.55); }
+  .shake .gc-cap{ animation: capRattle .11s ease-in-out infinite alternate; }
+  .shake .gc-cap:nth-child(2n){ animation-duration: .09s; animation-direction: alternate-reverse; }
+  @keyframes capRattle{ from{ margin-top: calc(var(--sz)/-2); } to{ margin-top: calc(var(--sz)/-2 - 8px); } }
+  .gc-cap.gone{ opacity:0; transform: translate(0, 140px) scale(.6); }
+  .gc-cap.drop-in{ animation: capDrop .6s cubic-bezier(.3,1.35,.5,1) both; }
+  @keyframes capDrop{ from{ opacity:0; margin-top: -260px; } to{ opacity:1; margin-top: calc(var(--sz)/-2); } }
+
+  .gc-panel{ position:absolute; left: 24px; right: 24px; top: 286px; height: 92px; border-radius: 16px; background: rgba(0,0,0,.14);
+    display:flex; align-items:center; justify-content:space-around; }
+  .gc-coin{ display:flex; flex-direction:column; align-items:center; gap: 6px; }
+  .gc-coin-slot{ width: 12px; height: 40px; border-radius: 6px; background:#2a0b12; box-shadow: 0 0 0 5px #c9c9c9, inset 0 3px 6px rgba(0,0,0,.8); }
+  .gc-coin-lbl{ font-family:'Archivo Black', sans-serif; font-size: 10px; color:#fffdf7; letter-spacing: 1px; }
+  .gc-dial{ position:relative; width: 72px; height: 72px; border-radius:50%; background: radial-gradient(circle at 35% 30%, #ffffff, #d9d9d9 55%, #9a9a9a);
+    box-shadow: 0 4px 8px rgba(0,0,0,.4); transition: transform 1s cubic-bezier(.5,.1,.3,1); }
+  .gc-dial span{ position:absolute; left: 50%; top: 8px; bottom: 8px; width: 18px; margin-left: -9px; border-radius: 9px;
+    background: linear-gradient(90deg, #ffb627, #ffd166, #e89b00); box-shadow: 0 2px 3px rgba(0,0,0,.35); }
+  .gc-count{ position:absolute; left:50%; top: 256px; transform: translateX(-50%); z-index:2; font-size: 11px; font-weight:800; letter-spacing: 1px; color:#fffdf7;
+    text-transform: uppercase; background: rgba(0,0,0,.35); padding: 2px 10px; border-radius: 10px; white-space:nowrap; }
+  .gc-chute{ position:absolute; left: 50%; bottom: 18px; width: 110px; height: 66px; margin-left: -55px; border-radius: 14px;
+    background: #2a0b12; box-shadow: inset 0 8px 14px rgba(0,0,0,.7), 0 0 0 5px #fffdf7; overflow:hidden; }
+  .gc-flap{ position:absolute; left: 6px; right: 6px; top: 6px; height: 22px; border-radius: 8px; background: linear-gradient(180deg, rgba(200,230,255,.55), rgba(200,230,255,.25));
+    transform-origin: 50% 0; transition: transform .25s ease; }
+  .gc-machine.dispense .gc-flap{ transform: rotateX(75deg); }
+
+  .gc-coin-fly{ position:absolute; left: 62px; top: 180px; font-size: 34px; opacity:0; pointer-events:none; z-index: 5; }
+  .gc-coin-fly.go{ animation: coinIn .6s cubic-bezier(.4,0,.6,1) forwards; }
+  @keyframes coinIn{ 0%{ opacity:1; transform: translate(-30px, -160px) rotate(0) scale(1.3); } 70%{ opacity:1; transform: translate(10px, 125px) rotate(540deg) scale(.9); }
+    100%{ opacity:0; transform: translate(10px, 135px) rotate(720deg) scale(.5); } }
+
+  .gc-out{ --a:#ff6b5b; --b:#fffdf7; position:absolute; left: 50%; top: 420px; width: 56px; height: 56px; margin: -28px 0 0 -28px; z-index: 20; opacity:0; pointer-events:none; }
+  .gc-top, .gc-bot{ position:absolute; left:0; right:0; height: 50%; box-shadow: 0 4px 10px rgba(0,0,0,.45); transition: transform .55s cubic-bezier(.3,1.5,.5,1); }
+  .gc-top{ top:0; border-radius: 999px 999px 0 0; background: var(--a); border-bottom: 2px solid #1a1305; }
+  .gc-top::after{ content:''; position:absolute; left: 18%; top: 22%; width: 30%; height: 38%; border-radius:50%; background: rgba(255,255,255,.55); }
+  .gc-bot{ bottom:0; border-radius: 0 0 999px 999px; background: var(--b); }
+  .gc-slip{ position:absolute; left:50%; top:50%; transform: translate(-50%,-50%) scale(0); background:#fffdf7; color:#1a1305; border-radius: 10px;
+    font-size: 22px; line-height:1; padding: 5px; white-space:nowrap; box-shadow: 0 0 0 3px var(--a), 0 6px 16px rgba(0,0,0,.4); z-index: 3; transition: transform .45s cubic-bezier(.3,1.6,.5,1) .15s; }
+  .gc-out.roll{ opacity:1; animation: capOut .7s cubic-bezier(.3,1.25,.5,1) forwards; }
+  @keyframes capOut{ from{ transform: translate(0, -30px) rotate(-200deg) scale(.7); } to{ transform: translate(0, 0) rotate(0) scale(1); } }
+  .gc-out.big{ opacity:1; transform: translate(0, -255px) scale(2.2); transition: transform .6s cubic-bezier(.3,1.3,.5,1); }
+  .gc-out.big.wobble{ animation: capWobble .12s ease-in-out infinite alternate; }
+  @keyframes capWobble{ from{ rotate: -8deg; } to{ rotate: 8deg; } }
+  .gc-out.open .gc-top{ transform: translate(-22px, -30px) rotate(-35deg); }
+  .gc-out.open .gc-bot{ transform: translate(20px, 26px) rotate(25deg); }
+  .gc-out.open .gc-slip{ transform: translate(-50%,-50%) scale(1); }
+  .gc-out.rare .gc-top, .gc-out.rare .gc-bot{ box-shadow: 0 0 14px 4px #7fd6ff; }
+  .gc-out.legend .gc-top, .gc-out.legend .gc-bot{ box-shadow: 0 0 18px 6px #ffd166; }
+
+  .gc-machine.shake{ animation: machShake .14s ease-in-out infinite alternate; }
+  @keyframes machShake{ from{ transform: scale(var(--s)) rotate(-1.2deg); } to{ transform: scale(var(--s)) rotate(1.2deg); } }
+
+  .tray{ margin-top: 18px; text-align:center; min-height: 60px; }
+  .tray h3{ font-size:11px; letter-spacing:2px; color: var(--cream-dim); text-transform:uppercase; margin: 0 0 10px; }
+  .tray-items{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; }
+  .tray-item{ display:inline-flex; align-items:center; gap:8px; padding: 4px 12px 4px 4px; border-radius: 20px; background: rgba(255,255,255,.05);
+    border: 1px solid var(--line); font-weight:700; font-size:13px; animation: trayIn .45s cubic-bezier(.3,1.35,.5,1) both; }
+  .tray-item.rare{ border-color:#7fd6ff; } .tray-item.legend{ border-color:#ffd166; background: rgba(255,209,102,.1); }
+  .tray-item i{ width:22px; height:22px; border-radius:50%; background: linear-gradient(180deg, var(--a) 0 48%, #1a1305 48% 52%, var(--b) 52%); }
+  .tray-empty{ color: var(--cream-dim); font-size:13px; }
+  @keyframes trayIn{ from{ opacity:0; transform: translateY(-20px) scale(.6); } to{ opacity:1; transform:none; } }
+
+  .cc-reveal-name.as-capsule{ display:inline-block; color:#1a1305; text-shadow:none; font-size: clamp(44px, 10vw, 140px);
+    background:#fffdf7; padding: .18em .8em; border-radius: 999px; border: .1em solid var(--accent, #ff6b5b); box-shadow: 0 18px 44px rgba(0,0,0,.5); }
+  .cc-reveal-name.as-capsule.legend{ box-shadow: 0 0 0 .06em #fff, 0 0 60px 14px rgba(255,209,102,.7); }
+  .cc-reveal-name.as-capsule.rare{ box-shadow: 0 0 0 .06em #fff, 0 0 50px 10px rgba(127,214,255,.6); }
+
+  body.fs-active .gc-stage{ --s: 1.25; }
+  @media (max-width: 480px){ .gc-stage{ --s: .85; } }
+  @media (prefers-reduced-motion: reduce){ .gc-cap, .gc-out, .gc-top, .gc-bot, .gc-slip, .gc-dial{ transition:none !important; animation:none !important; }
+    .shake .gc-cap, .gc-machine.shake{ animation:none !important; } }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html" class="active">Name Pickers</a>
+      <a href="/games.html">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🎁 Gacha Machine</div>
+    <h1>Gacha Machine Name Picker</h1>
+    <div class="sub">Insert a coin, turn the dial, and a capsule drops out — pop it open to see who's up (and what surprise is inside)!</div>
+  </div>
+
+  <div id="setupScreen" class="panel">
+    <textarea id="namesInput" placeholder="Type or paste one name per line, e.g.
+Minji
+Daniel
+Sora
+Jayden
+Ava"></textarea>
+    <div class="row">
+      <div class="count" id="nameCount">0 students</div>
+      <button class="btn-ghost" id="sampleBtn">Fill sample class</button>
+    </div>
+    <div class="gc-options">
+      <label class="gm-check"><input type="checkbox" id="rareInput" checked> Surprise prizes in capsules (✨ rare & 👑 legendary!)</label>
+    </div>
+    <div class="btn-row"><button class="btn-gold" id="startBtn">Fill the Machine</button></div>
+  </div>
+
+  <div id="pickScreen" class="panel" style="display:none;">
+    <div class="gc-stage">
+      <div class="gc-machine" id="machine" role="button" tabindex="0" aria-label="Turn the dial to get a capsule">
+        <div class="gc-sign">GACHA</div>
+        <div class="gc-window"><div class="gc-caps" id="caps"></div><div class="gc-glare"></div></div>
+        <div class="gc-panel">
+          <div class="gc-coin"><span class="gc-coin-slot"></span><span class="gc-coin-lbl">1 COIN</span></div>
+          <div class="gc-dial" id="dial"><span></span></div>
+        </div>
+        <div class="gc-count" id="gcCount"></div>
+        <div class="gc-chute"><div class="gc-flap"></div></div>
+        <div class="gc-coin-fly" id="coin">🪙</div>
+        <div class="gc-out" id="outCap"><div class="gc-top"></div><div class="gc-bot"></div><div class="gc-slip" id="slip"></div></div>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gold" id="pullBtn">🪙 Turn the Dial</button>
+      <button class="btn-ghost" id="resetPoolBtn">Refill the Machine</button>
+      <button class="btn-ghost" id="editBtn">Edit Names</button>
+    </div>
+    <div class="tray">
+      <h3>Capsule collection</h3>
+      <div class="tray-items" id="tray"></div>
+    </div>
+  </div>
+  <div class="hint">Tap the machine (or press Space) to turn the dial. Everyone gets a capsule before the machine refills.</div>
+
+  <div class="related-skins">
+    <h3>Try a different mechanic</h3>
+    <div class="skin-links">
+      <a href="/tools/gumball-machine-picker.html">🍬 Gumball Machine</a>
+      <a href="/tools/name-picker.html">📋 List Picker</a>
+      <a href="/tools/popsicle-stick-picker.html">🥤 Popsicle Stick Cup</a>
+      <a href="/tools/lucky-envelope-picker.html">🧧 Lucky Envelope</a>
+      <a href="/tools/spin-globe-picker.html">🌍 Spin the Globe</a>
+      <a href="/tools/sticker-jar-picker.html">🫙 Sticker Jar</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>A gacha machine name picker for the classroom — the capsule toy machines kids know from shops and arcades. A coin drops in, the dial clicks round, and a two-colour capsule tumbles into the tray. Then it pops open to reveal whose turn it is. It uses the same fair no-repeat system as every picker on this site: once a student's capsule has come out, they're set aside until everyone else has had a turn.</p>
+    <p>Turn on surprise prizes and each capsule also hides a little extra — most are common, but some are ✨ rare and a lucky few are 👑 legendary, complete with a special glow and fanfare. Use the prize as a fun bonus (the legendary student picks the next song, sits in the special chair, or gets a sticker), or just enjoy the suspense. Every capsule lands in the class collection so you can see who's been picked.</p>
+    <p>Great for cold-calling, choosing who answers next, turn order, or classroom jobs — and especially popular with younger learners and ESL classes. Paste in your class list or load a saved class, and use fullscreen mode on the projector. No sign-up needed.</p>
+  </div>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const namesInput = $('namesInput'), machine = $('machine'), capsEl = $('caps'), outCap = $('outCap');
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const PAIRS = [['#ff6b5b','#fffdf7'],['#2ec4b6','#fffdf7'],['#ffb627','#fffdf7'],['#9b72cf','#fffdf7'],['#4fa8e0','#fffdf7'],
+                 ['#a8d46b','#fffdf7'],['#e85d8a','#ffd166'],['#54a0ff','#ffd166'],['#ff9f43','#9b72cf'],['#10ac84','#ff9ecb']];
+  const COMMON = ['🍬','🧸','🎈','🌈','🦖','🐱','🚗','🍩','🎨','🪀','🐸','🍓'];
+  const RARE = ['💎','🦄','🚀','🐉','🌟'];
+  const LEGEND = ['👑','🏆'];
+
+  let allNames = [], picker = null, busy = false, dialTurns = 0, look = {}, slots = {}, collection = [];
+  const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean);
+  const shuffle = a => { a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+
+  let actx = null;
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  function tone(f, when, dur, type, vol){
+    if(muted()) return;
+    try{
+      if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+      if(actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'triangle'; o.frequency.value = f;
+      g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02);
+    }catch(e){}
+  }
+  const coinSound = () => { tone(1568, 0, .12, 'square', .05); tone(2093, .08, .25, 'square', .05); };
+  const clicks = () => { for(let k = 0; k < 6; k++) tone(300 + k * 20, .15 + k * .13, .04, 'square', .05); };
+  const thunk = () => { tone(140, 0, .18, 'sine', .15); tone(90, .03, .2, 'sine', .12); };
+  const pop = () => { tone(900, 0, .06, 'square', .07); tone(1400, .04, .1, 'triangle', .07); };
+  const rareSound = () => [880, 1109, 1319, 1760].forEach((f, i) => tone(f, i * .07, .25, 'sine', .08));
+  const legendSound = () => [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone(f, i * .08, i > 3 ? .5 : .2, 'square', .07));
+
+  function updateCount(){ const n = lines(namesInput.value).length; $('nameCount').textContent = n + (n === 1 ? ' student' : ' students'); }
+  namesInput.addEventListener('input', updateCount);
+  $('sampleBtn').addEventListener('click', () => {
+    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah'].join('\n');
+    namesInput.dispatchEvent(new Event('input', { bubbles: true }));
+  });
+  $('startBtn').addEventListener('click', () => {
+    allNames = lines(namesInput.value);
+    if(allNames.length < 1){ alert('Add at least 1 name.'); return; }
+    picker = createPicker(allNames);
+    $('setupScreen').style.display = 'none'; $('pickScreen').style.display = 'block';
+    if(document.activeElement) document.activeElement.blur();
+    refill();
+  });
+  $('editBtn').addEventListener('click', () => { if(busy) return; $('pickScreen').style.display = 'none'; $('setupScreen').style.display = 'block'; });
+  $('resetPoolBtn').addEventListener('click', () => { if(!busy) refill(); });
+  machine.addEventListener('click', pull);
+  $('pullBtn').addEventListener('click', pull);
+  machine.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pull(); } });
+  document.addEventListener('keydown', e => {
+    if(e.key !== ' ' || $('pickScreen').style.display === 'none' || CCReveal.isOpen()) return;
+    const t = e.target.tagName; if(t === 'BUTTON' || t === 'TEXTAREA' || t === 'INPUT' || e.target === machine) return;
+    e.preventDefault(); pull();
+  });
+
+  // Prize rarity: roughly 1 in 6 rare, 1 in 14 legendary.
+  function rollPrize(){
+    if(!$('rareInput').checked) return null;
+    const r = Math.random();
+    if(r < .07) return { tier: 'legend', emoji: LEGEND[Math.floor(Math.random() * LEGEND.length)] };
+    if(r < .24) return { tier: 'rare', emoji: RARE[Math.floor(Math.random() * RARE.length)] };
+    return { tier: 'common', emoji: COMMON[Math.floor(Math.random() * COMMON.length)] };
+  }
+
+  function layout(keep){
+    const names = keep ? allNames.filter(n => picker.isRemaining(n)) : allNames;
+    const W = 236, H = 204, n = Math.max(1, names.length);
+    const sz = Math.max(26, Math.min(56, Math.floor(Math.sqrt(W * H * .7 / n))));
+    const perRow = Math.max(1, Math.floor((W - sz) / (sz * .9)) + 1);
+    slots = {};
+    if(!keep){ look = {}; shuffle(allNames).forEach((nm, i) => { look[nm] = PAIRS[i % PAIRS.length]; }); }
+    shuffle(names).forEach((nm, i) => {
+      const row = Math.floor(i / perRow), col = i % perRow, inRow = Math.min(perRow, names.length - row * perRow);
+      const x = W / 2 - (inRow - 1) * sz * .9 / 2 + col * sz * .9 + (row % 2 ? sz * .2 : 0) + (Math.random() - .5) * 5;
+      const y = H - sz / 2 - row * sz * .82 + (Math.random() - .5) * 4;
+      slots[nm] = { x: Math.max(sz / 2, Math.min(W - sz / 2, x)), y: Math.max(sz / 2, y), sz, r: Math.round((Math.random() - .5) * 120) };
+    });
+  }
+  function renderCaps(dropIn){
+    capsEl.innerHTML = '';
+    const inside = allNames.filter(n => picker.isRemaining(n));
+    inside.forEach((nm, i) => {
+      const s = slots[nm]; if(!s) return;
+      const el = document.createElement('div');
+      el.className = 'gc-cap' + (dropIn && !reduceMotion ? ' drop-in' : '');
+      el.style.setProperty('--sz', s.sz + 'px'); el.style.setProperty('--a', look[nm][0]); el.style.setProperty('--b', look[nm][1]); el.style.setProperty('--r', s.r + 'deg');
+      el.style.left = s.x + 'px'; el.style.top = s.y + 'px';
+      if(dropIn) el.style.animationDelay = (i * 35) + 'ms';
+      el.dataset.name = nm; capsEl.appendChild(el);
+    });
+    $('gcCount').textContent = inside.length === 1 ? '1 capsule' : inside.length + ' capsules';
+  }
+  function renderTray(){
+    const tray = $('tray'); tray.innerHTML = '';
+    if(!collection.length){ tray.innerHTML = '<span class="tray-empty">No capsules opened yet.</span>'; return; }
+    collection.forEach(c => {
+      const el = document.createElement('span'); el.className = 'tray-item' + (c.prize ? ' ' + c.prize.tier : '');
+      const dot = document.createElement('i'); dot.style.setProperty('--a', look[c.name][0]); dot.style.setProperty('--b', look[c.name][1]);
+      el.appendChild(dot); el.appendChild(document.createTextNode(c.name + (c.prize ? ' ' + c.prize.emoji : '')));
+      tray.appendChild(el);
+    });
+  }
+  function refill(){ picker.reset(); collection = []; layout(false); renderCaps(true); renderTray(); resetOut(); }
+  function resetOut(){ outCap.className = 'gc-out'; outCap.removeAttribute('style'); $('slip').textContent = ''; machine.classList.remove('dispense'); }
+
+  function pull(){
+    if(busy || !picker || CCReveal.isOpen()) return;
+    busy = true; resetOut();
+    const result = picker.pickNext(), name = result.name, prize = rollPrize();
+    const cap = [...capsEl.children].find(c => c.dataset.name === name);
+    const T = reduceMotion ? 0 : 1;
+
+    // 1. coin drops in
+    const coin = $('coin'); coin.classList.remove('go'); void coin.offsetWidth; coin.classList.add('go'); coinSound();
+    setTimeout(() => {
+      // 2. dial turns, machine rattles
+      dialTurns++; $('dial').style.transform = `rotate(${dialTurns * 360}deg)`;
+      clicks(); CCReveal.drumroll(T ? 1000 : 100);
+      machine.classList.add('shake'); capsEl.classList.add('shake');
+      setTimeout(() => {
+        machine.classList.remove('shake'); capsEl.classList.remove('shake');
+        if(cap) cap.classList.add('gone');
+        // 3. capsule rolls into the chute
+        setTimeout(() => {
+          machine.classList.add('dispense'); thunk();
+          outCap.style.setProperty('--a', look[name][0]); outCap.style.setProperty('--b', look[name][1]);
+          $('slip').textContent = prize ? prize.emoji : '⭐';
+          outCap.classList.add('roll');
+          setTimeout(() => {
+            // 4. capsule lifts up, wobbles, pops open
+            outCap.classList.remove('roll'); outCap.style.opacity = 1;
+            void outCap.offsetWidth;
+            outCap.classList.add('big', 'wobble');
+            if(prize && prize.tier !== 'common') outCap.classList.add(prize.tier);
+            setTimeout(() => {
+              outCap.classList.remove('wobble'); outCap.classList.add('open'); pop();
+              if(prize && prize.tier === 'legend') legendSound(); else if(prize && prize.tier === 'rare') rareSound();
+              setTimeout(() => {
+                const label = !prize ? 'Out of the capsule…' : prize.tier === 'legend' ? '👑 LEGENDARY capsule! ' + prize.emoji
+                  : prize.tier === 'rare' ? '✨ Rare capsule! ' + prize.emoji : 'Capsule prize: ' + prize.emoji;
+                CCReveal.show(name, {
+                  label, nameClass: 'as-capsule' + (prize && prize.tier !== 'common' ? ' ' + prize.tier : ''),
+                  accent: look[name][0], remaining: result.remaining, roundDone: result.justExhausted,
+                  onNext: pull, onClose: () => finish(name, prize, result.justExhausted)
+                });
+                if(prize && prize.tier === 'legend') setTimeout(() => CCReveal.confetti(), 400);
+              }, T ? 800 : 50);
+            }, T ? 900 : 50);
+          }, T ? 750 : 50);
+        }, T ? 350 : 0);
+      }, T ? 1000 : 100);
+    }, T ? 550 : 0);
+  }
+  function finish(name, prize, roundDone){
+    collection.push({ name, prize });
+    resetOut();
+    if(roundDone) refill();
+    else { layout(true); renderCaps(false); renderTray(); }
+    busy = false;
+  }
+  updateCount();
+})();
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>
