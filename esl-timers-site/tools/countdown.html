@@ -141,8 +141,26 @@
   .beat-row input{ width: min(100%, 460px); background:#0f1522; color:var(--cream); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:13px; }
   .beat-row[hidden], #doneBtn[hidden]{ display:none !important; }
   #doneBtn{ background: #a8d46b; color: #13301a; border-color: #a8d46b; }
+  /* christmas themes */
+  .sm svg, .pr svg{ width:100%; height:100%; overflow: visible; position:relative; z-index:1; }
+  .sm .smbody{ transform-box: fill-box; transform-origin: 50% 100%; transition: transform .5s ease; }
+  #smHat{ transform-box: fill-box; transform-origin: 50% 100%; transition: transform .5s ease; }
+  .sm .sun{ transform-box: fill-box; transform-origin: 50% 50%; }
+  .sm.running .sun{ animation: sunPulse 2s ease-in-out infinite; }
+  .sm .drip{ opacity: 0; } .sm.running .drip{ animation: drip 2.2s ease-in infinite; }
+  .snow{ position:absolute; inset:0; pointer-events:none; background-image: radial-gradient(3px 3px at 20% 10%, #fff, transparent), radial-gradient(2px 2px at 60% 30%, #fff, transparent),
+    radial-gradient(3px 3px at 80% 60%, #fff, transparent), radial-gradient(2px 2px at 35% 75%, #fff, transparent), radial-gradient(2px 2px at 90% 15%, #fff, transparent), radial-gradient(3px 3px at 10% 50%, #fff, transparent);
+    background-size: 100% 100%; opacity: .8; animation: snowfall 6s linear infinite; }
+  @keyframes snowfall{ from{ background-position: 0 -300px; } to{ background-position: 30px 0; } }
+  .pr .paper{ transition: transform .5s ease, opacity .5s ease; transform-box: fill-box; transform-origin: 0 0; }
+  .pr .paper.off{ transform: translate(-20px, -30px) rotate(-40deg); opacity: 0; }
+  #prBow{ transform-box: fill-box; transform-origin: 50% 50%; transition: transform .5s ease; }
+  .pr .lid{ transform-box: fill-box; transform-origin: 50% 100%; transition: transform .9s cubic-bezier(.3,1.5,.5,1); }
+  .pr.open .lid{ transform: translate(70px, -60px) rotate(30deg); }
+  .pr .surprise{ opacity: 0; transition: transform 1s cubic-bezier(.3,1.6,.5,1) .2s, opacity .3s ease .2s; transform-box: fill-box; transform-origin: 50% 50%; }
+  .pr.open .surprise{ opacity: 1; transform: translateY(-60px) scale(1.35); }
   body.fs-active .tm-scene{ height: 42vh; width: min(100%, 620px); }
-  @media (prefers-reduced-motion: reduce){ .shake, .tm-final.beat, .rk.running .flame, .bl.running .ball-wrap, .hg .stream, .tm-scene.urgent::after, .rk.running .stars, .rk.running .ship, .rk.running .vent, .hg.running .grain, .hg.running svg, .ic.running .drip, .ic.running .sun, .ic.running .jig, .bl.running .puff, .bl.running .breath{ animation:none !important; } }
+  @media (prefers-reduced-motion: reduce){ .shake, .tm-final.beat, .rk.running .flame, .bl.running .ball-wrap, .hg .stream, .tm-scene.urgent::after, .rk.running .stars, .rk.running .ship, .rk.running .vent, .hg.running .grain, .hg.running svg, .ic.running .drip, .ic.running .sun, .ic.running .jig, .bl.running .puff, .bl.running .breath, .snow, .sm.running .sun, .sm.running .drip{ animation:none !important; } }
 </style>
 <script type="application/ld+json">
 {
@@ -207,7 +225,7 @@
      "name": "What themes does the countdown timer have?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "Rocket Launch, Balloon Pop, Melting Ice Cream, Sand Timer and Classic. Each has its own animation, sounds and finale, plus a big 10-second countdown at the end."
+      "text": "Rocket Launch, Balloon Pop, Melting Ice Cream, Sand Timer, Classic, and two Christmas themes — a Melting Snowman and a Present to unwrap. Each has its own animation, sounds and finale, plus a big 10-second countdown at the end."
      }
     },
     {
@@ -253,7 +271,7 @@
   <div class="page-header">
     <div class="eyebrow">⏳ Countdown Timer</div>
     <h1>Classroom Countdown</h1>
-    <div class="sub">Pick a theme and a time. A timer buddy cheers the class on, every theme has its own sounds, and beat-the-timer mode turns any task into a race for a mystery reward.</div>
+    <div class="sub">Pick a theme — including a melting snowman and a present to unwrap — and a time. A timer buddy cheers the class on, every theme has its own sounds, and beat-the-timer mode turns any task into a race for a mystery reward.</div>
   </div>
 
   <div class="panel">
@@ -308,7 +326,7 @@
     <h3>Is the Classroom Countdown Timer free?</h3>
     <p>Yes. The Classroom Countdown Timer is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
     <h3>What themes does the countdown timer have?</h3>
-    <p>Rocket Launch, Balloon Pop, Melting Ice Cream, Sand Timer and Classic. Each has its own animation, sounds and finale, plus a big 10-second countdown at the end.</p>
+    <p>Rocket Launch, Balloon Pop, Melting Ice Cream, Sand Timer, Classic, and two Christmas themes — a Melting Snowman and a Present to unwrap. Each has its own animation, sounds and finale, plus a big 10-second countdown at the end.</p>
     <h3>What is beat-the-timer mode?</h3>
     <p>Turn it on and a “We’re done!” button appears. If the class finishes before time runs out, they win a random mystery reward from a list you can edit.</p>
     <h3>Can I turn the sound off?</h3>
@@ -344,9 +362,11 @@
     hourglass: [2500, () => S.sand()],
     rocket:    [2000, () => { S.beacon(); if(ambN % 3 === 0) S.noise(.8, .08, 160); }],
     icecream:  [2200, () => S.drip()],
-    balloon:   [1600, () => S.pump()]
+    balloon:   [1600, () => S.pump()],
+    snowman:   [2400, () => S.drip()],
+    present:   [2600, () => S.noise(.35, .12, 2500, 'bandpass')]
   };
-  const START_SOUND = { classic: S.start, hourglass: S.flip, rocket: () => { S.start(); S.rumble(); }, icecream: S.jingle, balloon: () => { S.pump(); setTimeout(S.pump, 250); } };
+  const START_SOUND = { classic: S.start, hourglass: S.flip, rocket: () => { S.start(); S.rumble(); }, icecream: S.jingle, balloon: () => { S.pump(); setTimeout(S.pump, 250); }, snowman: S.jingle, present: S.jingle };
   function ambient(sec){
     if(!running || !ambOn() || sec <= 10) return;
     const now = performance.now();
@@ -360,6 +380,8 @@
     hourglass: ['Sand is falling… ⏳', 'Every grain counts!', 'Tick… tock… 🕰️'],
     icecream: ['Phew, it’s hot! ☀️', 'My ice cream is melting! 🍦', 'Work fast before it drips!'],
     balloon: ['Pump… pump… 💨', 'It’s getting BIG! 🎈', 'Careful… not too big…'],
+    snowman: ['Brrr… it’s getting warm! ☀️', 'Save the snowman — keep working! ⛄', 'Drip… drip… 💧'],
+    present: ['What’s inside? 🎁', 'Unwrapping… 🎀', 'No peeking until time’s up!'],
     classic: []
   };
   const words = t => { const m = Math.floor(t / 60), s = t % 60;
@@ -419,7 +441,9 @@
     hourglass: () => [1047, 1319, 1568, 2093].forEach((f, i) => tone(f, i * .12, .6, 'sine', .12)),
     rocket:    () => { noise(2.2, .5, 500); tone(80, 0, 2, 'sawtooth', .08); },
     icecream:  () => [392, 370, 349, 330].forEach((f, i) => tone(f, i * .35, i === 3 ? .9 : .32, 'sawtooth', .07)),
-    balloon:   () => { noise(.25, .9, 3000); tone(180, 0, .15, 'square', .1); }
+    balloon:   () => { noise(.25, .9, 3000); tone(180, 0, .15, 'square', .1); },
+    snowman:   () => [784, 659, 523, 392].forEach((f, i) => tone(f, i * .3, i === 3 ? .8 : .28, 'sine', .1)),
+    present:   () => { noise(.4, .5, 2500); [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => tone(f, .15 + i * .08, .3, 'triangle', .09)); }
   };
 
   /* ---------- themes ---------- */
@@ -514,7 +538,62 @@
         scene.classList.toggle('shake', running && sec <= 10 && !reduceMotion);
       },
       finish(){ scene.classList.remove('shake', 'running'); scene.classList.add('popped'); },
-      reset(){ scene.classList.remove('popped'); } }
+      reset(){ scene.classList.remove('popped'); } },
+
+    snowman: { label: '⛄ Melting Snowman', done: '⛄ The snowman melted!',
+      build(){
+        scene.className = 'tm-scene sm';
+        scene.innerHTML = `<div class="snow"></div><svg viewBox="0 0 220 280" aria-hidden="true">
+          <text class="sun" x="168" y="46" font-size="34">☀️</text>
+          <ellipse id="smPuddle" cx="110" cy="262" rx="30" ry="6" fill="#bfe3f5" opacity=".9"/>
+          <g id="smBody" class="smbody">
+            <circle cx="110" cy="206" r="54" fill="#f4fbff" stroke="#1d2433" stroke-width="3"/>
+            <circle cx="110" cy="128" r="40" fill="#f4fbff" stroke="#1d2433" stroke-width="3"/>
+            <circle cx="110" cy="190" r="4" fill="#1d2433"/><circle cx="110" cy="210" r="4" fill="#1d2433"/><circle cx="110" cy="230" r="4" fill="#1d2433"/>
+            <path d="M66 158 Q110 176 154 158 L150 172 Q110 188 70 172 Z" fill="#e8434b" stroke="#1d2433" stroke-width="2"/>
+            <circle cx="96" cy="118" r="4" fill="#1d2433"/><circle cx="124" cy="118" r="4" fill="#1d2433"/>
+            <path d="M110 128 L146 134 L110 138 Z" fill="#ff8a2a" stroke="#1d2433" stroke-width="2"/>
+            <path d="M98 146 Q110 154 122 146" stroke="#1d2433" stroke-width="3" fill="none" stroke-linecap="round"/>
+            <path d="M58 196 L22 170 M162 196 L198 170" stroke="#7a4b2a" stroke-width="5" stroke-linecap="round"/>
+          </g>
+          <g id="smHat"><rect x="84" y="72" width="52" height="16" rx="6" fill="#3b7dd8" stroke="#1d2433" stroke-width="3"/>
+            <path d="M88 76 Q110 40 132 76 Z" fill="#3b7dd8" stroke="#1d2433" stroke-width="3"/><circle cx="110" cy="46" r="8" fill="#fff" stroke="#1d2433" stroke-width="2"/></g>
+          <ellipse class="drip" cx="80" cy="200" rx="4" ry="6" fill="#bfe3f5"/><ellipse class="drip" cx="142" cy="210" rx="4" ry="6" fill="#bfe3f5" style="animation-delay:1.2s"/>
+        </svg>`;
+      },
+      update(p){
+        const m = Math.max(0, p);
+        $('smBody').style.transform = `scale(${.55 + .45 * m}, ${.12 + .88 * m})`;
+        $('smHat').style.transform = `translateY(${(1 - m) * 168}px) rotate(${(1 - m) * -18}deg)`;
+        $('smPuddle').setAttribute('rx', 30 + 70 * (1 - m)); $('smPuddle').setAttribute('ry', 6 + 12 * (1 - m));
+        scene.classList.toggle('running', running && p > 0);
+      },
+      finish(){}, reset(){} },
+
+    present: { label: '🎁 Present Unwrap', done: '🎁 Surprise!',
+      build(){
+        const surprise = ['🧸','🎮','⭐','🎈','🍭','🚀','🦄','🏆','🍩','🎸'][Math.floor(Math.random() * 10)];
+        scene.className = 'tm-scene pr';
+        scene.innerHTML = `<div class="snow"></div><svg viewBox="0 0 220 280" aria-hidden="true">
+          <text id="prSurprise" class="surprise" x="110" y="150" font-size="70" text-anchor="middle">${surprise}</text>
+          <g id="prBox"><rect x="38" y="120" width="144" height="130" rx="6" fill="#c9463d" stroke="#1d2433" stroke-width="3"/>
+            <rect x="98" y="120" width="24" height="130" fill="#ffd23f" stroke="#1d2433" stroke-width="2"/>
+            ${Array.from({ length: 8 }, (_, i) => `<rect class="paper" data-i="${i}" x="${38 + (i % 4) * 36}" y="${120 + Math.floor(i / 4) * 65}" width="36" height="65" fill="${['#2e9e5b','#3fb96d'][ (i + Math.floor(i / 4)) % 2 ]}" stroke="#1d2433" stroke-width="1.5"/>`).join('')}
+          </g>
+          <g id="prLid" class="lid"><rect x="30" y="98" width="160" height="28" rx="6" fill="#d9534a" stroke="#1d2433" stroke-width="3"/>
+            <rect x="98" y="98" width="24" height="28" fill="#ffd23f" stroke="#1d2433" stroke-width="2"/>
+            <g id="prBow"><ellipse cx="90" cy="88" rx="22" ry="14" fill="#ffd23f" stroke="#1d2433" stroke-width="3"/><ellipse cx="130" cy="88" rx="22" ry="14" fill="#ffd23f" stroke="#1d2433" stroke-width="3"/>
+              <circle cx="110" cy="92" r="9" fill="#f5b700" stroke="#1d2433" stroke-width="3"/></g></g>
+        </svg>`;
+      },
+      update(p, sec){
+        const gone = Math.floor((1 - p) * 8.9);
+        scene.querySelectorAll('.paper').forEach(r => r.classList.toggle('off', +r.dataset.i < gone));
+        $('prBow').style.transform = `scale(${.4 + .6 * p})`;
+        scene.classList.toggle('shake', running && sec <= 10 && sec > 0 && !reduceMotion);
+      },
+      finish(){ scene.classList.remove('shake'); scene.classList.add('open'); },
+      reset(){ scene.classList.remove('open'); } }
   };
 
   function renderThemes(){
@@ -580,7 +659,7 @@
     if(beat) setTimeout(S.sadTrombone, 900);
     setTimeout(() => {
       if(window.CCReveal) CCReveal.show('Time’s up!', { label: beat ? '⏰ The timer won this round — try again!' : t.done, onClose: () => {} });
-    }, themeKey === 'rocket' ? 1400 : themeKey === 'balloon' ? 500 : 300);
+    }, themeKey === 'rocket' ? 1400 : themeKey === 'present' ? 1100 : themeKey === 'balloon' ? 500 : 300);
   }
   function weDone(){
     if(finished || remainMs >= total * 1000) return;

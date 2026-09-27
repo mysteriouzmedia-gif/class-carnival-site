@@ -33,7 +33,10 @@
     '🔀 Shuffle Seats':'🔀 자리 섞기', '🖨️ Print':'🖨️ 인쇄', 'Copy Chart':'자리표 복사', 'Tip: click two desks to swap them.':'팁: 책상 두 개를 차례로 누르면 자리를 바꿀 수 있어요.',
     '⚠️ Couldn’t keep every pair apart with this layout — the red names are still neighbours. Try swapping or adding desks.':'⚠️ 이 배치로는 모든 학생을 떨어뜨릴 수 없어요. 빨간 이름은 아직 옆자리예요. 자리를 바꾸거나 책상을 늘려 보세요.',
     // countdown
-    '🔢 Classic':'🔢 기본', '⏳ Sand Timer':'⏳ 모래시계', '🚀 Rocket Launch':'🚀 로켓 발사', '🍦 Melting Ice Cream':'🍦 녹는 아이스크림', '🎈 Balloon Pop':'🎈 풍선 터뜨리기',
+    '🔢 Classic':'🔢 기본', '⏳ Sand Timer':'⏳ 모래시계', '🚀 Rocket Launch':'🚀 로켓 발사', '🍦 Melting Ice Cream':'🍦 녹는 아이스크림', '⛄ Melting Snowman':'⛄ 녹는 눈사람', '🎁 Present Unwrap':'🎁 선물 포장 풀기',
+    '⛄ The snowman melted!':'⛄ 눈사람이 다 녹았어요!', '🎁 Surprise!':'🎁 짜잔!', 'Brrr… it’s getting warm! ☀️':'으… 점점 따뜻해져! ☀️',
+    'Save the snowman — keep working! ⛄':'눈사람을 지켜 줘 — 계속 집중! ⛄', 'Drip… drip… 💧':'똑… 똑… 💧', 'What’s inside? 🎁':'안에 뭐가 들었을까? 🎁',
+    'Unwrapping… 🎀':'포장 푸는 중… 🎀', 'No peeking until time’s up!':'시간 끝날 때까지 엿보기 금지!', '🎈 Balloon Pop':'🎈 풍선 터뜨리기',
     '30 sec':'30초', '1 min':'1분', '2 min':'2분', '3 min':'3분', '5 min':'5분', '10 min':'10분', '15 min':'15분', 'Set':'설정', '+1 min':'+1분',
     'Tick sound in the last 10 seconds':'마지막 10초 째깍 소리', '🎵 Theme sounds':'🎵 테마 효과음', '🏁 Beat-the-timer mode':'🏁 타이머 이기기 모드',
     '🎁 Mystery rewards (comma separated):':'🎁 깜짝 보상 (쉼표로 구분):', 'Mystery rewards':'깜짝 보상', '▶ Start':'▶ 시작', '⏸ Pause':'⏸ 일시정지', '▶ Resume':'▶ 계속', '↺ Again':'↺ 다시',
