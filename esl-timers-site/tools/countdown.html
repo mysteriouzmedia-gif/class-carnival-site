@@ -34,7 +34,7 @@
   .tm-themes{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; margin-bottom: 14px; }
   .tm-theme{ background: rgba(255,255,255,.03); border: 2px solid var(--line); color: var(--cream); border-radius: 22px; padding: 8px 14px; font-size: 14px; }
   .tm-theme.on{ border-color: var(--gold); background: rgba(255,182,39,.12); color: var(--gold); }
-  .tm-stage{ position:relative; display:flex; flex-direction:column; align-items:center; gap: 6px; }
+  .tm-stage{ position:relative; display:flex; flex-direction:column; align-items:center; gap: 6px; overflow:hidden; padding-top: 6px; }
   .tm-scene{ position:relative; width: min(100%, 420px); height: 300px; }
   .tm-scene:empty{ display:none; }
   .tm-time{ font-family:'Archivo Black', sans-serif; font-size: clamp(56px, 12vw, 120px); line-height:1; letter-spacing: 2px; transition: color .3s ease; }
@@ -100,8 +100,46 @@
   .bl.popped .burst{ animation: burst .6s ease-out forwards; }
   @keyframes burst{ 0%{ opacity:1; transform: scale(.3); } 100%{ opacity:0; transform: scale(1.8); } }
 
+  /* ambient motion so the scene is always alive */
+  .tm-scene.urgent::after{ content:''; position:absolute; inset: -4px; border-radius: 24px; pointer-events:none; animation: urgentGlow 1s ease-in-out infinite; }
+  @keyframes urgentGlow{ 0%,100%{ box-shadow: 0 0 0 0 rgba(255,80,60,0); } 50%{ box-shadow: 0 0 34px 8px rgba(255,80,60,.65); } }
+  .rk .stars{ background-size: 100% 100%; }
+  .rk.running .stars{ animation: rkStars 2.5s linear infinite; }
+  @keyframes rkStars{ to{ background-position: 0 300px; } }
+  .rk.running .ship{ animation: rkRumble .22s linear infinite; }
+  @keyframes rkRumble{ 0%,100%{ transform: translateX(calc(-50% - 1px)) rotate(-45deg); } 50%{ transform: translateX(calc(-50% + 1px)) rotate(-44deg); } }
+  .rk .vent{ position:absolute; bottom: 26px; font-size: 34px; opacity: 0; }
+  .rk.running .vent{ animation: vent 2.4s ease-out infinite; }
+  @keyframes vent{ 0%{ opacity: 0; transform: translateY(0) scale(.5); } 30%{ opacity: .85; } 100%{ opacity: 0; transform: translateY(-50px) scale(1.4); } }
+  .rk .beacon{ position:absolute; left: calc(50% + 44px); bottom: 186px; width: 18px; height: 18px; border-radius: 50%; background: #ff3b3b; box-shadow: 0 0 12px #ff3b3b; opacity:.35; }
+  .rk.running .beacon{ animation: beacon 1s steps(2) infinite; }
+  @keyframes beacon{ 50%{ opacity: 1; } }
+  .hg .grain{ opacity: 0; }
+  .hg.running .grain{ animation: grain .8s linear infinite; }
+  @keyframes grain{ 0%{ opacity: 1; transform: translateY(0); } 90%{ opacity: 1; } 100%{ opacity: 0; transform: translateY(88px); } }
+  .hg.running svg{ animation: hgSway 4s ease-in-out infinite; transform-origin: 50% 50%; }
+  @keyframes hgSway{ 25%{ transform: rotate(-2deg); } 75%{ transform: rotate(2deg); } }
+  .ic .drip{ opacity: 0; }
+  .ic.running .drip{ animation: drip 2.2s ease-in infinite; }
+  @keyframes drip{ 0%{ opacity: 0; transform: translateY(0) scale(.4); } 15%{ opacity: 1; transform: translateY(0) scale(1); } 100%{ opacity: 0; transform: translateY(70px) scale(.8); } }
+  .ic .sun{ transform-box: fill-box; transform-origin: 50% 50%; }
+  .ic.running .sun{ animation: sunPulse 2s ease-in-out infinite; }
+  @keyframes sunPulse{ 50%{ transform: scale(1.2) rotate(20deg); } }
+  .ic .jig{ transform-box: fill-box; transform-origin: 50% 100%; }
+  .ic.running .jig{ animation: jiggle 1.8s ease-in-out infinite; }
+  @keyframes jiggle{ 25%{ transform: skewX(-3deg); } 75%{ transform: skewX(3deg); } }
+  .bl .puff{ opacity: 0; }
+  .bl.running .puff{ animation: puff 1.6s ease-out infinite; }
+  @keyframes puff{ 0%{ opacity: 0; transform: translate(0,0) scale(.5); } 25%{ opacity: .9; } 100%{ opacity: 0; transform: translate(24px,-40px) scale(1.3); } }
+  .bl .breath{ transform-box: fill-box; transform-origin: 50% 100%; }
+  .bl.running .breath{ animation: breath 1.6s ease-in-out infinite; }
+  @keyframes breath{ 50%{ transform: scale(1.04, 1.03); } }
+  .beat-row{ display:flex; gap: 8px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top: 10px; font-size: 13px; color: var(--cream-dim); }
+  .beat-row input{ width: min(100%, 460px); background:#0f1522; color:var(--cream); border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-size:13px; }
+  .beat-row[hidden], #doneBtn[hidden]{ display:none !important; }
+  #doneBtn{ background: #a8d46b; color: #13301a; border-color: #a8d46b; }
   body.fs-active .tm-scene{ height: 42vh; width: min(100%, 620px); }
-  @media (prefers-reduced-motion: reduce){ .shake, .tm-final.beat, .rk.running .flame, .bl.running .ball-wrap, .hg .stream{ animation:none !important; } }
+  @media (prefers-reduced-motion: reduce){ .shake, .tm-final.beat, .rk.running .flame, .bl.running .ball-wrap, .hg .stream, .tm-scene.urgent::after, .rk.running .stars, .rk.running .ship, .rk.running .vent, .hg.running .grain, .hg.running svg, .ic.running .drip, .ic.running .sun, .ic.running .jig, .bl.running .puff, .bl.running .breath{ animation:none !important; } }
 </style>
 </head>
 <body>
@@ -124,13 +162,14 @@
   <div class="page-header">
     <div class="eyebrow">⏳ Countdown Timer</div>
     <h1>Classroom Countdown</h1>
-    <div class="sub">Pick a theme and a time. Watch the rocket fuel drain, the balloon swell, or the ice cream melt — with a big 10-second countdown at the end.</div>
+    <div class="sub">Pick a theme and a time. A timer buddy cheers the class on, surprise visitors fly past to catch for class stars, and beat-the-timer mode turns any task into a race for a mystery reward.</div>
   </div>
 
   <div class="panel">
     <div class="tm-themes" id="themes" role="radiogroup" aria-label="Timer theme"></div>
     <div class="tm-stage">
       <div class="tm-scene" id="scene"></div>
+      <div id="buddyHost" style="width:100%"></div>
       <div class="tm-time" id="timeDisplay">05:00</div>
       <div class="tm-bar" id="bar"><span></span></div>
     </div>
@@ -150,19 +189,26 @@
       <input type="number" id="customSec" min="0" max="59" placeholder="sec" aria-label="Seconds">
       <button class="btn-ghost" id="setCustomBtn">Set</button>
       <label class="gm-check"><input type="checkbox" id="tickInput" checked> Tick sound in the last 10 seconds</label>
+      <label class="gm-check"><input type="checkbox" id="beatInput"> 🏁 Beat-the-timer mode</label>
+    </div>
+    <div class="beat-row" id="beatRow" hidden>
+      <label for="rewardsInput">🎁 Mystery rewards (comma separated):</label>
+      <input type="text" id="rewardsInput" aria-label="Mystery rewards">
     </div>
     <div class="btn-row">
       <button class="btn-gold" id="startStopBtn">▶ Start</button>
+      <button class="btn-gold" id="doneBtn" hidden>✅ We’re done!</button>
       <button class="btn-ghost" id="addBtn">+1 min</button>
       <button class="btn-ghost" id="resetBtn">Reset</button>
     </div>
   </div>
-  <div class="hint">Tip: press Space to start/pause, R to reset.</div>
+  <div class="hint">Tip: press Space to start/pause, R to reset, S to catch a flying visitor, D for “We’re done!” in beat-the-timer mode.</div>
 
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A themed classroom countdown timer that students actually watch. Choose a theme to match the moment: a rocket whose fuel drains until it blasts off, a balloon that swells until it pops, an ice cream that slowly melts, a classic sand timer, or a simple big-digit timer with a colour-changing progress bar. Every theme is readable from the back of the room and works in fullscreen on a projector.</p>
     <p>In the final 10 seconds, giant numbers count down on screen (with an optional tick sound), so students get a clear cue to wrap up even when the room is noisy. When time's up, each theme has its own finale — liftoff, a pop, a puddle — followed by a big "Time's up!" message.</p>
+    <p>To keep the class engaged, a timer buddy cheers everyone on, calls out halfway and the last minute, and starts to panic when time is nearly gone. Every so often a surprise visitor — a butterfly, a UFO, even a golden star — flies across the screen: click it (or press S) to earn a class star. Turn on beat-the-timer mode and press “We’re done!” when the class finishes early to unlock a mystery reward you choose.</p>
     <p>Use it for independent work, timed writing, group discussions, test sections, clean-up time, or transitions. Pick a preset (30 seconds to 15 minutes) or set any custom time, add an extra minute on the fly, and press Space to start and pause. No sign-up and no download needed.</p>
   </div>
 </main>
@@ -170,6 +216,7 @@
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
 
 <script src="../js/picker-reveal.js"></script>
+<script src="../js/timer-fun.js"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
@@ -179,6 +226,46 @@
   let total = 300, remainMs = 300000, running = false, endAt = 0, raf = null, lastShown = null, finished = false;
   let themeKey = 'rocket';
   try{ themeKey = localStorage.getItem('cc-countdown-theme') || 'rocket'; }catch(e){}
+
+  /* ---------- buddy, visitors, beat-the-timer ---------- */
+  const F = window.CCTimerFun;
+  const buddy = F.buddy($('buddyHost'));
+  const visitors = F.visitors(document.querySelector('.tm-stage'), buddy);
+  let said = {}, nextChat = 0;
+  const CHAT = {
+    all: ['You’ve got this! 💪', 'Nice focus, everyone!', 'Quiet brains at work… 🧠', 'Looking good!', 'I believe in you!', 'Keep going, keep going!'],
+    rocket: ['Fuel check… ✅', 'Engines warming up 🔧', 'Mission control says: keep working! 🛰️', 'Astronauts, stay focused! 👩‍🚀'],
+    hourglass: ['Sand is falling… ⏳', 'Every grain counts!', 'Tick… tock… 🕰️'],
+    icecream: ['Phew, it’s hot! ☀️', 'My ice cream is melting! 🍦', 'Work fast before it drips!'],
+    balloon: ['Pump… pump… 💨', 'It’s getting BIG! 🎈', 'Careful… not too big…'],
+    classic: []
+  };
+  const words = t => { const m = Math.floor(t / 60), s = t % 60;
+    return (m ? m + (m === 1 ? ' minute' : ' minutes') : '') + (m && s ? ' ' : '') + (s ? s + (s === 1 ? ' second' : ' seconds') : ''); };
+  const DEFAULT_REWARDS = '⭐ Class point, 🎵 Pick a song, 🎲 Quick game, 😎 1 minute free time, 👏 Big round of applause, 🕺 Teacher does a silly dance, 🤫 Whisper challenge, 🖍️ Draw on the board';
+  try{ $('rewardsInput').value = localStorage.getItem('cc-countdown-rewards') || DEFAULT_REWARDS; }catch(e){ $('rewardsInput').value = DEFAULT_REWARDS; }
+  try{ $('beatInput').checked = localStorage.getItem('cc-countdown-beat') === 'true'; }catch(e){}
+  $('rewardsInput').addEventListener('change', () => { try{ localStorage.setItem('cc-countdown-rewards', $('rewardsInput').value); }catch(e){} });
+  $('beatInput').addEventListener('change', () => { try{ localStorage.setItem('cc-countdown-beat', $('beatInput').checked); }catch(e){} syncBeat();
+    if($('beatInput').checked) buddy.say('Beat the timer! Finish before it runs out for a mystery reward 🎁', 'wow', 5000); });
+  function syncBeat(){
+    const on = $('beatInput').checked; $('beatRow').hidden = !on;
+    $('doneBtn').hidden = !(on && !finished && (running || remainMs < total * 1000));
+  }
+  function talk(sec){
+    if(!running) return;
+    const ms = performance.now();
+    let msg = null, mood = null, hold;
+    if(sec <= 10 && !said.s10){ said.s10 = said.s30 = said.m1 = said.half = true; msg = 'HURRY!!! 😱'; mood = 'panic'; hold = 0; }
+    else if(sec <= 30 && total >= 60 && !said.s30){ said.s30 = said.m1 = said.half = true; msg = '30 seconds! Start wrapping up!'; mood = 'worried'; }
+    else if(sec <= 60 && total >= 120 && !said.m1){ said.m1 = said.half = true; msg = '1 minute left! ⏰'; mood = 'worried'; }
+    else if(sec <= total / 2 && total >= 60 && !said.half){ said.half = true; msg = 'Halfway there! 🎉'; mood = 'wow'; }
+    if(msg){ buddy.say(msg, mood, hold); nextChat = ms + 20000; return; }
+    if(sec > 30 && ms > nextChat){
+      nextChat = ms + 20000 + Math.random() * 12000;
+      buddy.say(F.pick(CHAT.all.concat(CHAT[themeKey], CHAT[themeKey])), F.pick(['focus', 'cool', 'happy']));
+    }
+  }
 
   /* ---------- sound ---------- */
   let actx = null;
@@ -231,6 +318,7 @@
           <rect x="24" y="22" width="6" height="196" fill="#9c6630"/><rect x="130" y="22" width="6" height="196" fill="#9c6630"/>
           <g clip-path="url(#hgTop)"><rect id="sandTop" x="30" y="22" width="100" height="98" fill="#f2c46b"/></g>
           <g clip-path="url(#hgBot)"><rect id="sandBot" x="30" y="218" width="100" height="0" fill="#f2c46b"/></g>
+          ${[0, .2, .4, .6].map(d => `<circle class="grain" cx="${79 + Math.random() * 2}" cy="122" r="2.2" fill="#f2c46b" style="animation-delay:${d}s"/>`).join('')}
           <line id="stream" class="stream" x1="80" y1="118" x2="80" y2="216" stroke="#f2c46b" stroke-width="3" opacity="0"/>
           <path d="M32 22 H128 C128 70 92 96 82 118 H78 C68 96 32 70 32 22 Z M78 122 H82 C92 144 128 170 128 218 H32 C32 170 68 144 78 122 Z"
             fill="rgba(200,230,255,.12)" stroke="rgba(220,240,255,.6)" stroke-width="3"/>
@@ -242,13 +330,14 @@
         const hb = 96 * (1 - p); bot.setAttribute('y', 218 - hb); bot.setAttribute('height', hb);
         st.setAttribute('opacity', running && p > 0 ? 1 : 0);
         st.setAttribute('y2', 216 - hb);
+        scene.classList.toggle('running', running && p > 0);
       },
       finish(){}, reset(){ scene.classList.remove('flip'); void scene.offsetWidth; if(!reduceMotion) scene.classList.add('flip'); } },
 
     rocket: { label: '🚀 Rocket Launch', done: '🚀 Liftoff!',
       build(){
         scene.className = 'tm-scene';
-        scene.innerHTML = `<div class="rk" id="rk"><div class="stars"></div><div class="tower"></div><div class="pad"></div>
+        scene.innerHTML = `<div class="rk" id="rk"><div class="stars"></div><div class="tower"></div><div class="beacon"></div><div class="pad"></div><div class="vent" style="left:26%">☁️</div><div class="vent" style="left:64%;animation-delay:1.2s">☁️</div>
           <div class="fuel"><span id="fuel"></span></div><div class="fuel-lbl">FUEL</div>
           <div class="flame" id="flame">🔥</div><div class="ship" id="ship">🚀</div>
           <div class="smoke" style="left:30%;--dx:-60px">💨</div><div class="smoke" style="left:50%;--dx:0px">💨</div><div class="smoke" style="left:62%;--dx:60px">💨</div></div>`;
@@ -266,19 +355,22 @@
       build(){
         scene.className = 'tm-scene ic';
         scene.innerHTML = `<svg viewBox="0 0 200 260" aria-hidden="true">
+          <text class="sun" x="160" y="40" font-size="34">☀️</text>
+          <ellipse class="drip" cx="68" cy="158" rx="4" ry="6" fill="#ff9ecb"/><ellipse class="drip" cx="133" cy="160" rx="4" ry="6" fill="#a8e6cf" style="animation-delay:1.1s"/>
           <ellipse id="puddle" class="puddle" cx="100" cy="244" rx="0" ry="0" fill="#ff9ecb" opacity=".85"/>
           <path d="M62 150 L100 240 L138 150 Z" fill="#e0a45e" stroke="#9c6630" stroke-width="3"/>
           <path d="M70 160 L130 200 M76 176 L122 150 M84 196 L118 176 M130 160 L78 196" stroke="#b77b3c" stroke-width="2"/>
-          <g id="s0" class="scoop"><circle cx="100" cy="138" r="40" fill="#ff9ecb"/><circle cx="86" cy="126" r="8" fill="#fff" opacity=".5"/></g>
+          <g class="jig"><g id="s0" class="scoop"><circle cx="100" cy="138" r="40" fill="#ff9ecb"/><circle cx="86" cy="126" r="8" fill="#fff" opacity=".5"/></g>
           <g id="s1" class="scoop"><circle cx="100" cy="92" r="35" fill="#a8e6cf"/><circle cx="88" cy="80" r="7" fill="#fff" opacity=".5"/></g>
           <g id="s2" class="scoop"><circle cx="100" cy="52" r="30" fill="#8b5a3c"/><circle cx="90" cy="42" r="6" fill="#fff" opacity=".4"/>
-            <circle cx="100" cy="22" r="8" fill="#e84a5f"/></g>
+            <circle cx="100" cy="22" r="8" fill="#e84a5f"/></g></g>
         </svg>`;
       },
       update(p){
         [0, 1, 2].forEach(k => { const v = Math.max(0, Math.min(1, p * 3 - k)); $('s' + k).style.transform = `scale(${.15 + .85 * v}, ${v})`; $('s' + k).style.opacity = v > 0 ? 1 : 0; });
         const m = 1 - p; $('puddle').setAttribute('rx', 20 + 70 * m); $('puddle').setAttribute('ry', 4 + 10 * m);
         $('puddle').setAttribute('opacity', m > 0.02 ? .85 : 0);
+        scene.classList.toggle('running', running && p > 0);
       },
       finish(){}, reset(){} },
 
@@ -287,8 +379,9 @@
         scene.className = 'tm-scene bl';
         scene.innerHTML = `<svg viewBox="0 0 220 280" aria-hidden="true">
           <g class="ball-wrap"><path d="M110 196 C104 230 118 250 108 278" stroke="#fffdf7" stroke-width="2" fill="none"/>
-            <g id="ball" class="ball"><ellipse cx="110" cy="110" rx="70" ry="84" fill="#ff5c7a"/><ellipse cx="86" cy="76" rx="14" ry="22" fill="#fff" opacity=".45"/>
-              <path d="M104 192 L116 192 L110 202 Z" fill="#d9365a"/></g></g>
+            <g class="breath"><g id="ball" class="ball"><ellipse cx="110" cy="110" rx="70" ry="84" fill="#ff5c7a"/><ellipse cx="86" cy="76" rx="14" ry="22" fill="#fff" opacity=".45"/>
+              <path d="M104 192 L116 192 L110 202 Z" fill="#d9365a"/></g></g></g>
+          <text class="puff" x="40" y="262" font-size="28">💨</text><text class="puff" x="150" y="262" font-size="28" style="animation-delay:.8s">💨</text>
           <g class="burst" style="transform-origin:110px 110px">
             ${Array.from({ length: 12 }, (_, i) => { const a = i * 30 * Math.PI / 180; return `<path d="M${110 + 30 * Math.cos(a)} ${110 + 30 * Math.sin(a)} L${110 + 90 * Math.cos(a)} ${110 + 90 * Math.sin(a)}" stroke="${['#ff5c7a','#ffb627','#2ec4b6'][i % 3]}" stroke-width="8" stroke-linecap="round"/>`; }).join('')}
           </g></svg>`;
@@ -331,6 +424,8 @@
       timeEl.classList.toggle('done', sec <= 0);
     }
     THEMES[themeKey].update(p, sec);
+    scene.classList.toggle('urgent', running && sec > 0 && sec <= (total >= 120 ? 30 : 10));
+    talk(sec);
   }
   function finalBeat(n){
     if($('tickInput').checked) tick(n);
@@ -344,22 +439,42 @@
   }
   function start(){
     if(remainMs <= 0) return;
+    const fresh = remainMs >= total * 1000;
     running = true; endAt = performance.now() + remainMs; btn.textContent = '⏸ Pause';
+    if(fresh){ said = {}; buddy.say('Let’s go! ' + words(total) + ' on the clock!' + ($('beatInput').checked ? ' Beat it! 🏁' : ''), 'happy'); }
+    else buddy.say('And we’re back! ▶', 'happy', 2500);
+    nextChat = performance.now() + 15000;
+    visitors.start(); syncBeat();
     cancelAnimationFrame(raf); loop();
   }
-  function pause(){ running = false; cancelAnimationFrame(raf); btn.textContent = '▶ Resume'; render(true); }
+  function pause(){ running = false; cancelAnimationFrame(raf); btn.textContent = '▶ Resume'; visitors.stop(); buddy.say('Paused… zzz', 'sleep', 0); render(true); }
   function toggle(){ if(finished) return reset(); running ? pause() : start(); }
   function finish(){
     running = false; finished = true; cancelAnimationFrame(raf); btn.textContent = '↺ Again';
-    render(true);
+    visitors.stop(); render(true); syncBeat();
     const t = THEMES[themeKey]; t.finish(); FINALE_SOUND[themeKey]();
+    const beat = $('beatInput').checked;
+    buddy.say(beat ? 'The timer won this time… rematch? 😅' : 'Time’s up! Pencils down! 🥳', beat ? 'worried' : 'party', 0);
     setTimeout(() => {
-      if(window.CCReveal) CCReveal.show('Time’s up!', { label: t.done, onClose: () => {} });
+      if(window.CCReveal) CCReveal.show('Time’s up!', { label: beat ? '⏰ The timer won this round — try again!' : t.done, onClose: () => {} });
     }, themeKey === 'rocket' ? 1400 : themeKey === 'balloon' ? 500 : 300);
+  }
+  function weDone(){
+    if(finished || remainMs >= total * 1000) return;
+    const spare = Math.ceil(remainMs / 1000);
+    running = false; finished = true; cancelAnimationFrame(raf); btn.textContent = '↺ Again';
+    visitors.stop(); scene.classList.remove('urgent'); syncBeat();
+    const t = THEMES[themeKey]; t.finish(); FINALE_SOUND[themeKey]();
+    buddy.say('WE BEAT THE TIMER! ' + fmt(spare) + ' to spare! 🏆', 'party', 0);
+    const list = $('rewardsInput').value.split(',').map(x => x.trim()).filter(Boolean);
+    const reward = list.length ? F.pick(list) : '🏆 Bragging rights!';
+    if(window.CCReveal){ CCReveal.drumroll(1600);
+      setTimeout(() => CCReveal.show(reward, { label: '🏁 Beat the timer with ' + fmt(spare) + ' to spare! Your mystery reward:', onClose: () => {} }), 1700); }
   }
   function reset(){
     running = false; finished = false; cancelAnimationFrame(raf); remainMs = total * 1000; lastShown = null; btn.textContent = '▶ Start';
-    THEMES[themeKey].reset(); render(true);
+    said = {}; visitors.stop(); buddy.quiet(); buddy.mood('calm');
+    THEMES[themeKey].reset(); render(true); syncBeat();
   }
   function setTime(sec){
     total = sec; document.querySelectorAll('.preset').forEach(b => b.classList.toggle('on', +b.dataset.sec === sec));
@@ -373,19 +488,26 @@
   });
   $('addBtn').addEventListener('click', () => {
     if(finished){ total = 60; remainMs = 60000; finished = false; THEMES[themeKey].reset(); btn.textContent = '▶ Start'; render(true); return; }
-    total += 60; remainMs += 60000; if(running) endAt += 60000; render(true);
+    total += 60; remainMs += 60000; if(running) endAt += 60000;
+    if(remainMs > 60000) said.s10 = said.s30 = false;
+    if(remainMs > 120000) said.m1 = false;
+    buddy.say('Bonus minute! Phew! ⏱️', 'happy', 3000); render(true);
   });
   btn.addEventListener('click', toggle);
   $('resetBtn').addEventListener('click', reset);
+  $('doneBtn').addEventListener('click', weDone);
   document.addEventListener('keydown', e => {
     const tag = e.target.tagName; if(tag === 'INPUT' || tag === 'TEXTAREA') return;
     if(window.CCReveal && CCReveal.isOpen()) return;
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
     else if(e.key.toLowerCase() === 'r'){ reset(); }
+    else if(e.key.toLowerCase() === 's'){ visitors.catchNow(); }
+    else if(e.key.toLowerCase() === 'd' && $('beatInput').checked){ weDone(); }
   });
 
   document.querySelector('.preset[data-sec="300"]').classList.add('on');
-  renderThemes(); applyTheme();
+  renderThemes(); applyTheme(); syncBeat();
+  buddy.say('Hi! Pick a time and press Start ▶', 'happy', 5000);
 })();
 </script>
 <script src="../js/fullscreen.js"></script>

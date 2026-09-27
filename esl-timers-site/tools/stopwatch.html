@@ -34,7 +34,7 @@
   .tm-themes{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; margin-bottom: 14px; }
   .tm-theme{ background: rgba(255,255,255,.03); border: 2px solid var(--line); color: var(--cream); border-radius: 22px; padding: 8px 14px; font-size: 14px; }
   .tm-theme.on{ border-color: var(--gold); background: rgba(255,182,39,.12); color: var(--gold); }
-  .tm-stage{ display:flex; flex-direction:column; align-items:center; gap: 4px; }
+  .tm-stage{ position:relative; overflow:hidden; display:flex; flex-direction:column; align-items:center; gap: 4px; padding-top: 4px; }
   .tm-scene{ position:relative; width: min(100%, 640px); height: 250px; border-radius: 20px; overflow:hidden; }
   .tm-scene:empty{ display:none; }
   .tm-note{ min-height: 1.5em; font-weight:800; font-size: clamp(15px, 2vw, 20px); color: var(--gold); text-align:center; }
@@ -85,7 +85,42 @@
   .spc .ship{ position:absolute; top: 60%; font-size: 40px; transform: translate(-50%, -115%) rotate(45deg); transition: left .3s linear; }
 
   body.fs-active .tm-scene{ height: 40vh; width: min(100%, 900px); }
-  @media (prefers-reduced-motion: reduce){ .gdn .sun, .spc .stars, .gdn .fl, .tm-note.pop{ animation:none !important; } }
+  /* always-moving extras */
+  .gdn .bed.dense .fl{ font-size: 24px; }
+  .trk .runner i{ display:inline-block; font-style:normal; }
+  .tm-scene.running .trk .runner i{ animation: runBob .32s ease-in-out infinite; }
+  @keyframes runBob{ 50%{ transform: translateY(-7px) rotate(-6deg); } }
+  .trk .crowd{ position:absolute; left:50%; top: 68%; transform: translateX(-50%); font-size: 20px; letter-spacing: 4px; white-space:nowrap; }
+  .trk .crowd span{ display:inline-block; }
+  .tm-scene.running .trk .crowd span{ animation: cheer .6s ease-in-out infinite; }
+  .trk .crowd span:nth-child(2n){ animation-delay: .3s !important; }
+  @keyframes cheer{ 50%{ transform: translateY(-6px); } }
+  .gdn .cloud{ position:absolute; top: 12px; left: -60px; font-size: 40px; opacity: .9; }
+  .tm-scene.running .gdn .cloud{ animation: cloud 26s linear infinite; }
+  .gdn .cloud.c2{ top: 40px; font-size: 30px; }
+  .tm-scene.running .gdn .cloud.c2{ animation-duration: 38s; animation-delay: -14s; }
+  @keyframes cloud{ from{ left: -60px; } to{ left: 105%; } }
+  .gdn .bug{ position:absolute; font-size: 26px; left: 20%; top: 45%; }
+  .tm-scene.running .gdn .bug{ animation: flutter 7s ease-in-out infinite; }
+  .gdn .bug.b2{ left: 70%; top: 35%; }
+  .tm-scene.running .gdn .bug.b2{ animation-duration: 9s; animation-direction: reverse; }
+  @keyframes flutter{ 0%,100%{ transform: translate(0,0) rotate(-8deg); } 25%{ transform: translate(80px,-30px) rotate(8deg); } 50%{ transform: translate(150px,10px) scaleX(-1); } 75%{ transform: translate(60px,30px) scaleX(-1) rotate(8deg); } }
+  .tm-scene.running .gdn .fl{ animation: sprout .7s cubic-bezier(.3,1.6,.5,1) both, sway 2.6s ease-in-out .7s infinite; }
+  .gdn .fl:nth-child(2n){ animation-delay: 0s, 1.3s !important; }
+  @keyframes sway{ 25%{ transform: rotate(-7deg); } 75%{ transform: rotate(7deg); } }
+  .spc .comet{ position:absolute; top: 10%; left: 110%; font-size: 30px; opacity: 0; }
+  .tm-scene.running .spc .comet{ animation: comet 9s linear infinite; }
+  .spc .comet.k2{ top: 78%; font-size: 22px; }
+  .tm-scene.running .spc .comet.k2{ animation-duration: 13s; animation-delay: -5s; }
+  @keyframes comet{ 0%{ left: 110%; opacity: 0; } 5%{ opacity: 1; } 60%{ opacity: 1; } 70%,100%{ left: -15%; opacity: 0; } }
+  .tm-scene.running .spc .ship{ animation: shipWobble 1.2s ease-in-out infinite; }
+  @keyframes shipWobble{ 50%{ transform: translate(-50%, -125%) rotate(40deg); } }
+  .sw-rbar{ position:relative; width: min(100%, 640px); height: 30px; margin: 2px auto; border-radius: 16px; background: rgba(255,255,255,.06); border: 1px solid var(--line); overflow:hidden; }
+  .sw-rbar[hidden]{ display:none; }
+  .sw-rbar .fill{ position:absolute; left:0; top:0; bottom:0; width:0; background: linear-gradient(90deg, #2ec4b6, #a8d46b); transition: width .2s linear; }
+  .sw-rbar.over .fill{ background: linear-gradient(90deg, #ff9f5b, #ff6b5b); }
+  .sw-rbar .lbl{ position:absolute; inset:0; display:flex; align-items:center; justify-content:space-between; padding: 0 12px; font-weight:800; font-size: 13px; color: #fffdf7; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+  @media (prefers-reduced-motion: reduce){ .gdn .sun, .spc .stars, .gdn .fl, .tm-note.pop, .tm-scene.running *{ animation:none !important; } }
 </style>
 </head>
 <body>
@@ -108,13 +143,15 @@
   <div class="page-header">
     <div class="eyebrow">⏱️ Stopwatch</div>
     <h1>Classroom Stopwatch</h1>
-    <div class="sub">Pick a theme and watch the runner lap the track, the garden grow, or the rocket fly past the planets. Try a clean-up challenge and beat the class record!</div>
+    <div class="sub">Pick a theme and watch the runner lap the track, the garden grow, or the rocket fly past the planets. A timer buddy cheers the class on, surprise visitors fly by for class stars, and challenge mode races the class record.</div>
   </div>
 
   <div class="panel">
     <div class="tm-themes" id="themes" role="radiogroup" aria-label="Stopwatch theme"></div>
     <div class="tm-stage">
       <div class="tm-scene" id="scene"></div>
+      <div id="buddyHost" style="width:100%"></div>
+      <div class="sw-rbar" id="rbar" hidden><div class="fill"></div><div class="lbl"><span id="rbarNow">🏃 Now</span><span id="rbarRec">🏆 Record</span></div></div>
       <div class="tm-note" id="note" aria-live="polite"></div>
       <div class="time" id="timeDisplay">00:00<span class="ms">.00</span></div>
     </div>
@@ -129,12 +166,13 @@
     </div>
     <div class="laps" id="laps"></div>
   </div>
-  <div class="hint">Tip: press Space to start/stop, L to lap, R to reset.</div>
+  <div class="hint">Tip: press Space to start/stop, L to lap, R to reset, S to catch a flying visitor.</div>
 
   <div class="info-section panel">
     <h2>About this tool</h2>
     <p>A themed classroom stopwatch that's big enough to read from the back of the room — and fun enough that students want to watch it. Choose a theme: a runner who laps the track once every minute, a garden that sprouts a new flower every 30 seconds, a rocket that flies past the Moon, Mars and beyond as time goes on, or a classic big-digit stopwatch.</p>
     <p>Turn on challenge mode to make clean-up time, lining up, or getting ready into a game: the class tries to beat its fastest time, and a new record gets a celebration. The record is remembered in your browser, so you can bring the challenge back tomorrow. Use the lap button to record several times in a row — handy for reading fluency checks, relay drills, or timing students one after another.</p>
+    <p>A timer buddy cheers the class on and calls out each minute, and surprise visitors — a butterfly, a UFO, even a golden star — fly across the screen now and then: click one (or press S) to earn a class star. In challenge mode a progress bar shows how close the class is to its record time, so everyone can see if they're on pace.</p>
     <p>Press Space to start and stop, L to record a lap, and R to reset. Works in fullscreen on any projector, with no sign-up or download.</p>
   </div>
 </main>
@@ -142,6 +180,7 @@
 <footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
 
 <script src="../js/picker-reveal.js"></script>
+<script src="../js/timer-fun.js"></script>
 <script>
 (function(){
   const $ = id => document.getElementById(id);
@@ -150,6 +189,35 @@
   let themeKey = 'track';
   try{ themeKey = localStorage.getItem('cc-stopwatch-theme') || 'track'; }catch(e){}
   const FLOWERS = ['🌷','🌻','🌼','🌸','🌹','🌺','💐','🍄'];
+  const F = window.CCTimerFun;
+  const buddy = F.buddy($('buddyHost'));
+  const visitors = F.visitors(document.querySelector('.tm-stage'), buddy);
+  let lastMin = 0, nextChat = 0, recSaid = {};
+  const CHAT = {
+    all: ['Go, go, go! 💨', 'Looking speedy!', 'Nice teamwork! 🤝', 'Keep it up!', 'You’re doing great!', 'Focus mode: ON 🧠'],
+    track: ['Pick up those feet! 👟', 'The crowd goes wild! 📣', 'What a runner!'],
+    garden: ['Look at those flowers grow! 🌸', 'Bzzz… busy bees! 🐝', 'The garden loves hard work!'],
+    space: ['Next stop: the stars! ✨', 'Watch out for comets! ☄️', 'Houston, we have a hard-working class!'],
+    classic: []
+  };
+  function talk(ms){
+    const now = performance.now(), min = Math.floor(ms / 60000), chal = $('recordInput').checked && best;
+    if(min > lastMin){ lastMin = min; buddy.say(min + (min === 1 ? ' minute' : ' minutes') + '! ⏱️', 'wow'); nextChat = now + 15000; return; }
+    if(chal){
+      const left = best - ms;
+      if(left <= Math.min(15000, best / 3) && left > 0 && !recSaid.near){ recSaid.near = true; buddy.say('Only ' + Math.ceil(left / 1000) + ' seconds until the record! HURRY! 😱', 'panic'); nextChat = now + 12000; return; }
+      if(left <= 0 && !recSaid.over){ recSaid.over = true; buddy.say('Past the record time… keep going! 😬', 'worried'); nextChat = now + 15000; return; }
+    }
+    if(now > nextChat){ nextChat = now + 20000 + Math.random() * 12000; buddy.say(F.pick(CHAT.all.concat(CHAT[themeKey], CHAT[themeKey])), F.pick(['focus', 'cool', 'happy'])); }
+  }
+  function recBar(ms){
+    const bar = $('rbar'), on = $('recordInput').checked && best;
+    bar.hidden = !on; if(!on) return;
+    bar.querySelector('.fill').style.width = Math.min(100, ms / best * 100) + '%';
+    bar.classList.toggle('over', ms > best);
+    $('rbarNow').textContent = '🏃 ' + fmt(ms).slice(0, 5);
+    $('rbarRec').textContent = '🏆 Record ' + fmt(best).slice(0, 5);
+  }
   const PLANETS = [['🌙','Moon',60],['🔴','Mars',180],['🪐','Saturn',360],['🔵','Neptune',600],['⭐','Star',900]];
 
   /* sound */
@@ -184,7 +252,7 @@
           <rect x="30" y="25" width="580" height="200" rx="100" fill="none" stroke="#fffdf7" stroke-width="2" stroke-dasharray="10 12"/>
           <line x1="320" y1="4" x2="320" y2="46" stroke="#fffdf7" stroke-width="5"/></svg>
           <div class="lapct"><span id="lapN">0</span><small>LAPS</small></div>
-          <div class="runner" id="runner"><span>🏃</span></div></div>`;
+          <div class="crowd"><span>👏</span><span>🙌</span><span>📣</span><span>🎉</span><span>👏</span><span>🙌</span></div><div class="runner" id="runner"><span><i>🏃</i></span></div></div>`;
       },
       update(ms){
         // position around a stadium shape: one lap per 60s, starting at the top-centre finish line
@@ -204,15 +272,15 @@
       },
       milestone(k){ ding(); note('🏁 Lap ' + k + ' complete!'); } },
 
-    garden: { label: '🌷 Growing Garden', every: 30,
-      build(){ scene.innerHTML = `<div class="gdn"><div class="sun">☀️</div><div class="bed" id="bed"></div><div class="seed" id="seed">🌱</div></div>`; },
+    garden: { label: '🌷 Growing Garden', every: 10,
+      build(){ scene.innerHTML = `<div class="gdn"><div class="sun">☀️</div><div class="cloud">☁️</div><div class="cloud c2">☁️</div><div class="bug">🦋</div><div class="bug b2">🐝</div><div class="bed" id="bed"></div><div class="seed" id="seed">🌱</div></div>`; },
       update(ms){
-        const n = Math.floor(ms / 30000), bed = $('bed');
-        while(bed.children.length < Math.min(n, 60)){ const f = document.createElement('span'); f.className = 'fl'; f.textContent = FLOWERS[bed.children.length % FLOWERS.length]; bed.appendChild(f); }
+        const n = Math.floor(ms / 10000), bed = $('bed'); bed.classList.toggle('dense', n > 36);
+        while(bed.children.length < Math.min(n, 90)){ const f = document.createElement('span'); f.className = 'fl'; f.textContent = FLOWERS[bed.children.length % FLOWERS.length]; bed.appendChild(f); }
         while(bed.children.length > n) bed.lastChild.remove();
-        $('seed').style.setProperty('--g', .35 + ((ms % 30000) / 30000) * .9);
+        $('seed').style.setProperty('--g', .35 + ((ms % 10000) / 10000) * .9);
       },
-      milestone(k){ ding(); note('🌷 ' + k + (k === 1 ? ' flower' : ' flowers') + ' — ' + (k * 30 >= 60 ? Math.floor(k / 2) + ' min' + (k % 2 ? ' 30 sec' : '') : '30 sec') + '!'); } },
+      milestone(k){ tone(1175 + (k % 5) * 90, 0, .12, 'triangle', .05); note('🌷 ' + k + (k === 1 ? ' flower' : ' flowers') + '!'); } },
 
     space: { label: '🚀 Space Trip', every: 0,
       build(){
@@ -220,7 +288,7 @@
         scene.innerHTML = `<div class="spc" id="spc"><div class="stars"></div><div class="path"></div>` +
           `<div class="pl reached" style="left:6%"><b>🌍</b><span>Earth</span></div>` +
           PLANETS.map(([e, n, s], i) => `<div class="pl" id="pl${i}" style="left:${6 + 88 * Math.sqrt(s / max)}%"><b>${e}</b><span>${n} · ${s / 60}m</span></div>`).join('') +
-          `<div class="ship" id="ship">🚀</div></div>`;
+          `<div class="comet">☄️</div><div class="comet k2">☄️</div><div class="ship" id="ship">🚀</div></div>`;
       },
       update(ms){
         const max = PLANETS[PLANETS.length - 1][2], s = ms / 1000;
@@ -259,20 +327,27 @@
     const ms = now(); timeEl.innerHTML = fmt(ms, true);
     const t = THEMES[themeKey]; t.update(ms);
     if(t.every){ const k = Math.floor(ms / (t.every * 1000)); if(k > marks){ marks = k; t.milestone(k); } }
-    if(running) raf = requestAnimationFrame(loop);
+    scene.classList.toggle('running', running);
+    recBar(ms);
+    if(running){ talk(ms); raf = requestAnimationFrame(loop); }
   }
   function toggle(){
     if(running){
       running = false; elapsed += performance.now() - startTime; cancelAnimationFrame(raf);
-      btn.textContent = '▶ Resume'; lapBtn.disabled = true; loop(); checkRecord();
+      btn.textContent = '▶ Resume'; lapBtn.disabled = true; loop(); visitors.stop(); buddy.say('Stopped at ' + fmt(elapsed).slice(0, 5) + '! ✋', 'cool', 0); checkRecord();
     } else {
-      running = true; startTime = performance.now(); btn.textContent = '⏸ Stop'; lapBtn.disabled = false; $('note').textContent = ''; loop();
+      const fresh = elapsed === 0;
+      running = true; startTime = performance.now(); btn.textContent = '⏸ Stop'; lapBtn.disabled = false; $('note').textContent = '';
+      if(fresh){ lastMin = 0; recSaid = {}; buddy.say($('recordInput').checked && best ? 'Record to beat: ' + fmt(best).slice(0, 5) + '! GO! 🏁' : 'Ready… set… GO! 🏁', 'happy'); }
+      else buddy.say('And we’re off again! ▶', 'happy', 2500);
+      nextChat = performance.now() + 15000; visitors.start(); loop();
     }
   }
   function reset(){
     running = false; cancelAnimationFrame(raf); elapsed = 0; lapCount = 0; lastLapAt = 0; marks = 0;
     btn.textContent = '▶ Start'; lapBtn.disabled = true; $('laps').innerHTML = ''; $('note').textContent = '';
     timeEl.innerHTML = fmt(0, true); THEMES[themeKey].build(); THEMES[themeKey].update(0);
+    scene.classList.remove('running'); visitors.stop(); buddy.quiet(); buddy.mood('calm'); lastMin = 0; recSaid = {}; recBar(0);
   }
   function addLap(){
     const ms = now(), split = ms - lastLapAt; lastLapAt = ms; lapCount++;
@@ -297,13 +372,13 @@
     if(!$('recordInput').checked || elapsed < 1000) return;
     if(!best || elapsed < best){
       const old = best; best = elapsed; try{ localStorage.setItem('cc-stopwatch-record', String(best)); }catch(e){}
-      showBest(); fanfare();
+      showBest(); fanfare(); buddy.say('NEW CLASS RECORD!!! 🏆', 'party', 0); recBar(elapsed);
       if(window.CCReveal) CCReveal.show(fmt(best), { label: old ? '🏆 NEW CLASS RECORD! (old: ' + fmt(old) + ')' : '🏆 First class record!', onClose: () => {} });
     } else {
-      note('So close! ' + fmt(elapsed - best) + ' slower than the record.');
+      note('So close! ' + fmt(elapsed - best) + ' slower than the record.'); buddy.say('So close! Try again? 💪', 'worried', 0);
     }
   }
-  $('recordInput').addEventListener('change', () => { try{ localStorage.setItem('cc-stopwatch-challenge', $('recordInput').checked); }catch(e){} showBest(); });
+  $('recordInput').addEventListener('change', () => { try{ localStorage.setItem('cc-stopwatch-challenge', $('recordInput').checked); }catch(e){} showBest(); recBar(now()); });
   try{ $('recordInput').checked = localStorage.getItem('cc-stopwatch-challenge') === 'true'; }catch(e){}
 
   btn.addEventListener('click', toggle);
@@ -316,8 +391,10 @@
     if(e.code === 'Space'){ e.preventDefault(); toggle(); }
     else if(e.key.toLowerCase() === 'l' && running){ addLap(); }
     else if(e.key.toLowerCase() === 'r'){ reset(); }
+    else if(e.key.toLowerCase() === 's'){ visitors.catchNow(); }
   });
-  renderThemes(); applyTheme(); showBest(); timeEl.innerHTML = fmt(0, true);
+  renderThemes(); applyTheme(); showBest(); timeEl.innerHTML = fmt(0, true); recBar(0);
+  buddy.say('Hi! Press Start and let’s see how fast we are! ⏱️', 'happy', 5000);
 })();
 </script>
 <script src="../js/fullscreen.js"></script>
