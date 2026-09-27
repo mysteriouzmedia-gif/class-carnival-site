@@ -11,7 +11,7 @@
   const COLORS = ['#ff6b5b','#2ec4b6','#ffb627','#9b72cf','#4fa8e0','#a8d46b','#e85d8a','#ff9f43'];
   const TEAMS  = [['Tigers','🐯'],['Dolphins','🐬'],['Rockets','🚀'],['Owls','🦉'],['Dragons','🐉'],['Pandas','🐼'],['Foxes','🦊'],
                   ['Sharks','🦈'],['Eagles','🦅'],['Koalas','🐨'],['Penguins','🐧'],['Lions','🦁'],['Unicorns','🦄'],['Turtles','🐢'],['Bees','🐝'],['Robots','🤖']];
-  const SAMPLE = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia','Seojun','Chloe','Arjun','Emma'];
+  const SAMPLE = window.CC_SAMPLE || ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia','Seojun','Chloe','Arjun','Emma'];
 
   const lines = t => t.split('\n').map(s => s.trim()).filter(Boolean);
   const shuffle = a => { a = [...a]; for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };

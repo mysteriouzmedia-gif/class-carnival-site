@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
@@ -10,12 +10,13 @@
   gtag('config', 'G-HL5R197PE4');
 </script>
 <meta charset="UTF-8">
+<script src="/js/i18n-ko.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Seating Chart Shuffle — Random Classroom Seating Plan Maker | ClassCarnival</title>
-<meta name="description" content="Free random seating chart generator for teachers. Set your desk layout, keep chosen students apart, deal names to seats with a fun animation, swap seats, and print. No sign-up.">
-<link rel="canonical" href="https://classcarnival.com/tools/seating-chart">
-<link rel="alternate" hreflang="en" href="https://classcarnival.com/tools/seating-chart">
+<title>자리 바꾸기 프로그램 — 랜덤 교실 자리배치표 만들기 | ClassCarnival</title>
+<meta name="description" content="무료 교실 자리 바꾸기 프로그램. 책상 배치를 정하면 학생 이름 카드가 자리로 날아가며 새 자리배치표가 완성됩니다. 떨어뜨려 앉힐 학생 지정, 자리 맞바꾸기, 인쇄까지. 회원가입 없음.">
+<link rel="canonical" href="https://classcarnival.com/ko/tools/seating-chart">
 <link rel="alternate" hreflang="ko" href="https://classcarnival.com/ko/tools/seating-chart">
+<link rel="alternate" hreflang="en" href="https://classcarnival.com/tools/seating-chart">
 <link rel="alternate" hreflang="x-default" href="https://classcarnival.com/tools/seating-chart">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -23,16 +24,92 @@
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Seating Chart Shuffle — Random Classroom Seating Plan Maker | ClassCarnival">
-<meta property="og:description" content="Free random seating chart generator for teachers. Set your desk layout, keep chosen students apart, deal names to seats with a fun animation, swap seats, and print. No sign-up.">
-<meta property="og:url" content="https://classcarnival.com/tools/seating-chart">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="자리 바꾸기 프로그램 — 랜덤 교실 자리배치표 만들기 | ClassCarnival">
+<meta property="og:description" content="무료 교실 자리 바꾸기 프로그램. 책상 배치를 정하면 학생 이름 카드가 자리로 날아가며 새 자리배치표가 완성됩니다. 떨어뜨려 앉힐 학생 지정, 자리 맞바꾸기, 인쇄까지. 회원가입 없음.">
+<meta property="og:url" content="https://classcarnival.com/ko/tools/seating-chart">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="../css/theme.css">
-<link rel="stylesheet" href="../css/picker-shared.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "name": "자리 바꾸기 프로그램",
+   "url": "https://classcarnival.com/ko/tools/seating-chart",
+   "description": "무료 교실 자리 바꾸기 프로그램. 책상 배치를 정하면 학생 이름 카드가 자리로 날아가며 새 자리배치표가 완성됩니다. 떨어뜨려 앉힐 학생 지정, 자리 맞바꾸기, 인쇄까지. 회원가입 없음.",
+   "applicationCategory": "EducationalApplication",
+   "operatingSystem": "Any (runs in a web browser)",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+   },
+   "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "teacher"
+   },
+   "inLanguage": "ko",
+   "publisher": {
+    "@type": "Organization",
+    "name": "ClassCarnival",
+    "url": "https://classcarnival.com/"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://classcarnival.com/ko/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "자리 바꾸기 프로그램",
+     "item": "https://classcarnival.com/ko/tools/seating-chart"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "무료인가요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. 회원가입이나 설치 없이 무료로 사용할 수 있어요."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "특정 학생끼리 떨어뜨려 앉힐 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. “떨어뜨려 앉힐 학생”을 열고 한 줄에 두 명씩 적으세요. 앞뒤·양옆으로 붙지 않게 배치하며, 배치상 불가능하면 빨간색으로 알려 줘요."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "자리배치표를 인쇄할 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. “인쇄”를 누르면 잉크를 아끼는 깔끔한 자리표가 인쇄되고, “자리표 복사”로 글자로 복사할 수도 있어요."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/picker-shared.css">
 <style>
 
   .sc-opts2{ display:flex; flex-wrap:wrap; gap: 10px 24px; justify-content:center; align-items:center; margin-top: 14px; }
@@ -165,24 +242,25 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <a class="brand" href="/ko/">Class<span class="dot">Carnival</span></a>
     <nav class="site-nav">
-      <a href="/index.html">Home</a>
-      <a href="/races.html">Races</a>
-      <a href="/name-pickers.html">Name Pickers</a>
-      <a href="/games.html" class="active">Games &amp; Teams</a>
-      <a href="/tools/stopwatch.html">Stopwatch</a>
-      <a href="/tools/countdown.html">Countdown</a>
-      <a href="/ko/tools/seating-chart" lang="ko" hreflang="ko">한국어</a>
+      <a href="/ko/">홈</a>
+      <a href="/ko/tools/name-picker">이름 뽑기</a>
+      <a href="/ko/tools/group-maker">모둠 나누기</a>
+      <a href="/ko/tools/seating-chart" class="active">자리 바꾸기</a>
+      <a href="/ko/tools/countdown">수업 타이머</a>
+      <a href="/ko/tools/noise-meter">소음 측정기</a>
+      <a href="/ko/tools/classroom-screen">클래스 스크린</a>
+      <a href="/tools/seating-chart.html" lang="en" hreflang="en">English</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">🪑 Seating Chart Shuffle</div>
-    <h1>Seating Chart Shuffle</h1>
-    <div class="sub">Set up your desks, then deal your class into a brand-new random seating plan — with “keep apart” pairs, easy swaps, and printing.</div>
+    <div class="eyebrow">🪑 자리 바꾸기</div>
+    <h1>자리 바꾸기 프로그램</h1>
+    <div class="sub">책상 배치를 정하고, 우리 반의 새로운 랜덤 자리배치표를 만들어 보세요. 떨어뜨려 앉힐 학생 지정, 자리 맞바꾸기, 인쇄까지 한 번에.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -236,41 +314,39 @@ Leo, Noah"></textarea>
     </div>
     <div class="gm-copied" id="copied" aria-live="polite"></div>
   </div>
-  <div class="hint">Press Space to shuffle again. Click one desk, then another, to swap two students.</div>
+  <div class="hint">Space 키를 누르면 다시 섞어요. 책상 하나를 누르고 다른 책상을 누르면 두 학생의 자리가 바뀌어요.</div>
 
   <div class="related-skins">
-    <h3>More team tools</h3>
+    <h3>다른 수업 도구</h3>
     <div class="skin-links">
-      <a href="/tools/team-sorter.html">🎩 Magic Team Sorter</a>
-      <a href="/tools/balloon-pop-teams.html">🎈 Balloon Pop Teams</a>
-      <a href="/tools/captains-draft.html">👑 Captain’s Draft</a>
-      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
-      <a href="/tools/group-maker.html">👥 Group Maker</a>
+      <a href="/ko/tools/name-picker">이름 뽑기</a>
+      <a href="/ko/tools/group-maker">모둠 나누기</a>
+      <a href="/ko/tools/countdown">수업 타이머</a>
+      <a href="/ko/tools/noise-meter">소음 측정기</a>
+      <a href="/ko/tools/classroom-screen">클래스 스크린</a>
     </div>
   </div>
   <div class="info-section panel">
-    <h2>About this tool</h2>
-    <p>The Seating Chart Shuffle builds a random seating plan for your classroom in seconds. Set how many desks go across and how many rows you have, and the name cards are dealt out from the teacher’s desk to each seat — a fun reveal on the projector when students come in on seat-change day.</p>
-    <p>Add “keep apart” pairs and the shuffle makes sure those students never sit next to each other (left, right, in front, or behind). Choose desks in pairs, fill the front rows first, then fine-tune by clicking any two desks to swap them. Your layout is remembered for next time.</p>
-    <p>When you’re happy, print the chart for your desk or substitute folder, or copy it as text. Save your class list once and it’s ready on every ClassCarnival tool. Free, no sign-up, and nothing is uploaded — everything stays in your browser.</p>
+    <h2>도구 소개</h2>
+    <p>자리 바꾸는 날, 교실 화면에 띄워 쓰기 좋은 무료 랜덤 자리배치 도구입니다. 가로 책상 수와 줄 수를 정하면 선생님 자리에서 학생 이름 카드가 한 장씩 날아가 각 책상에 앉혀져요. 학생들이 가장 기다리는 순간이 됩니다.</p>
+    <p>“떨어뜨려 앉힐 학생”에 두 명씩 적어 두면, 그 학생들이 앞뒤·양옆으로 붙어 앉지 않도록 자동으로 배치해 줘요. 2인용 짝 책상 배치, 앞줄부터 채우기도 선택할 수 있고, 책상 두 개를 차례로 누르면 자리를 직접 바꿀 수도 있어요.</p>
+    <p>완성된 자리표는 인쇄하거나 글자로 복사해 둘 수 있어요. 책상 배치는 다음에도 그대로 기억되며, 모든 정보는 선생님 브라우저에만 저장됩니다.</p>
   </div>
   <section class="info-section panel faq-section" id="faq">
-    <h2>Frequently asked questions</h2>
-    <h3>Is the Seating Chart Shuffle free?</h3>
-    <p>Yes. The Seating Chart Shuffle is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
-    <h3>Can I keep certain students apart?</h3>
-    <p>Yes. Open “Keep students apart” and list pairs, one per line. The shuffle makes sure they don’t sit next to each other — left, right, in front or behind — and warns you if the layout makes that impossible.</p>
-    <h3>Can I print the seating chart?</h3>
-    <p>Yes. Press Print for a clean, ink-friendly version of the chart, or Copy Chart to paste it as text. You can also click any two desks to swap students before printing.</p>
-    <h3>Can I save my class list?</h3>
-    <p>Yes. Type or paste your names once, then save them as a class in the “My classes” bar above the names box. Your saved classes load on every ClassCarnival tool. They are stored only in your own browser — nothing is uploaded.</p>
+    <h2>자주 묻는 질문</h2>
+    <h3>무료인가요?</h3>
+    <p>네. 회원가입이나 설치 없이 무료로 사용할 수 있어요.</p>
+    <h3>특정 학생끼리 떨어뜨려 앉힐 수 있나요?</h3>
+    <p>네. “떨어뜨려 앉힐 학생”을 열고 한 줄에 두 명씩 적으세요. 앞뒤·양옆으로 붙지 않게 배치하며, 배치상 불가능하면 빨간색으로 알려 줘요.</p>
+    <h3>자리배치표를 인쇄할 수 있나요?</h3>
+    <p>네. “인쇄”를 누르면 잉크를 아끼는 깔끔한 자리표가 인쇄되고, “자리표 복사”로 글자로 복사할 수도 있어요.</p>
   </section>
 </main>
 
-<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+<footer class="site-footer"><div class="wrap">선생님을 위해 만든 무료 수업 도구. <a href="/ko/">한국어 홈</a> · <a href="/index.html" lang="en">English</a> · <a href="/privacy-policy.html">개인정보처리방침 (영문)</a> · <a href="/terms.html">이용약관 (영문)</a> · <a href="mailto:mysteriouz.media@gmail.com">문의</a></div></footer>
 
-<script src="../js/picker-reveal.js"></script>
-<script src="../js/team-kit.js"></script>
+<script src="/js/picker-reveal.js"></script>
+<script src="/js/team-kit.js"></script>
 <script>
 
 (function(){
@@ -396,7 +472,7 @@ Leo, Noah"></textarea>
 })();
 
 </script>
-<script src="../js/class-lists.js"></script>
-<script src="../js/fullscreen.js"></script>
+<script src="/js/class-lists.js"></script>
+<script src="/js/fullscreen.js"></script>
 </body>
 </html>

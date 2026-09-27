@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
@@ -10,12 +10,13 @@
   gtag('config', 'G-HL5R197PE4');
 </script>
 <meta charset="UTF-8">
+<script src="/js/i18n-ko.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Random Group Maker for Teachers — Split Your Class Into Groups | ClassCarnival</title>
-<meta name="description" content="Free random group generator for teachers. Split your class into groups of any size or a set number of teams, dealt out live on the projector. Balanced groups, no sign-up.">
-<link rel="canonical" href="https://classcarnival.com/tools/group-maker">
-<link rel="alternate" hreflang="en" href="https://classcarnival.com/tools/group-maker">
+<title>랜덤 모둠 나누기 — 클릭 한 번으로 모둠·팀 편성 | ClassCarnival</title>
+<meta name="description" content="무료 랜덤 모둠 나누기 프로그램. 학생 명단을 넣고 모둠 인원이나 모둠 수를 정하면 인원이 고른 모둠을 바로 만들어 줍니다. 카드를 나눠 주는 애니메이션과 팀 이름·마스코트까지. 회원가입 없음.">
+<link rel="canonical" href="https://classcarnival.com/ko/tools/group-maker">
 <link rel="alternate" hreflang="ko" href="https://classcarnival.com/ko/tools/group-maker">
+<link rel="alternate" hreflang="en" href="https://classcarnival.com/tools/group-maker">
 <link rel="alternate" hreflang="x-default" href="https://classcarnival.com/tools/group-maker">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
@@ -23,16 +24,92 @@
 <meta name="theme-color" content="#141b28">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="ClassCarnival">
-<meta property="og:title" content="Random Group Maker for Teachers — Split Your Class Into Groups | ClassCarnival">
-<meta property="og:description" content="Free random group generator for teachers. Split your class into groups of any size or a set number of teams, dealt out live on the projector. Balanced groups, no sign-up.">
-<meta property="og:url" content="https://classcarnival.com/tools/group-maker">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:title" content="랜덤 모둠 나누기 — 클릭 한 번으로 모둠·팀 편성 | ClassCarnival">
+<meta property="og:description" content="무료 랜덤 모둠 나누기 프로그램. 학생 명단을 넣고 모둠 인원이나 모둠 수를 정하면 인원이 고른 모둠을 바로 만들어 줍니다. 카드를 나눠 주는 애니메이션과 팀 이름·마스코트까지. 회원가입 없음.">
+<meta property="og:url" content="https://classcarnival.com/ko/tools/group-maker">
 <meta property="og:image" content="https://classcarnival.com/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="../css/theme.css">
-<link rel="stylesheet" href="../css/picker-shared.css">
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "name": "랜덤 모둠 나누기",
+   "url": "https://classcarnival.com/ko/tools/group-maker",
+   "description": "무료 랜덤 모둠 나누기 프로그램. 학생 명단을 넣고 모둠 인원이나 모둠 수를 정하면 인원이 고른 모둠을 바로 만들어 줍니다. 카드를 나눠 주는 애니메이션과 팀 이름·마스코트까지. 회원가입 없음.",
+   "applicationCategory": "EducationalApplication",
+   "operatingSystem": "Any (runs in a web browser)",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "KRW"
+   },
+   "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "teacher"
+   },
+   "inLanguage": "ko",
+   "publisher": {
+    "@type": "Organization",
+    "name": "ClassCarnival",
+    "url": "https://classcarnival.com/"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "홈",
+     "item": "https://classcarnival.com/ko/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "랜덤 모둠 나누기",
+     "item": "https://classcarnival.com/ko/tools/group-maker"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "무료인가요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. 회원가입이나 설치 없이 무료로 사용할 수 있어요."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "모둠 인원이 고르게 나뉘나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. 모든 모둠은 최대 1명 차이로 균형 있게 나뉘어요."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "모둠 결과를 복사할 수 있나요?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "네. “모둠 복사” 버튼을 누르면 모든 모둠과 구성원이 글자로 복사되어 문서, 메신저, 슬라이드에 붙여넣을 수 있어요."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<link rel="stylesheet" href="/css/theme.css">
+<link rel="stylesheet" href="/css/picker-shared.css">
 <style>
   .gm-options{ display:flex; flex-wrap:wrap; gap:14px 22px; align-items:center; justify-content:center; margin-top: 20px; }
   .gm-mode{ display:inline-flex; border:1px solid var(--line); border-radius: 12px; overflow:hidden; }
@@ -210,24 +287,25 @@
 
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <a class="brand" href="/ko/">Class<span class="dot">Carnival</span></a>
     <nav class="site-nav">
-      <a href="/index.html">Home</a>
-      <a href="/races.html">Races</a>
-      <a href="/name-pickers.html">Name Pickers</a>
-      <a href="/games.html" class="active">Games &amp; Teams</a>
-      <a href="/tools/stopwatch.html">Stopwatch</a>
-      <a href="/tools/countdown.html">Countdown</a>
-      <a href="/ko/tools/group-maker" lang="ko" hreflang="ko">한국어</a>
+      <a href="/ko/">홈</a>
+      <a href="/ko/tools/name-picker">이름 뽑기</a>
+      <a href="/ko/tools/group-maker" class="active">모둠 나누기</a>
+      <a href="/ko/tools/seating-chart">자리 바꾸기</a>
+      <a href="/ko/tools/countdown">수업 타이머</a>
+      <a href="/ko/tools/noise-meter">소음 측정기</a>
+      <a href="/ko/tools/classroom-screen">클래스 스크린</a>
+      <a href="/tools/group-maker.html" lang="en" hreflang="en">English</a>
     </nav>
   </div>
 </header>
 
 <main class="wrap">
   <div class="page-header">
-    <div class="eyebrow">👥 Group Maker</div>
-    <h1>Random Group Maker</h1>
-    <div class="sub">Split your class into random groups or teams in one click — then deal them out on the big screen.</div>
+    <div class="eyebrow">👥 모둠 나누기</div>
+    <h1>랜덤 모둠 나누기</h1>
+    <div class="sub">클릭 한 번으로 학급을 랜덤 모둠이나 팀으로 나누고, 큰 화면에서 카드처럼 나눠 주세요.</div>
   </div>
 
   <div id="setupScreen" class="panel">
@@ -276,43 +354,38 @@ Ava"></textarea>
     </div>
     <div class="gm-copied" id="copied" aria-live="polite"></div>
   </div>
-  <div class="hint">Choose “One at a time” for maximum suspense — press Space to reveal each student. Save your class once and it's ready on every tool.</div>
+  <div class="hint">“한 명씩 공개”를 고르면 Space 키를 누를 때마다 한 명씩 모둠이 공개돼요. 긴장감 최고!</div>
 
   <div class="related-skins">
-    <h3>More classroom tools</h3>
+    <h3>다른 수업 도구</h3>
     <div class="skin-links">
-      <a href="/tools/review-game.html">🏆 Review Game</a>
-      <a href="/tools/team-wheel.html">🎡 Team Wheel</a>
-      <a href="/tools/partner-picker.html">🤝 Mystery Partners</a>
-      <a href="/tools/gumball-machine-picker.html">🍬 Gumball Machine</a>
-      <a href="/tools/popsicle-stick-picker.html">🥤 Popsicle Stick Cup</a>
-      <a href="/tools/race-timer.html">🏁 Race Timer</a>
-      <a href="/tools/team-race.html">🚩 Team Race</a>
-      <a href="/tools/countdown.html">⏳ Countdown</a>
+      <a href="/ko/tools/name-picker">이름 뽑기</a>
+      <a href="/ko/tools/seating-chart">자리 바꾸기</a>
+      <a href="/ko/tools/countdown">수업 타이머</a>
+      <a href="/ko/tools/noise-meter">소음 측정기</a>
+      <a href="/ko/tools/classroom-screen">클래스 스크린</a>
     </div>
   </div>
   <div class="info-section panel">
-    <h2>About this tool</h2>
-    <p>A random group generator built for the classroom. Paste in your class list, choose either the size of each group or how many groups you want, and ClassCarnival shuffles everyone fairly and deals the names out into groups on screen — one card at a time, so the whole class can watch their team come together.</p>
-    <p>When the numbers don't divide evenly, the extra students are spread across groups so no group is ever more than one person bigger than another, and nobody gets left on their own. Hit Shuffle Again for a completely new mix, or Copy Groups to paste the list into a document, a class chat, or your lesson notes.</p>
-    <p>Use it for pair work, project teams, discussion circles, stations, or splitting the class into teams for a quiz game — it pairs perfectly with the Team Race. Team names and mascots are on by default (turn them off for plain numbered groups), “One at a time” mode lets you reveal each student with a drumroll, and use fullscreen mode to put the groups up on your projector. No sign-up needed, and any class size works.</p>
+    <h2>도구 소개</h2>
+    <p>모둠 활동, 프로젝트, 체육 시간 팀 나누기에 쓰는 무료 랜덤 모둠 편성 도구입니다. “모둠당 인원” 또는 “모둠 수”를 고르고 “모둠 만들기”를 누르면, 카드를 섞어 학생들을 각 모둠에 나눠 주는 모습이 화면에 펼쳐져요.</p>
+    <p>모둠 인원은 항상 최대 1명 차이로 고르게 맞춰집니다. 예를 들어 25명을 4명씩 나누면 4명 모둠과 5명 모둠이 알맞게 섞여 만들어져요. “팀 이름과 마스코트”를 켜면 호랑이 팀, 돌고래 팀처럼 재미있는 팀 이름이 붙습니다.</p>
+    <p>결과는 “모둠 복사”로 한 번에 복사해 문서나 메신저에 붙여넣을 수 있어요. 학급 명단을 저장해 두면 이름 뽑기, 자리 바꾸기 등 다른 도구에서도 그대로 쓸 수 있습니다.</p>
   </div>
   <section class="info-section panel faq-section" id="faq">
-    <h2>Frequently asked questions</h2>
-    <h3>Is the Random Group Maker free?</h3>
-    <p>Yes. The Random Group Maker is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
-    <h3>Are the teams balanced?</h3>
-    <p>Yes. Teams always end up within one student of each other in size, and every team gets its own colour and mascot.</p>
-    <h3>Can I copy the teams afterwards?</h3>
-    <p>Yes. Press “Copy Teams” to copy every team and its members as text, ready to paste into a document, chat or slide.</p>
-    <h3>Can I save my class list?</h3>
-    <p>Yes. Type or paste your names once, then save them as a class in the “My classes” bar above the names box. Your saved classes load on every ClassCarnival tool. They are stored only in your own browser — nothing is uploaded.</p>
+    <h2>자주 묻는 질문</h2>
+    <h3>무료인가요?</h3>
+    <p>네. 회원가입이나 설치 없이 무료로 사용할 수 있어요.</p>
+    <h3>모둠 인원이 고르게 나뉘나요?</h3>
+    <p>네. 모든 모둠은 최대 1명 차이로 균형 있게 나뉘어요.</p>
+    <h3>모둠 결과를 복사할 수 있나요?</h3>
+    <p>네. “모둠 복사” 버튼을 누르면 모든 모둠과 구성원이 글자로 복사되어 문서, 메신저, 슬라이드에 붙여넣을 수 있어요.</p>
   </section>
 </main>
 
-<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+<footer class="site-footer"><div class="wrap">선생님을 위해 만든 무료 수업 도구. <a href="/ko/">한국어 홈</a> · <a href="/index.html" lang="en">English</a> · <a href="/privacy-policy.html">개인정보처리방침 (영문)</a> · <a href="/terms.html">이용약관 (영문)</a> · <a href="mailto:mysteriouz.media@gmail.com">문의</a></div></footer>
 
-<script src="../js/picker-reveal.js"></script>
+<script src="/js/picker-reveal.js"></script>
 <script>
   const setupScreen = document.getElementById('setupScreen');
   const groupScreen = document.getElementById('groupScreen');
@@ -393,7 +466,7 @@ Ava"></textarea>
   document.getElementById('minusBtn').addEventListener('click', () => { numInput.value = Math.max(1, num() - 1); updateCount(); });
   document.getElementById('plusBtn').addEventListener('click', () => { numInput.value = Math.min(50, num() + 1); updateCount(); });
   document.getElementById('sampleBtn').addEventListener('click', () => {
-    namesInput.value = ['Minji','Daniel','Sora','Jayden','Ava','Leo','Yuna','Noah','Hana','Ethan','Jiwoo','Mia','Seojun','Chloe'].join('\n');
+    namesInput.value = ['민지','도윤','서연','지호','하은','준우','유나','시우','하나','예준','지우','수아','서준','채원'].join('\n');
     updateCount();
   });
   document.getElementById('startBtn').addEventListener('click', () => {
@@ -600,7 +673,7 @@ Ava"></textarea>
 
   updateCount();
 </script>
-<script src="../js/class-lists.js"></script>
-<script src="../js/fullscreen.js"></script>
+<script src="/js/class-lists.js"></script>
+<script src="/js/fullscreen.js"></script>
 </body>
 </html>

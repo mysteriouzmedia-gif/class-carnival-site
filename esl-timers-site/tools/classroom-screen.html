@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-HL5R197PE4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-HL5R197PE4');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classroom Screen — Timer, Name Picker, Noise Meter & Work Mode on One Screen | ClassCarnival</title>
+<meta name="description" content="Free classroom screen for your projector: a clock, timer, random name picker, noise meter, work-mode signs, traffic light and instructions — all on one screen. Pick your widgets, no sign-up.">
+<link rel="canonical" href="https://classcarnival.com/tools/classroom-screen">
+<link rel="alternate" hreflang="en" href="https://classcarnival.com/tools/classroom-screen">
+<link rel="alternate" hreflang="ko" href="https://classcarnival.com/ko/tools/classroom-screen">
+<link rel="alternate" hreflang="x-default" href="https://classcarnival.com/tools/classroom-screen">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#141b28">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ClassCarnival">
+<meta property="og:title" content="Classroom Screen — Timer, Name Picker, Noise Meter &amp; Work Mode on One Screen | ClassCarnival">
+<meta property="og:description" content="Free classroom screen for your projector: a clock, timer, random name picker, noise meter, work-mode signs, traffic light and instructions — all on one screen. Pick your widgets, no sign-up.">
+<meta property="og:url" content="https://classcarnival.com/tools/classroom-screen">
+<meta property="og:image" content="https://classcarnival.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3586154702955492" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="../css/theme.css">
+<link rel="stylesheet" href="../css/picker-shared.css">
+<style>
+  .cs-bar{ display:flex; flex-wrap:wrap; gap: 8px; justify-content:center; align-items:center; margin-bottom: 12px; }
+  .cs-chip{ background: rgba(255,255,255,.03); border: 2px solid var(--line); color: var(--cream); border-radius: 22px; padding: 7px 13px; font-size: 13px; }
+  .cs-chip.on{ border-color: var(--gold); background: rgba(255,182,39,.12); color: var(--gold); }
+  .cs-bgs{ display:inline-flex; gap: 6px; margin-left: 8px; align-items:center; font-size: 12px; color: var(--cream-dim); font-weight: 700; }
+  .cs-bgs button{ width: 26px; height: 26px; border-radius: 50%; padding: 0; border: 2px solid rgba(255,255,255,.3); }
+  .cs-bgs button.on{ border-color: #fff; box-shadow: 0 0 0 2px var(--gold); }
+  .cs-screen{ --bg: linear-gradient(135deg, #1d2b4f, #3b2a5c); background: var(--bg); background-size: cover; border-radius: 20px; padding: 16px; min-height: 60vh;
+    display:grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; align-content: start; }
+  .cs-w{ position:relative; background: rgba(15,21,34,.72); backdrop-filter: blur(6px); border: 1px solid rgba(255,255,255,.14); border-radius: 18px; padding: 14px 16px 16px; color: var(--cream);
+    display:flex; flex-direction:column; min-height: 200px; }
+  .cs-w[hidden]{ display:none; }
+  .cs-w h3{ margin: 0 0 8px; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-dim); font-weight: 800; font-family:'Work Sans', sans-serif; }
+  .cs-x{ position:absolute; right: 8px; top: 6px; background:none; border:none; color: var(--cream-dim); font-size: 18px; padding: 2px 8px; }
+  .cs-x:hover{ color: #ff6b5b; }
+  .cs-big{ font-family:'Archivo Black', sans-serif; font-size: clamp(44px, 6vw, 84px); line-height: 1; text-align:center; margin: auto 0; }
+  .cs-small{ text-align:center; color: var(--cream-dim); font-weight: 700; margin-top: 6px; }
+  .cs-btns{ display:flex; flex-wrap:wrap; gap: 6px; justify-content:center; margin-top: 10px; }
+  .cs-btns button{ padding: 7px 12px; font-size: 13px; }
+  .cs-w.done{ animation: csFlash .5s ease 4; }
+  @keyframes csFlash{ 50%{ background: rgba(255,107,91,.55); } }
+  .cs-pick{ font-family:'Archivo Black', sans-serif; font-size: clamp(34px, 4.6vw, 64px); text-align:center; color: var(--gold); margin: auto 0; min-height: 1.2em; overflow-wrap:anywhere; line-height: 1.1; }
+  .cs-pick.spin{ color: var(--cream-dim); }
+  .cs-w details{ margin-top: 8px; font-size: 13px; }
+  .cs-w details summary{ cursor:pointer; color: var(--cream-dim); font-weight: 700; text-align:center; }
+  .cs-w textarea{ min-height: 110px; margin-top: 6px; font-size: 14px; }
+  .cs-meter{ height: 34px; border-radius: 18px; background: rgba(255,255,255,.08); position:relative; overflow:hidden; margin: auto 0 6px; }
+  .cs-meter i{ position:absolute; left:0; top:0; bottom:0; width:0; background: linear-gradient(90deg, #2ec4b6, #a8d46b); transition: width .12s linear; border-radius: 18px; }
+  .cs-meter.loud i{ background: linear-gradient(90deg, #ffb627, #ff6b5b); }
+  .cs-meter b{ position:absolute; top: -4px; bottom: -4px; width: 4px; background: #fffdf7; border-radius: 2px; }
+  .cs-noiseface{ text-align:center; font-size: 52px; line-height: 1; margin-top: 4px; }
+  .cs-mode{ text-align:center; margin: auto 0; cursor:pointer; user-select:none; }
+  .cs-mode .ic{ font-size: clamp(60px, 8vw, 110px); line-height: 1; display:block; }
+  .cs-mode .lb{ font-family:'Archivo Black', sans-serif; font-size: clamp(22px, 2.6vw, 34px); display:block; margin-top: 6px; }
+  .cs-mode .ds{ display:block; color: var(--cream-dim); font-weight: 700; font-size: 14px; margin-top: 2px; }
+  .cs-light{ display:flex; gap: 14px; justify-content:center; align-items:center; margin: auto 0; background: #10141f; border-radius: 60px; padding: 14px 18px; align-self:center; }
+  .cs-light button{ width: clamp(56px, 6vw, 80px); height: clamp(56px, 6vw, 80px); border-radius: 50%; border: none; padding: 0; opacity: .22; transition: opacity .2s ease, box-shadow .2s ease; }
+  .cs-light button.on{ opacity: 1; box-shadow: 0 0 30px currentColor; }
+  .cs-note{ flex:1; outline: none; font-size: clamp(20px, 2.4vw, 32px); font-weight: 700; line-height: 1.35; white-space: pre-wrap; border-radius: 10px; padding: 4px 6px; min-height: 120px; }
+  .cs-note:focus{ background: rgba(255,255,255,.05); }
+  .cs-note:empty::before{ content: attr(data-ph); color: var(--cream-dim); }
+  body.fs-active .page-header, body.fs-active .hint, body.fs-active .cs-bar{ display:none; }
+  body.fs-active main.wrap{ max-width: none; padding: 10px; }
+  body.fs-active .cs-screen{ min-height: calc(100vh - 20px); }
+  body.fs-active #screenPanel{ padding: 0; border: none; background: none; }
+  .cc-classes{ font-size: 12px; }
+</style>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@graph": [
+  {
+   "@type": "WebApplication",
+   "name": "Classroom Screen",
+   "url": "https://classcarnival.com/tools/classroom-screen",
+   "description": "Free classroom screen for your projector: a clock, timer, random name picker, noise meter, work-mode signs, traffic light and instructions — all on one screen. Pick your widgets, no sign-up.",
+   "applicationCategory": "EducationalApplication",
+   "operatingSystem": "Any (runs in a web browser)",
+   "browserRequirements": "Requires JavaScript",
+   "isAccessibleForFree": true,
+   "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+   },
+   "audience": {
+    "@type": "EducationalAudience",
+    "educationalRole": "teacher"
+   },
+   "inLanguage": "en",
+   "image": "https://classcarnival.com/og-image.png",
+   "publisher": {
+    "@type": "Organization",
+    "name": "ClassCarnival",
+    "url": "https://classcarnival.com/"
+   }
+  },
+  {
+   "@type": "BreadcrumbList",
+   "itemListElement": [
+    {
+     "@type": "ListItem",
+     "position": 1,
+     "name": "Home",
+     "item": "https://classcarnival.com/"
+    },
+    {
+     "@type": "ListItem",
+     "position": 2,
+     "name": "Classroom Screen",
+     "item": "https://classcarnival.com/tools/classroom-screen"
+    }
+   ]
+  },
+  {
+   "@type": "FAQPage",
+   "mainEntity": [
+    {
+     "@type": "Question",
+     "name": "Is the Classroom Screen free?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. The Classroom Screen is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "What can I put on the classroom screen?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "A clock, a countdown timer, a random name picker, a noise meter, work-mode signs, a traffic light and a box for instructions. Turn each widget on or off and choose a background colour."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Will my screen be saved for next time?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Your widgets, background, instructions and class list are remembered in your browser, so the screen is ready when you open it again."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Will it work on my classroom projector or whiteboard?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Press the fullscreen button in the top-right corner and the tool fills the screen, with text big enough to read from the back of the room. It also works on interactive whiteboards and tablets."
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/index.html">Class<span class="dot">Carnival</span></a>
+    <nav class="site-nav">
+      <a href="/index.html">Home</a>
+      <a href="/races.html">Races</a>
+      <a href="/name-pickers.html">Name Pickers</a>
+      <a href="/games.html">Games &amp; Teams</a>
+      <a href="/tools/stopwatch.html">Stopwatch</a>
+      <a href="/tools/countdown.html">Countdown</a>
+      <a href="/ko/tools/classroom-screen" lang="ko" hreflang="ko">한국어</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="page-header">
+    <div class="eyebrow">🖥️ Classroom Screen</div>
+    <h1>Classroom Screen</h1>
+    <div class="sub">Everything you need on the projector at once — clock, timer, name picker, noise meter, work mode and instructions. Choose your widgets and go fullscreen.</div>
+  </div>
+
+  <div class="panel" id="screenPanel">
+    <div class="cs-bar" id="bar"></div>
+    <div class="cs-screen" id="screen">
+
+      <section class="cs-w" data-w="clock"><h3 data-t="clockH">🕒 Clock</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-big" id="clockTime">--:--</div><div class="cs-small" id="clockDate"></div></section>
+
+      <section class="cs-w" data-w="timer"><h3 data-t="timerH">⏳ Timer</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-big" id="tmTime">05:00</div>
+        <div class="cs-btns" id="tmPresets"></div>
+        <div class="cs-btns"><button class="btn-gold" id="tmStart">▶ Start</button><button class="btn-ghost" id="tmAdd">+1 min</button><button class="btn-ghost" id="tmReset">Reset</button></div></section>
+
+      <section class="cs-w" data-w="picker"><h3 data-t="pickerH">🎯 Name Picker</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-pick" id="pkName">?</div><div class="cs-small" id="pkLeft"></div>
+        <div class="cs-btns"><button class="btn-gold" id="pkBtn">🎯 Pick a Student</button></div>
+        <details id="pkDetails"><summary data-t="pkEdit">✏️ Edit class list</summary><textarea id="namesInput" placeholder="One name per line"></textarea></details></section>
+
+      <section class="cs-w" data-w="noise"><h3 data-t="noiseH">🔊 Noise Meter</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-noiseface" id="nzFace">🤫</div>
+        <div class="cs-meter" id="nzMeter"><i id="nzBar"></i><b id="nzLimit"></b></div>
+        <div class="cs-btns" id="nzPresets"></div>
+        <div class="cs-btns"><button class="btn-gold" id="nzStart">🎤 Start</button></div></section>
+
+      <section class="cs-w" data-w="mode"><h3 data-t="modeH">📋 Work Mode</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-mode" id="mode" title="Click to change"><span class="ic"></span><span class="lb"></span><span class="ds"></span></div>
+        <div class="cs-btns" id="modeBtns"></div></section>
+
+      <section class="cs-w" data-w="light"><h3 data-t="lightH">🚦 Traffic Light</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-light" id="light"><button style="background:#ff4b4b;color:#ff4b4b" data-l="0" aria-label="Red"></button><button style="background:#ffc233;color:#ffc233" data-l="1" aria-label="Yellow"></button><button style="background:#3fd46b;color:#3fd46b" data-l="2" aria-label="Green"></button></div>
+        <div class="cs-small" id="lightLbl"></div></section>
+
+      <section class="cs-w" data-w="note" style="grid-column: span 1"><h3 data-t="noteH">📝 Instructions</h3><button class="cs-x" aria-label="Hide">×</button>
+        <div class="cs-note" id="note" contenteditable="true" data-ph="Click here and type today’s instructions…"></div></section>
+    </div>
+  </div>
+  <div class="hint">Tip: pick your widgets, then press fullscreen (top right). Everything you set is remembered in this browser.</div>
+
+  <div class="related-skins">
+    <h3>More classroom tools</h3>
+    <div class="skin-links">
+      <a href="/tools/noise-meter.html">🔊 Noise Meter</a>
+      <a href="/tools/countdown.html">⏳ Countdown Timer</a>
+      <a href="/tools/name-picker.html">🎯 Name Picker</a>
+      <a href="/tools/group-maker.html">👥 Group Maker</a>
+    </div>
+  </div>
+  <div class="info-section panel">
+    <h2>About this tool</h2>
+    <p>The Classroom Screen puts the tools you use every lesson onto one projector screen: a big clock, a countdown timer, a random name picker, a live noise meter, work-mode signs, a traffic light and a space for today’s instructions. Switch widgets on and off to build the screen you need — just a timer and instructions for a test, or the noise meter and work mode for group work — then press fullscreen.</p>
+    <p>The work-mode sign shows students exactly what’s expected right now: silent work, whisper voices, partner talk, group work, “ask three before me”, or eyes on the teacher. The traffic light gives a quick visual signal for stop, get ready and go, and the name picker never repeats a student until everyone has had a turn.</p>
+    <p>Your layout, background, instructions and class list are remembered in your browser, so the screen is ready when you come back. The noise meter measures sound live on your computer — nothing is recorded or uploaded. Free, no sign-up, and it works on any laptop connected to a projector or interactive whiteboard.</p>
+  </div>
+  <section class="info-section panel faq-section" id="faq">
+    <h2>Frequently asked questions</h2>
+    <h3>Is the Classroom Screen free?</h3>
+    <p>Yes. The Classroom Screen is completely free — no sign-up, no student accounts and nothing to download. It runs in any modern web browser on a laptop, tablet, interactive whiteboard or projector.</p>
+    <h3>What can I put on the classroom screen?</h3>
+    <p>A clock, a countdown timer, a random name picker, a noise meter, work-mode signs, a traffic light and a box for instructions. Turn each widget on or off and choose a background colour.</p>
+    <h3>Will my screen be saved for next time?</h3>
+    <p>Yes. Your widgets, background, instructions and class list are remembered in your browser, so the screen is ready when you open it again.</p>
+    <h3>Will it work on my classroom projector or whiteboard?</h3>
+    <p>Yes. Press the fullscreen button in the top-right corner and the tool fills the screen, with text big enough to read from the back of the room. It also works on interactive whiteboards and tablets.</p>
+  </section>
+</main>
+
+<footer class="site-footer"><div class="wrap">Built for teachers. Free to use in class. <a href="/races.html">Races</a> · <a href="/name-pickers.html">Name Pickers</a> · <a href="/games.html">Games &amp; Teams</a> · <a href="/privacy-policy.html">Privacy Policy</a> · <a href="/terms.html">Terms of Use</a> · <a href="mailto:mysteriouz.media@gmail.com">Contact</a></div></footer>
+
+<script src="../js/picker-core.js"></script>
+<script src="../js/picker-reveal.js"></script>
+<script src="../js/noise-core.js"></script>
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const T = window.CC_CS_TEXT || {};
+  const tx = (k, d) => T[k] || d;
+  const store = (k, v) => { try{ localStorage.setItem(k, typeof v === 'string' ? v : JSON.stringify(v)); }catch(e){} };
+  const load = (k, d) => { try{ const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); }catch(e){ return d; } };
+  const muted = () => { try{ return localStorage.getItem('cc-sound-muted') === 'true'; }catch(e){ return false; } };
+  let actx = null;
+  function tone(f, when, dur, type, vol){ if(muted()) return; try{ if(!actx) actx = new (window.AudioContext || window.webkitAudioContext)(); if(actx.state === 'suspended') actx.resume();
+    const t = actx.currentTime + (when || 0), o = actx.createOscillator(), g = actx.createGain(); o.type = type || 'sine'; o.frequency.value = f;
+    g.gain.setValueAtTime(vol || .08, t); g.gain.exponentialRampToValueAtTime(.001, t + dur); o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02); }catch(e){} }
+
+  // translations for headings (Korean page supplies CC_CS_TEXT)
+  document.querySelectorAll('[data-t]').forEach(el => { if(T[el.dataset.t]) el.textContent = T[el.dataset.t]; });
+  if(T.notePh) $('note').dataset.ph = T.notePh;
+  if(T.namesPh) $('namesInput').placeholder = T.namesPh;
+
+  /* ---------- widget bar + backgrounds ---------- */
+  const W = { clock: tx('clock', '🕒 Clock'), timer: tx('timer', '⏳ Timer'), picker: tx('picker', '🎯 Name Picker'), noise: tx('noise', '🔊 Noise'), mode: tx('mode', '📋 Work Mode'), light: tx('light', '🚦 Traffic Light'), note: tx('note', '📝 Instructions') };
+  const BGS = ['linear-gradient(135deg, #1d2b4f, #3b2a5c)', 'linear-gradient(135deg, #0f5132, #1e7a5a)', 'linear-gradient(135deg, #7a2e4d, #c2566b)', 'linear-gradient(135deg, #1b4e7a, #3aa0c8)', 'linear-gradient(135deg, #3a2c22, #7a5436)', '#111418'];
+  let on = load('cc-screen-widgets', { clock: true, timer: true, picker: true, noise: false, mode: true, light: false, note: true });
+  let bg = load('cc-screen-bg', 0);
+  function renderBar(){
+    const bar = $('bar'); bar.innerHTML = '';
+    Object.entries(W).forEach(([k, label]) => { const b = document.createElement('button'); b.className = 'cs-chip' + (on[k] ? ' on' : ''); b.textContent = label;
+      b.setAttribute('aria-pressed', !!on[k]); b.addEventListener('click', () => { on[k] = !on[k]; store('cc-screen-widgets', on); apply(); }); bar.appendChild(b); });
+    const bgs = document.createElement('span'); bgs.className = 'cs-bgs'; bgs.textContent = tx('bg', 'Background');
+    BGS.forEach((g, i) => { const b = document.createElement('button'); b.style.background = g; b.className = i === bg ? 'on' : ''; b.setAttribute('aria-label', 'Background ' + (i + 1));
+      b.addEventListener('click', () => { bg = i; store('cc-screen-bg', i); apply(); }); bgs.appendChild(b); });
+    bar.appendChild(bgs);
+  }
+  function apply(){
+    document.querySelectorAll('.cs-w').forEach(w => w.hidden = !on[w.dataset.w]);
+    $('screen').style.setProperty('--bg', BGS[bg]); renderBar();
+    if(!on.noise && CCNoise.running){ CCNoise.stop(); $('nzStart').textContent = tx('nzStart', '🎤 Start'); }
+  }
+  document.querySelectorAll('.cs-x').forEach(x => x.addEventListener('click', () => { on[x.parentElement.dataset.w] = false; store('cc-screen-widgets', on); apply(); }));
+
+  /* ---------- clock ---------- */
+  const lang = document.documentElement.lang || 'en';
+  function clock(){ const d = new Date();
+    $('clockTime').textContent = d.toLocaleTimeString(lang, { hour: 'numeric', minute: '2-digit' });
+    $('clockDate').textContent = d.toLocaleDateString(lang, { weekday: 'long', month: 'long', day: 'numeric' }); }
+  clock(); setInterval(clock, 1000);
+
+  /* ---------- timer ---------- */
+  let total = 300, left = 300000, endAt = 0, running = false, tRaf = null;
+  const f2 = ms => { const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+  [1, 2, 3, 5, 10, 15].forEach(m => { const b = document.createElement('button'); b.className = 'btn-ghost'; b.textContent = m + tx('min', ' min');
+    b.addEventListener('click', () => { total = m * 60; tReset(); }); $('tmPresets').appendChild(b); });
+  function tDraw(){ $('tmTime').textContent = f2(left); }
+  function tLoop(){ left = Math.max(0, endAt - performance.now()); tDraw();
+    const s = Math.ceil(left / 1000); if(s <= 5 && s > 0 && s !== tLoop.last){ tLoop.last = s; tone(880, 0, .08, 'square', .05); }
+    if(left <= 0){ running = false; $('tmStart').textContent = tx('start', '▶ Start'); [0, .35, .7].forEach(t => tone(988, t, .3, 'sine', .2));
+      const w = document.querySelector('[data-w="timer"]'); w.classList.remove('done'); void w.offsetWidth; w.classList.add('done');
+      if(window.CCReveal) CCReveal.show(tx('timesUp', 'Time’s up!'), { label: '⏰', onClose: () => {} }); return; }
+    tRaf = requestAnimationFrame(tLoop); }
+  function tReset(){ running = false; cancelAnimationFrame(tRaf); left = total * 1000; $('tmStart').textContent = tx('start', '▶ Start'); tDraw(); }
+  $('tmStart').addEventListener('click', () => {
+    if(running){ running = false; cancelAnimationFrame(tRaf); $('tmStart').textContent = tx('resume', '▶ Resume'); return; }
+    if(left <= 0) left = total * 1000;
+    running = true; endAt = performance.now() + left; $('tmStart').textContent = tx('pause', '⏸ Pause'); tone(660, 0, .12, 'triangle', .08); tLoop(); });
+  $('tmAdd').addEventListener('click', () => { left += 60000; total += 60; if(running) endAt += 60000; tDraw(); });
+  $('tmReset').addEventListener('click', tReset);
+  tDraw();
+
+  /* ---------- name picker ---------- */
+  let picker = null, lastList = '';
+  const names = () => $('namesInput').value.split('\n').map(s => s.trim()).filter(Boolean);
+  function ensurePicker(){ const l = names().join('\n'); if(l !== lastList){ lastList = l; picker = l ? createPicker(names()) : null; } }
+  function pkLeft(n){ $('pkLeft').textContent = n === undefined ? '' : n + tx('left', ' still to pick'); }
+  $('pkBtn').addEventListener('click', () => {
+    ensurePicker();
+    if(!picker){ $('pkDetails').open = true; $('namesInput').focus(); return; }
+    const r = picker.pickNext(), all = names(), el = $('pkName');
+    el.classList.add('spin'); let n = 0;
+    (function flick(){ el.textContent = all[Math.floor(Math.random() * all.length)]; tone(1200, 0, .03, 'square', .03);
+      if(++n < 12) return setTimeout(flick, 40 + n * 12);
+      el.classList.remove('spin'); el.textContent = r.name; [660, 880, 1175].forEach((f, i) => tone(f, i * .07, .2, 'triangle', .09));
+      pkLeft(r.remaining); if(r.justExhausted) $('pkLeft').textContent = tx('round', '🎉 Everyone has had a turn — new round next'); })();
+  });
+  $('namesInput').addEventListener('input', () => { store('cc-screen-names', $('namesInput').value); pkLeft(); });
+  $('namesInput').value = (() => { try{ return localStorage.getItem('cc-screen-names') || ''; }catch(e){ return ''; } })();
+
+  /* ---------- noise ---------- */
+  const NZ = [[tx('nzSilent', '🤫 Silent'), 15], [tx('nzWhisper', '🐭 Whisper'), 30], [tx('nzTalk', '🗣️ Talk'), 50], [tx('nzGroup', '👥 Group'), 65]];
+  let limit = load('cc-noise-limit', 50);
+  function nzPresets(){ const w = $('nzPresets'); w.innerHTML = '';
+    NZ.forEach(([l, v]) => { const b = document.createElement('button'); b.className = 'cs-chip' + (v === limit ? ' on' : ''); b.textContent = l;
+      b.addEventListener('click', () => { limit = v; store('cc-noise-limit', v); nzPresets(); }); w.appendChild(b); });
+    $('nzLimit').style.left = limit + '%'; }
+  nzPresets();
+  try{ CCNoise.setSensitivity((+localStorage.getItem('cc-noise-sens') || 100) / 100); }catch(e){}
+  $('nzStart').addEventListener('click', async () => {
+    if(CCNoise.running){ CCNoise.stop(); $('nzStart').textContent = tx('nzStart', '🎤 Start'); $('nzBar').style.width = 0; return; }
+    try{ await CCNoise.start(l => { $('nzBar').style.width = l + '%'; $('nzMeter').classList.toggle('loud', l > limit);
+        $('nzFace').textContent = l > limit ? '🙉' : l > limit * .75 ? '😬' : '😊'; });
+      $('nzStart').textContent = tx('nzStop', '⏹ Stop'); }
+    catch(e){ $('nzFace').textContent = '🚫'; $('nzStart').textContent = tx('nzBlocked', '🎤 Mic blocked — try again'); }
+  });
+
+  /* ---------- work mode ---------- */
+  const MODES = T.modes || [['🤫', 'Silent work', 'Voices off'], ['🐭', 'Whisper voices', 'Only your neighbour can hear'], ['🗣️', 'Partner talk', 'Talk with your partner'],
+    ['👥', 'Group work', 'Work together, 6-inch voices'], ['🙋', 'Ask 3 before me', 'Try three classmates first'], ['👀', 'Eyes on me', 'Stop, look and listen']];
+  let mode = load('cc-screen-mode', 0);
+  function drawMode(){ const m = MODES[mode % MODES.length], el = $('mode'); el.querySelector('.ic').textContent = m[0]; el.querySelector('.lb').textContent = m[1]; el.querySelector('.ds').textContent = m[2];
+    [...$('modeBtns').children].forEach((b, i) => b.classList.toggle('on', i === mode)); }
+  MODES.forEach((m, i) => { const b = document.createElement('button'); b.className = 'cs-chip'; b.textContent = m[0]; b.title = m[1];
+    b.addEventListener('click', () => { mode = i; store('cc-screen-mode', i); drawMode(); tone(784, 0, .12, 'triangle', .06); }); $('modeBtns').appendChild(b); });
+  $('mode').addEventListener('click', () => { mode = (mode + 1) % MODES.length; store('cc-screen-mode', mode); drawMode(); tone(784, 0, .12, 'triangle', .06); });
+  drawMode();
+
+  /* ---------- traffic light ---------- */
+  const LL = T.lights || ['🛑 Stop and listen', '✋ Get ready', '✅ Go!'];
+  let light = load('cc-screen-light', 2);
+  function drawLight(){ [...$('light').children].forEach((b, i) => b.classList.toggle('on', i === light)); $('lightLbl').textContent = LL[light]; }
+  $('light').addEventListener('click', e => { const b = e.target.closest('button'); if(!b) return; light = +b.dataset.l; store('cc-screen-light', light); drawLight(); tone([330, 523, 784][light], 0, .15, 'triangle', .07); });
+  drawLight();
+
+  /* ---------- note ---------- */
+  try{ $('note').innerText = localStorage.getItem('cc-screen-note') || ''; }catch(e){}
+  $('note').addEventListener('input', () => { try{ localStorage.setItem('cc-screen-note', $('note').innerText); }catch(e){} });
+
+  apply();
+})();
+</script>
+<script src="../js/class-lists.js"></script>
+<script src="../js/fullscreen.js"></script>
+</body>
+</html>
