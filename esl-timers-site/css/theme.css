@@ -162,10 +162,14 @@ body.fs-active .related-skins,
 body.fs-active .eyebrow,
 body.fs-active .sub{ display: none !important; }
 
-body.fs-active{ display: flex; align-items: center; justify-content: center; min-height: 100vh; }
-body.fs-active main.wrap{ max-width: 100%; width: 100%; padding: 24px 32px; }
-body.fs-active .page-header{ padding: 0 0 18px; }
-body.fs-active h1{ font-size: clamp(28px, 5vw, 46px); }
+html.fs-on, html.fs-on body{ height: 100%; overflow: hidden !important; }
+html.fs-on{ scrollbar-width: none; }
+html.fs-on::-webkit-scrollbar{ display: none; }
+body.fs-active{ display: flex; align-items: center; justify-content: center; min-height: 100vh; height: 100vh; margin: 0; overflow: hidden !important; }
+body.fs-active main.wrap, body.fs-active main{ max-width: 100%; width: 100%; padding: 14px 28px; margin: 0 auto; flex: 0 0 auto; }
+body.fs-active .page-header{ padding: 0 0 10px; }
+body.fs-active h1{ font-size: clamp(24px, 3.6vw, 42px); }
+body.fs-active ins.adsbygoogle, body.fs-active .google-auto-placed, body.fs-active #recentTools, body.fs-active .faq-section, body.fs-active .breadcrumbs{ display: none !important; }
 body.fs-active .panel{ border: none; background: transparent; padding: 0; }
 body.fs-active .time{ font-size: clamp(90px, 22vw, 240px) !important; }
 body.fs-active .picked-name{ font-size: clamp(60px, 14vw, 160px) !important; }
