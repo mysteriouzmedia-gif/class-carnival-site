@@ -108,7 +108,7 @@
  ]
 }
 </script>
-<link rel="stylesheet" href="/css/theme.css?v=056192cb">
+<link rel="stylesheet" href="/css/theme.css?v=2b5b3b3c">
 <link rel="stylesheet" href="/css/picker-shared.css?v=556bf53b">
 <style>
   .nm-stage{ position:relative; height: min(56vh, 460px); min-height: 300px; border-radius: 20px; overflow:hidden; background:#0f1522; border: 1px solid var(--line); }
@@ -170,7 +170,7 @@
    "@type": "WebApplication",
    "name": "Classroom Noise Meter",
    "url": "https://classcarnival.com/tools/noise-meter",
-   "description": "Free classroom noise meter that uses your computer’s microphone. Bouncing balls, a noise gauge, or a sleeping dragon that wakes up when the class gets too loud — plus a quiet-time challenge. Nothing is recorded.",
+   "description": "Free classroom noise monitor that shows the sound level live using your computer’s microphone. Bouncing balls, a volume gauge or a sleeping dragon, with a “shh” alarm when the class gets too loud. Nothing is recorded.",
    "applicationCategory": "EducationalApplication",
    "operatingSystem": "Any (runs in a web browser)",
    "browserRequirements": "Requires JavaScript",
@@ -226,6 +226,30 @@
      "acceptedAnswer": {
       "@type": "Answer",
       "text": "No. The sound level is measured live inside your browser and nothing is recorded, saved or uploaded. The microphone switches off as soon as you close the page."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Is there an alarm when the class gets too loud?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. When the sound level goes over your limit, the meter shows a “Too loud!” warning and can play a gentle “shh” sound. In the Sleeping Dragon display the dragon wakes up with a “ROAR!”. Untick the “Shh!” box if you only want the visual warning."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Does it measure decibels?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "No. It shows a relative sound level from 0 to 100 rather than calibrated decibels, because every laptop microphone is different. Set the limit and sensitivity once for your room and the reading stays consistent from lesson to lesson."
+     }
+    },
+    {
+     "@type": "Question",
+     "name": "Can I use it on a smartboard or projector?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Yes. Open it on the computer connected to your projector or interactive whiteboard and press the fullscreen button. That computer needs a microphone — most laptops have one built in."
      }
     },
     {
