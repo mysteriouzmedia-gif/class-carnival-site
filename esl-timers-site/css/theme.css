@@ -187,3 +187,22 @@ body.fs-active .card{ font-size: clamp(28px, 6vw, 64px) !important; padding: 20p
 .faq-section h3{ font-size: 17px; margin: 18px 0 4px; }
 .faq-section h3:first-of-type{ margin-top: 6px; }
 .faq-section p{ margin: 0 0 6px; }
+
+/* --- Email sign-up box (js/signup.js) --- */
+.cc-signup{ margin-top: 40px; text-align: center; border-color: rgba(255,182,39,.45); background: linear-gradient(180deg, rgba(255,182,39,.07), rgba(255,255,255,.02)); }
+.cc-signup h2{ font-family:'Archivo Black', sans-serif; font-size: 20px; margin: 0 0 8px; }
+.cc-signup-sub{ color: var(--cream-dim); font-size: 14px; line-height: 1.6; margin: 0 0 16px; }
+.cc-signup form{ display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+.cc-signup input[type=email]{ flex: 1 1 240px; max-width: 340px; min-width: 0; padding: 12px 14px; border-radius: 10px; border: 1px solid var(--line); background: #0e1422; color: var(--cream); font: inherit; font-size: 15px; }
+.cc-signup input[type=email]:focus{ outline: 2px solid var(--gold); outline-offset: 1px; border-color: var(--gold); }
+.cc-signup input[type=email]::placeholder{ color: #6f7890; }
+.cc-signup button{ flex: 0 0 auto; }
+.cc-signup-msg{ min-height: 0; margin: 12px 0 0; font-size: 14px; font-weight: 700; }
+.cc-signup-msg:empty{ display: none; }
+.cc-signup-msg.ok{ color: var(--c5); font-size: 16px; }
+.cc-signup-msg.err{ color: var(--c1); }
+.cc-signup-small{ color: var(--cream-dim); font-size: 12px; margin: 12px 0 0; }
+.cc-hp{ position: absolute !important; left: -9999px !important; width: 1px; height: 1px; opacity: 0; }
+.cc-sr{ position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.cc-signup [hidden]{ display: none !important; }
+body.fs-active .cc-signup{ display: none !important; }
